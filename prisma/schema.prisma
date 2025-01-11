@@ -16,18 +16,29 @@ datasource db {
 model Member {
   id          Int      @id @default(autoincrement())
   generation  Int
-  department  String
   name        String
-  specialty   String
-  introduction String
-  image       String
-  discord     String?
-  github      String?
-  instagram   String?
-  solvedac    String?
-  email       String?
+  role        String // para or sunrin
+  info        Information?
+  infoId      Int?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Information {
+  id            Int @id @default(autoincrement())
+  member        Member   @relation(fields: [memberId], references: [id])
+  memberId      Int @unique
+  department    String
+  specialty     String
+  introduction  String
+  profile_image String?
+  discord       String?
+  github        String?
+  instagram     String?
+  solvedac      String?
+  email         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Portfolio {
