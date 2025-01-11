@@ -15,6 +15,7 @@ datasource db {
 
 model Member {
   id          Int      @id @default(autoincrement())
+  email       String
   generation  Int
   name        String
   role        String // para or sunrin
@@ -36,7 +37,6 @@ model Information {
   github        String?
   instagram     String?
   solvedac      String?
-  email         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
