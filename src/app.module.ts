@@ -7,10 +7,11 @@ import { PortfolioModule } from './portfolio/portfolio.module';
 import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
+import { UserService } from './user/user.service';
 
 @Module({
   imports: [MemberModule, QuestionModule, PortfolioModule, AuthModule, PrismaModule],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService, UserService],
 })
 export class AppModule {}
