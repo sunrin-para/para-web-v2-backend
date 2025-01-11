@@ -12,3 +12,54 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Member {
+  id          Int      @id @default(autoincrement())
+  generation  Int
+  department  String
+  name        String
+  specialty   String
+  introduction String
+  image       String
+  discord     String?
+  github      String?
+  instagram   String?
+  solvedac    String?
+  email       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Portfolio {
+  id          Int      @id @default(autoincrement())
+  tags        String[]
+  title       String
+  summary     String
+  description String
+  thumbnail   String
+  image       String[]
+  member      String[]
+  filePath    String
+  date        DateTime[]
+  link        String?
+  github      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Question {
+  id          Int      @id @default(autoincrement())
+  title       String
+  content     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Award {
+  id          Int      @id @default(autoincrement())
+  name        String
+  member      String[]
+  year        Int  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
