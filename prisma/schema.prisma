@@ -13,72 +13,73 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// 로그인 시 사용하는 유저 모델입니다. admin id, google id데이터를 공유합니다.
 model User {
-  uid       Int @id @default(autoincrement())
-  email     String
-  password  String
-  
+  uid           Int @id @default(autoincrement())
+  email         String @unique
+  password      String? // password가 null일 경우 authService or Dto 단에서 null은 401 처리 부탁드립니다.
+  name          String
+  permission    Permission @default(USER) // permission은 'super(총괄유저)', 'moderator(지원폼까지 접근 가능)', 'manager(사이트 기본 설정만 접근 가능)', 'user(관리자 X, 지원 폼만 접근 가능)'
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  refreshToken  String?
 }
 
+enum Permission {
+  SUPER        // 총괄 유저
+  MODERATOR    // 지원 폼 접근 가능
+  MANAGER      // 사이트 기본 설정 접근 가능
+  USER         // 지원 폼만 접근 가능
+}
+
+// para web에 표시할 부원 정보 모델입니다.
 model Member {
-  uid          Int      @id @default(autoincrement())
-  email       String // use as signin id
-  password    String
-  generation  Int // 기수 ()
-  name        String
-  role        String // para or sunrin
-  info        Information?
-  infoId      Int?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Information {
-  id            Int @id @default(autoincrement())
-  member        Member   @relation(fields: [memberId], references: [uid])
-  memberId      Int @unique
+  id            Int      @id @default(autoincrement())
+  generation    Int // 기수 ()
+  name          String
   department    String
   specialty     String
   introduction  String
-  profile_image String?
+  profile_image String @default("/default.png") // 이 부분은 member controller image return 구현 후 기본 이미지 엔드포인트로 변경 요함.
   discord       String?
   github        String?
   instagram     String?
   solvedac      String?
+  email         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
 
 model Portfolio {
-  id          Int      @id @default(autoincrement())
-  tags        String[]
-  title       String
-  summary     String
-  description String
-  thumbnail   String
-  image       String[]
-  member      String[]
-  filePath    String
-  date        DateTime[]
-  link        String?
-  github      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  tags          String[]
+  title         String
+  summary       String
+  description   String
+  thumbnail     String
+  image         String[]
+  member        String[]
+  filePath      String
+  date          DateTime[]
+  link          String?
+  github        String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Question {
-  id          Int      @id @default(autoincrement())
-  title       String
-  content     String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  title         String
+  content       String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Award {
-  id          Int      @id @default(autoincrement())
-  name        String
-  member      String[]
-  year        Int  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  name          String
+  member        String[]
+  year          Int  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
