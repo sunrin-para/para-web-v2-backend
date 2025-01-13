@@ -1,21 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { GoogleUserDto } from './dto/googleUser.dto';
 import { UserService } from 'src/user/user.service';
+import { CreateUserDto } from './dto/createUser.dto';
+import { UserDataDto } from './dto/user.dto';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly userService: UserService) {}
-  async registerUser(user: any) {
-    const newUser = {
-      email: user.email,
-      password: user.password ?? null,
-      name: user.name,
-      permission: user.permission ?? 'user',
-    };
-  }
-
-  async handleGoogleSignIn(user: GoogleUserDto) {
-    
+  async handleGoogleSignIn(googleUser: GoogleUserDto) {
+    let user: UserDataDto = await this.userService.findUserByEmail(
+      googleUser.email,
+    );
+    if (!user) {
+      const newUserData: CreateUserDto = {
+        email: googleUser.email,
+        name: googleUser.name,
+      };
+      user = await this.userService.createUser(newUserData);
+    }
+    return user;
   }
 
   // 여기서 bcrypt 이용해서 비밀번호 맞는지 검사해야 함.

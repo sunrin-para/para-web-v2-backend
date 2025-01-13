@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GoogleUserDto {
+export class CreateUserDto {
   email: string;
+  password?: string;
   name: string;
+  permission?: string;
 }
