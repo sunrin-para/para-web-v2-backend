@@ -8,9 +8,10 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserService } from './user/user.service';
+import { UserModule } from './user/user.module';
 
 @Module({
-  imports: [MemberModule, QuestionModule, PortfolioModule, AuthModule, PrismaModule],
+  imports: [MemberModule, QuestionModule, PortfolioModule, AuthModule, PrismaModule, UserModule],
   controllers: [AppController],
   providers: [AppService, PrismaService, UserService],
 })

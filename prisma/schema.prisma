@@ -15,13 +15,13 @@ datasource db {
 
 // 로그인 시 사용하는 유저 모델입니다. admin id, google id데이터를 공유합니다.
 model User {
-  uid           Int @id @default(autoincrement())
-  email         String @unique
+  uid           Int         @id @default(autoincrement())
+  email         String      @unique
   password      String? // password가 null일 경우 authService or Dto 단에서 null은 401 처리 부탁드립니다.
   name          String
-  permission    Permission @default(USER) // permission은 'super(총괄유저)', 'moderator(지원폼까지 접근 가능)', 'manager(사이트 기본 설정만 접근 가능)', 'user(관리자 X, 지원 폼만 접근 가능)'
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  permission    Permission  @default(USER) // permission은 'super(총괄유저)', 'moderator(지원폼까지 접근 가능)', 'manager(사이트 기본 설정만 접근 가능)', 'user(관리자 X, 지원 폼만 접근 가능)'
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
   refreshToken  String?
 }
 

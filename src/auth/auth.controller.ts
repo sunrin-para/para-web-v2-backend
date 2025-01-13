@@ -44,7 +44,13 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const user = req.user;
-    await this.authService.handleSignIn(user);
+    const tokens: any = await this.authService.handleGoogleSignIn(user);
+
+    res.header('Access-Control-Allow-Origin', process.env.DOMAIN);
+
+    res.header('Access-Control-Allow-Credentials', 'true');
+
+    return { accessToken: tokens.accessToken };
   }
 
   @Get('/logout')
