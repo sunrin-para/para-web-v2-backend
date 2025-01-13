@@ -16,7 +16,6 @@ import { AuthService } from './auth.service';
 import { GoogleGuard } from 'src/common/guards/google.guard';
 import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
-import { SunrinGuard } from 'src/common/guards/sunrin.guard';
 import { UserService } from 'src/user/user.service';
 
 interface IRequest extends Request {
@@ -49,7 +48,6 @@ export class AuthController {
   }
 
   @Get('/logout')
-  @UseGuards(SunrinGuard)
   @HttpCode(HttpStatus.OK)
   async logout(
     @Req() req: IRequest,
