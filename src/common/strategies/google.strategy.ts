@@ -32,7 +32,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     user.accessToken = accessToken;
     user.refreshToken = refreshToken;
     console.log(user._json.email);
-    if (this.isValidEmail(user._json.email)) return done(null, profile);
+    if (this.isValidEmail(user._json.email)) return done(null, user);
     else throw new ForbiddenException();
   }
 }

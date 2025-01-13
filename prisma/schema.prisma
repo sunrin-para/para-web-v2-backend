@@ -13,10 +13,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  uid       Int @id @default(autoincrement())
+  email     String
+  password  String
+  
+}
+
 model Member {
-  id          Int      @id @default(autoincrement())
-  email       String
-  generation  Int
+  uid          Int      @id @default(autoincrement())
+  email       String // use as signin id
+  password    String
+  generation  Int // 기수 ()
   name        String
   role        String // para or sunrin
   info        Information?
@@ -27,7 +35,7 @@ model Member {
 
 model Information {
   id            Int @id @default(autoincrement())
-  member        Member   @relation(fields: [memberId], references: [id])
+  member        Member   @relation(fields: [memberId], references: [uid])
   memberId      Int @unique
   department    String
   specialty     String

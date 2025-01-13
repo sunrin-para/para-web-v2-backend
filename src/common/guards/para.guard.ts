@@ -24,6 +24,8 @@ export class ParaGuard implements CanActivate {
       );
     }
 
+    // para id db에 등록되어 있고, role이 para인지 확인해야 함.
+
     return true;
   }
 }
