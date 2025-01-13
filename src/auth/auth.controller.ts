@@ -26,10 +26,7 @@ interface IRequest extends Request {
 @ApiTags('Authorization')
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Get('/google')
   @UseGuards(GoogleGuard)
@@ -50,7 +47,7 @@ export class AuthController {
 
     res.header('Access-Control-Allow-Credentials', 'true');
 
-    return { accessToken: tokens.accessToken };
+    return tokens;
   }
 
   @Get('/logout')

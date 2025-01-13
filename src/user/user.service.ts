@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from 'src/auth/dto/createUser.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Permission } from '@prisma/client';
+import { Permission, User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { UserDataDto } from 'src/auth/dto/user.dto';
 
@@ -36,5 +36,33 @@ export class UserService {
         where: { email: email },
       })) ?? null
     );
+  }
+
+  async setRefreshToken(email: string, refreshToken: string) {
+    await this.prismaService.user
+      .update({
+        where: { email: email },
+        data: { refreshToken: refreshToken },
+      })
+      .then(() => {
+        return true;
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+  }
+
+  async removeRefreshToken(email: string) {
+    await this.prismaService.user
+      .update({
+        where: { email: email },
+        data: { refreshToken: null },
+      })
+      .then(() => {
+        return true;
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
   }
 }
