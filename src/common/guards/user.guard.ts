@@ -4,9 +4,10 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
-export class SunrinGuard implements CanActivate {
+export class SunrinGuard extends AuthGuard('jwt') implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
 
