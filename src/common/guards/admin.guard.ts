@@ -24,12 +24,17 @@ export class AdminGuard extends AuthGuard('jwt') implements CanActivate {
         'Please set Guard permission via setMetaData decorator.',
       );
 
+    const canActivate = super.canActivate(context);
+    if (!canActivate) {
+      return false;
+    }
+
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
     if (!user || !user.role || user.role !== requiredPermission) {
       throw new ForbiddenException('해당 페이지에 접근할 권한이 없습니다.');
-    } 
+    }
 
     return true;
   }
