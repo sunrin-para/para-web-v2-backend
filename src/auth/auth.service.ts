@@ -1,15 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { GoogleUserDto } from './dto/googleUser.dto';
 import { UserService } from 'src/user/user.service';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UserDataDto } from './dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from './dto/JwtPayload.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {}
   async handleGoogleSignIn(googleUser: GoogleUserDto) {
     let user: UserDataDto = await this.userService.findUserByEmail(
@@ -27,10 +28,25 @@ export class AuthService {
   }
 
   // 만들어야 할 함수들
-  // generateToken(ac, ref), refreshToken, invalidate refreshtoken, 
-  async generateToken(type: string = "access") {
-    // const payload: JwtPayload = {}
-    // switch()
+  // generateToken(ac, ref), refreshToken, invalidate refreshtoken,
+  async generateToken(tokenType: string = 'access', email: string) {
+    const user = await this.userService.findUserByEmail(email);
+    const payload: JwtPayload = {
+      uid: user.uid,
+      email: user.email,
+      permission: user.permission,
+    };
+
+    switch (tokenType) {
+      case 'access':
+        return this.jwtService.sign(payload);
+      case 'refresh':
+        return this.jwtService.sign(payload, { expiresIn: '7d' });
+      default:
+        throw new InternalServerErrorException(
+          'Unable to generate user token: token type not provided.',
+        );
+    }
   }
 
   // 여기서 bcrypt 이용해서 비밀번호 맞는지 검사해야 함.
