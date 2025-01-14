@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { GoogleUserDto } from './dto/googleUser.dto';
 import { UserService } from 'src/user/user.service';
 import { CreateUserDto } from './dto/createUser.dto';
@@ -28,7 +32,7 @@ export class AuthService {
   }
 
   // 만들어야 할 함수들
-  // generateToken(ac, ref), refreshToken, invalidate refreshtoken,
+  // invalidate refreshtoken,
   async generateToken(tokenType: string = 'access', email: string) {
     const user = await this.userService.findUserByEmail(email);
     const payload: JwtPayload = {
@@ -47,6 +51,24 @@ export class AuthService {
           'Unable to generate user token: token type not provided.',
         );
     }
+  }
+
+  async refreshTokens(refreshToken: string) {
+    const decoded: JwtPayload = this.jwtService.verify(refreshToken);
+    const user = await this.userService.findUserByEmail(decoded.email);
+
+    if (!user || user.refreshToken !== refreshToken) {
+      throw new UnauthorizedException();
+    }
+
+    const newAccessToken = await this.generateToken('access', user.email);
+    const newRefreshToken = await this.generateToken('refresh', user.email);
+    await this.userService.setRefreshToken(user.email, newRefreshToken);
+
+    return {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    };
   }
 
   // 여기서 bcrypt 이용해서 비밀번호 맞는지 검사해야 함.
