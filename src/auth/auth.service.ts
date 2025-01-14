@@ -71,6 +71,21 @@ export class AuthService {
     };
   }
 
+  // sign out controller에서 사용할 예정
+  async invalidateRefreshToken(refreshToken: string) {
+    const decoded: JwtPayload = this.jwtService.verify(refreshToken);
+    const user = await this.userService.findUserByEmail(decoded.email);
+
+    if (!user || user.refreshToken !== refreshToken) {
+      throw new UnauthorizedException();
+    }
+
+    await this.userService.removeRefreshToken(user.email);
+    return {
+      result: true,
+    };
+  }
+
   // 여기서 bcrypt 이용해서 비밀번호 맞는지 검사해야 함.
   // case 2 : google or local strategy로 먼저 가입된 user의 경우, 기존 schema를 업데이트 해주는 방향으로 가야 함.
   // case 2의 경우 local auth는 admin page에서만 등록 가능하기 때문에 무조건적인 업데이트를 해줘도 됨.
