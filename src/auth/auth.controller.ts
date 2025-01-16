@@ -12,12 +12,15 @@ import {
   HttpCode,
   HttpStatus,
   UnauthorizedException,
+  SetMetadata,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleGuard } from 'src/common/guards/google.guard';
 import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtPayload } from './dto/JwtPayload.dto';
+import { UserGuard } from 'src/common/guards/user.guard';
+import { AdminGuard } from 'src/common/guards/admin.guard';
 
 interface IRequest extends Request {
   user?: any;
@@ -42,7 +45,10 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const user = req.user;
-    const tokens: any = await this.authService.handleGoogleSignIn(user);
+    const tokens: any = await this.authService.handleGoogleSignIn({
+      email: user._json.email,
+      name: user._json.name,
+    });
 
     res.header('Access-Control-Allow-Origin', process.env.DOMAIN);
 
@@ -68,5 +74,12 @@ export class AuthController {
     } catch (e) {
       throw new UnauthorizedException();
     }
+  }
+
+  @Get('/test')
+  @UseGuards(AdminGuard)
+  @SetMetadata('permission', 'ADMIN')
+  async test() {
+    return 'passed';
   }
 }

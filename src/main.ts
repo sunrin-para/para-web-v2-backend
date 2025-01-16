@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as session from 'express-session';
 import { PrismaService } from './prisma/prisma.service';
+import { UnauthorizedExceptionFilter } from './common/filters/unauthorized.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -60,6 +61,8 @@ async function bootstrap() {
     explorer: true,
     yamlDocumentUrl: 'api-docs/yaml',
   });
+
+  app.useGlobalFilters(new UnauthorizedExceptionFilter());
 
   await app.listen(process.env.PORT ?? 3000);
 }

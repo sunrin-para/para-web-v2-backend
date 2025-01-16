@@ -11,13 +11,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     super({
       clientID: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
-      // callbackURL: `${env.HTTP_PROTOCOL}://${env.DOMAIN}${env.GOOGLE_CALLBACK_PARAM}`,
-      callbackURL: `${env.DOMAIN}${env.GOOGLE_REDIRECT_URL}`,
+      callbackURL: `${env.DOMAIN}${env.GOOGLE_REDIRECT_PARAM}`,
       scope: ['profile', 'email'],
     });
   }
 
-  private async isValidEmail(email) {
+  private async validateEmailAddr(email) {
     const regex = /^[a-zA-Z0-9._%+-]+@(sunrint\.hs\.kr|sunrin-para\.dev)$/;
     return regex.test(email);
   }
@@ -32,7 +31,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     user.accessToken = accessToken;
     user.refreshToken = refreshToken;
     console.log(user._json.email);
-    if (this.isValidEmail(user._json.email)) return done(null, user);
+    const isValidEmail = await this.validateEmailAddr(user._json.email);
+    if (isValidEmail) return done(null, user);
     else throw new ForbiddenException();
   }
 }
