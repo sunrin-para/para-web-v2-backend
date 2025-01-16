@@ -76,10 +76,16 @@ export class AuthController {
     }
   }
 
-  @Get('/test')
+  @Get('/test1')
   @UseGuards(AdminGuard)
-  @SetMetadata('permission', 'ADMIN')
-  async test() {
+  @SetMetadata('permission', 'MANAGER')
+  async test1() {
     return 'passed';
+  }
+
+  @Get('/test2')
+  @UseGuards(UserGuard)
+  async test2() {
+    return '1';
   }
 }

@@ -1,20 +1,30 @@
 import {
-  CanActivate,
   ExecutionContext,
   Injectable,
   ForbiddenException,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 
+enum Permission {
+  SUPER,
+  MODERATOR,
+  MANAGER,
+  USER,
+}
+
 @Injectable()
-export class AdminGuard extends AuthGuard('jwt') implements CanActivate {
-  constructor(private reflector: Reflector) {
+export class AdminGuard extends AuthGuard('jwt') {
+  constructor(
+    private reflector: Reflector,
+    private readonly jwtService: JwtService,
+  ) {
     super();
   }
 
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean | null> {
     const requiredPermission = this.reflector.get<string>(
       'permission',
       context.getHandler(),
@@ -24,14 +34,21 @@ export class AdminGuard extends AuthGuard('jwt') implements CanActivate {
         'Please set Guard permission via setMetaData decorator.',
       );
 
-    const canActivate = super.canActivate(context);
+    const canActivate = await super.canActivate(context);
+    console.log('canActivate:', canActivate);
     if (!canActivate) {
       return false;
     }
-
+    // console.log(Permission[requiredPermission]);
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    if (!user || !user.role || user.role !== requiredPermission) {
+    // console.log(user)
+    console.log(Permission[user.permission] <= Permission[requiredPermission]);
+    if (
+      !user ||
+      !user.permission ||
+      !(Permission[user.permission] <= Permission[requiredPermission])
+    ) {
       throw new ForbiddenException('해당 페이지에 접근할 권한이 없습니다.');
     }
 
