@@ -2,6 +2,7 @@ import {
   INestApplication,
   Injectable,
   OnModuleDestroy,
+  OnApplicationShutdown,
   OnModuleInit,
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
@@ -9,7 +10,7 @@ import { PrismaClient } from '@prisma/client';
 @Injectable()
 export class PrismaService
   extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy
+  implements OnModuleInit, OnModuleDestroy, OnApplicationShutdown
 {
   constructor() {
     super({
@@ -29,8 +30,16 @@ export class PrismaService
     await this.$disconnect();
   }
 
+  async onApplicationShutdown(signal?: string) {
+    console.log(`Application is shutting down... Signal: ${signal}`);
+    await this.$disconnect();
+  }
+
   async enableShutdownHooks(app: INestApplication) {
-    this.$on('beforeExit' as never, async () => {
+    process.on('SIGINT', async () => {
+      await app.close();
+    });
+    process.on('SIGTERM', async () => {
       await app.close();
     });
   }

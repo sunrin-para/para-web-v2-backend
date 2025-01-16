@@ -11,12 +11,13 @@ import {
   Res,
   HttpCode,
   HttpStatus,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleGuard } from 'src/common/guards/google.guard';
 import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
-import { UserService } from 'src/user/user.service';
+import { JwtPayload } from './dto/JwtPayload.dto';
 
 interface IRequest extends Request {
   user?: any;
@@ -56,8 +57,16 @@ export class AuthController {
     @Req() req: IRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    if (req.session) {
-      req.session.user = '';
+    // controller에서 user refreshToken 추출해야 함. 해당 토큰을 signOut 함수에 넘겨야 함.
+    const user: JwtPayload = req.user;
+    try {
+      await this.authService.signOut(user.email);
+      if (req.session) {
+        req.session.user = '';
+      }
+      return true;
+    } catch (e) {
+      throw new UnauthorizedException();
     }
   }
 }

@@ -28,11 +28,20 @@ export class AuthService {
       user = await this.userService.createUser(newUserData);
     }
 
-    return user;
+    const accessToken = await this.generateToken('access', user.email);
+    const refreshToken = await this.generateToken('refresh', user.email);
+
+    return {
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    };
   }
 
-  // 만들어야 할 함수들
-  // invalidate refreshtoken,
+  async signOut(email: string) {
+    await this.invalidateRefreshToken(email);
+  }
+
+  /* 여기서부터 토큰 관리 함수들입니다. */
   async generateToken(tokenType: string = 'access', email: string) {
     const user = await this.userService.findUserByEmail(email);
     const payload: JwtPayload = {
@@ -48,7 +57,7 @@ export class AuthService {
         return this.jwtService.sign(payload, { expiresIn: '7d' });
       default:
         throw new InternalServerErrorException(
-          'Unable to generate user token: token type not provided.',
+          'Unable to generate user token: token type was not provided.',
         );
     }
   }
@@ -72,11 +81,10 @@ export class AuthService {
   }
 
   // sign out controller에서 사용할 예정
-  async invalidateRefreshToken(refreshToken: string) {
-    const decoded: JwtPayload = this.jwtService.verify(refreshToken);
-    const user = await this.userService.findUserByEmail(decoded.email);
+  async invalidateRefreshToken(email: string) {
+    const user = await this.userService.findUserByEmail(email);
 
-    if (!user || user.refreshToken !== refreshToken) {
+    if (!user) {
       throw new UnauthorizedException();
     }
 
@@ -85,12 +93,5 @@ export class AuthService {
       result: true,
     };
   }
-
-  // 여기서 bcrypt 이용해서 비밀번호 맞는지 검사해야 함.
-  // case 2 : google or local strategy로 먼저 가입된 user의 경우, 기존 schema를 업데이트 해주는 방향으로 가야 함.
-  // case 2의 경우 local auth는 admin page에서만 등록 가능하기 때문에 무조건적인 업데이트를 해줘도 됨.
-  // 단, user registration을 google / local 모두 허용하는 경우 local 가입 시 이메일 인증을 필수적으로 진행해야 함.
-  async validateUser(id: string, pw: string) {
-    return {};
-  }
+  /* 여기까지 토큰 관리 함수들입니다. */
 }
