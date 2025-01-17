@@ -107,10 +107,15 @@ export class AuthController {
   @SetMetadata('permission', 'SUPER')
   @Post('/password/reset')
   async resetPassword(
-    @Req() req: IRequest,
+    @Body() changePasswordDto: ChangePasswordDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     // super user가 user pw 변경하는 컨트롤러.
+    const result = await this.authService.changePassword(
+      changePasswordDto.email,
+      changePasswordDto,
+    );
+    return result;
   }
 
   @Post('/permission/change')
