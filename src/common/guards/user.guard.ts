@@ -9,8 +9,8 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
 export class UserGuard extends AuthGuard('jwt') {
-  canActivate(context: ExecutionContext): boolean {
-    const canActivate = super.canActivate(context);
+  async canActivate(context: ExecutionContext): Promise<boolean | null> {
+    const canActivate = await super.canActivate(context);
     if (!canActivate) {
       return false;
     }

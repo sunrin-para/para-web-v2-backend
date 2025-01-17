@@ -35,15 +35,13 @@ export class AdminGuard extends AuthGuard('jwt') {
       );
 
     const canActivate = await super.canActivate(context);
-    console.log('canActivate:', canActivate);
     if (!canActivate) {
       return false;
     }
-    // console.log(Permission[requiredPermission]);
+
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    // console.log(user)
-    console.log(Permission[user.permission] <= Permission[requiredPermission]);
+
     if (
       !user ||
       !user.permission ||

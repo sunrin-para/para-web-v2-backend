@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
@@ -37,6 +38,17 @@ export class AuthService {
       accessToken: accessToken,
       refreshToken: refreshToken,
     };
+  }
+
+  async registerUser(createUserDto: CreateUserDto) {
+    let user: UserDataDto = await this.userService.findUserByEmail(
+      createUserDto.email,
+    );
+    if (user) throw new ConflictException('Account already Exists');
+    else {
+      user = await this.userService.createUser(createUserDto);
+      return user;
+    }
   }
 
   async signOut(email: string) {

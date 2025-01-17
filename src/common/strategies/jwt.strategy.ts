@@ -20,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!payload || !payload.uid) {
       throw new UnauthorizedException('유효하지 않은 토큰입니다.');
     }
-    console.log(`jwt payload : ${JSON.stringify(payload)}`);
+
     return {
       uid: payload.uid,
       email: payload.email,

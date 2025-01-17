@@ -13,6 +13,7 @@ import {
   HttpStatus,
   UnauthorizedException,
   SetMetadata,
+  BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleGuard } from 'src/common/guards/google.guard';
@@ -21,6 +22,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { JwtPayload } from './dto/JwtPayload.dto';
 import { UserGuard } from 'src/common/guards/user.guard';
 import { AdminGuard } from 'src/common/guards/admin.guard';
+import { CreateUserDto } from './dto/createUser.dto';
 
 interface IRequest extends Request {
   user?: any;
@@ -57,13 +59,47 @@ export class AuthController {
     return tokens;
   }
 
+  // password null일 경우 400 return
+  @Post('/signin')
+  async signIn() {}
+
+  // Super permission을 요구함.
+  @Post('/register')
+  @UseGuards(AdminGuard)
+  @SetMetadata('permission', 'SUPER')
+  async register(@Body() createUserDto: CreateUserDto) {
+    if (!createUserDto.password || !createUserDto.permission) {
+      throw new BadRequestException('There is null data in createUserDto');
+    }
+    const user = await this.authService.registerUser(createUserDto);
+    return user;
+  }
+
+  // 본인 비밀번호 변경 요청 또는 super user 요청이면 바로 변경할 수 있도록.
+  @Post('/password/change')
+  async changePassword() {}
+
+  // user 요청이면 이메일 인증
+  @Post('/password/reset')
+  async resetPassword() {}
+
+  /** perm change case list
+   * 1. 자신의 권한을 변경하는 경우 -> 격하만 허용
+   * 2. 타인의 권한을 변경하는 경우 -> 본인의 권한 레벨까지 격상 허용. (Mod라면 Mod, Manager, User까지 허용)
+   * 이 외 요청은 전부 deny.
+   */
+  @Post('/permission/change')
+  async changePermission() {}
+
+  @Delete('/account')
+  async deleteAccount() {}
+
   @Get('/logout')
   @HttpCode(HttpStatus.OK)
   async logout(
     @Req() req: IRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    // controller에서 user refreshToken 추출해야 함. 해당 토큰을 signOut 함수에 넘겨야 함.
     const user: JwtPayload = req.user;
     try {
       await this.authService.signOut(user.email);
@@ -81,11 +117,5 @@ export class AuthController {
   @SetMetadata('permission', 'MANAGER')
   async test1() {
     return 'passed';
-  }
-
-  @Get('/test2')
-  @UseGuards(UserGuard)
-  async test2() {
-    return '1';
   }
 }

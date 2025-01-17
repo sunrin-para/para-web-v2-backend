@@ -26,8 +26,8 @@ model User {
 }
 
 enum Permission {
-  SUPER        // 총괄 유저
-  MODERATOR    // 지원 폼 접근 가능
+  SUPER        // 모든 정보 접근 가능
+  MODERATOR    // 지원 폼 및 지원 현황 접근 가능
   MANAGER      // 사이트 기본 설정 접근 가능
   USER         // 지원 폼만 접근 가능
 }
