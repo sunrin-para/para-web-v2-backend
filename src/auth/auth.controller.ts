@@ -24,6 +24,7 @@ import { UserGuard } from 'src/common/guards/user.guard';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import { CreateUserDto } from './dto/createUser.dto';
 import { SignInDto } from './dto/signIn.dto';
+import { ChangePasswordDto } from './dto/changePassword.dto';
 
 interface IRequest extends Request {
   user?: any;
@@ -92,21 +93,34 @@ export class AuthController {
 
   // 본인 비밀번호 변경 요청 또는 super user 요청이면 바로 변경할 수 있도록.
   @Post('/password/change')
-  async changePassword() {}
+  @UseGuards(UserGuard)
+  async changePassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Req() req: IRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const user = req.user;
+    await this.authService.changePassword(user.email, changePasswordDto);
+  }
 
-  // user 요청이면 이메일 인증
+  @UseGuards(AdminGuard)
+  @SetMetadata('permission', 'SUPER')
   @Post('/password/reset')
-  async resetPassword() {}
+  async resetPassword(
+    @Req() req: IRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    // super user가 user pw 변경하는 컨트롤러.
+  }
 
-  /** perm change case list
-   * 1. 자신의 권한을 변경하는 경우 -> 격하만 허용
-   * 2. 타인의 권한을 변경하는 경우 -> 본인의 권한 레벨까지 격상 허용. (Mod라면 Mod, Manager, User까지 허용)
-   * 이 외 요청은 전부 deny.
-   */
   @Post('/permission/change')
+  @UseGuards(AdminGuard)
+  @SetMetadata('permission', 'SUPER')
   async changePermission() {}
 
   @Delete('/account')
+  @UseGuards(AdminGuard)
+  @SetMetadata('permission', 'SUPER')
   async deleteAccount() {}
 
   @Get('/logout')

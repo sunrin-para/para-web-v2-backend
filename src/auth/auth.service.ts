@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   InternalServerErrorException,
@@ -13,6 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './dto/JwtPayload.dto';
 import { SignInDto } from './dto/signIn.dto';
 import bcrypt from 'bcryptjs';
+import { ChangePasswordDto } from './dto/changePassword.dto';
 
 @Injectable()
 export class AuthService {
@@ -71,6 +73,20 @@ export class AuthService {
       };
     }
     throw new UnauthorizedException();
+  }
+
+  async changePassword(email: string, changePasswordDto: ChangePasswordDto) {
+    if (
+      email !== changePasswordDto.email ||
+      !(await this.userService.findUserByEmail(email))
+    ) {
+      throw new BadRequestException();
+    }
+    const result = await this.userService.changePassword(
+      email,
+      changePasswordDto.newPassword,
+    );
+    return result;
   }
 
   async signOut(email: string) {

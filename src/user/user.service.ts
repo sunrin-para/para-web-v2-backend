@@ -38,6 +38,22 @@ export class UserService {
     );
   }
 
+  async changePassword(email: string, password: string) {
+    const salt = await bcrypt.genSalt(process.env.SALT_ROUND);
+    const encryptedPassword = await bcrypt.hash(password, salt);
+    await this.prismaService.user
+      .update({
+        where: { email: email },
+        data: { password: encryptedPassword },
+      })
+      .then(() => {
+        return true;
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+  }
+
   async setRefreshToken(email: string, refreshToken: string) {
     await this.prismaService.user
       .update({
