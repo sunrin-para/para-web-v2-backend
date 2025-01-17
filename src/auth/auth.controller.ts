@@ -23,6 +23,7 @@ import { JwtPayload } from './dto/JwtPayload.dto';
 import { UserGuard } from 'src/common/guards/user.guard';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import { CreateUserDto } from './dto/createUser.dto';
+import { SignInDto } from './dto/signIn.dto';
 
 interface IRequest extends Request {
   user?: any;
@@ -59,9 +60,23 @@ export class AuthController {
     return tokens;
   }
 
-  // password null일 경우 400 return
   @Post('/signin')
-  async signIn() {}
+  async signIn(
+    @Body() signInDto: SignInDto,
+    @Req() req: IRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    if (!signInDto.email || !signInDto.password) {
+      throw new BadRequestException('Email or Password is null.');
+    }
+    const tokens = await this.authService.handleSignIn(signInDto);
+
+    res.header('Access-Control-Allow-Origin', process.env.DOMAIN);
+
+    res.header('Access-Control-Allow-Credentials', 'true');
+
+    return tokens;
+  }
 
   // Super permission을 요구함.
   @Post('/register')

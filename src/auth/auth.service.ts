@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { GoogleUserDto } from './dto/googleUser.dto';
@@ -10,6 +11,8 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { UserDataDto } from './dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './dto/JwtPayload.dto';
+import { SignInDto } from './dto/signIn.dto';
+import bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
@@ -49,6 +52,25 @@ export class AuthService {
       user = await this.userService.createUser(createUserDto);
       return user;
     }
+  }
+
+  async handleSignIn(signInDto: SignInDto) {
+    const user = await this.userService.findUserByEmail(signInDto.email);
+    if (!user) throw new NotFoundException();
+
+    const match = await bcrypt.compare(user.password, signInDto.password);
+    if (match) {
+      const accessToken = await this.generateToken('access', user.email);
+      const refreshToken = await this.generateToken('refresh', user.email);
+
+      await this.userService.setRefreshToken(user.email, refreshToken);
+
+      return {
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      };
+    }
+    throw new UnauthorizedException();
   }
 
   async signOut(email: string) {
