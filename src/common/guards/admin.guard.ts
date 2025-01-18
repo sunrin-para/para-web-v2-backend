@@ -7,13 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
-
-enum Permission {
-  SUPER,
-  MODERATOR,
-  MANAGER,
-  USER,
-}
+import { Permission } from '../enums/Permission.enum';
 
 @Injectable()
 export class AdminGuard extends AuthGuard('jwt') {

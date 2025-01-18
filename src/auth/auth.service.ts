@@ -15,6 +15,7 @@ import { JwtPayload } from './dto/JwtPayload.dto';
 import { SignInDto } from './dto/signIn.dto';
 import bcrypt from 'bcryptjs';
 import { ChangePasswordDto } from './dto/changePassword.dto';
+import { ChangePermissionDto } from './dto/changePermission.dto';
 
 @Injectable()
 export class AuthService {
@@ -88,6 +89,8 @@ export class AuthService {
     );
     return result;
   }
+
+  async changePermission(changePermissionDto: ChangePermissionDto) {}
 
   async signOut(email: string) {
     await this.invalidateRefreshToken(email);

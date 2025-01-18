@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from 'src/auth/dto/createUser.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Permission, User } from '@prisma/client';
+import { Permission as PrismaPermission, User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { UserDataDto } from 'src/auth/dto/user.dto';
+import { Permission as PermissionEnum } from 'src/common/enums/Permission.enum';
 
 @Injectable()
 export class UserService {
@@ -21,7 +22,7 @@ export class UserService {
           email: userDto.email,
           name: userDto.name,
           password: encryptedPassword ?? null,
-          permission: Permission[userDto.permission ?? 'USER'],
+          permission: PrismaPermission[userDto.permission ?? 'USER'],
         },
       });
       return user;
@@ -45,6 +46,20 @@ export class UserService {
       .update({
         where: { email: email },
         data: { password: encryptedPassword },
+      })
+      .then(() => {
+        return true;
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+  }
+
+  async changePermission(email: string, newPermission: PermissionEnum) {
+    await this.prismaService.user
+      .update({
+        where: { email: email },
+        data: { permission: PrismaPermission[newPermission] },
       })
       .then(() => {
         return true;
