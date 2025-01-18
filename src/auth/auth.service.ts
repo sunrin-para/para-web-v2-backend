@@ -16,6 +16,7 @@ import { SignInDto } from './dto/signIn.dto';
 import bcrypt from 'bcryptjs';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { ChangePermissionDto } from './dto/changePermission.dto';
+import { Permission } from 'src/common/enums/Permission.enum';
 
 @Injectable()
 export class AuthService {
@@ -76,6 +77,7 @@ export class AuthService {
     throw new UnauthorizedException();
   }
 
+  // access, refreshToken reset required
   async changePassword(email: string, changePasswordDto: ChangePasswordDto) {
     if (
       email !== changePasswordDto.email ||
@@ -90,7 +92,12 @@ export class AuthService {
     return result;
   }
 
-  async changePermission(changePermissionDto: ChangePermissionDto) {}
+  async changePermission(changePermissionDto: ChangePermissionDto) {
+    return await this.userService.changePermission(
+      changePermissionDto.email,
+      changePermissionDto.newPermission,
+    );
+  }
 
   async signOut(email: string) {
     await this.invalidateRefreshToken(email);
