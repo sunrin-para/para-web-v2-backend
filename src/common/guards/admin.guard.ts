@@ -23,7 +23,7 @@ export class AdminGuard extends AuthGuard('jwt') {
       'permission',
       context.getHandler(),
     );
-    if (!requiredPermission)
+    if (!requiredPermission || !Permission[requiredPermission])
       throw new InternalServerErrorException(
         'Please set Guard permission via setMetaData decorator.',
       );

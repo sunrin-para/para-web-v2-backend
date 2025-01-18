@@ -130,6 +130,7 @@ export class AuthController {
   async deleteAccount() {}
 
   @Get('/logout')
+  @UseGuards(UserGuard)
   @HttpCode(HttpStatus.OK)
   async logout(
     @Req() req: IRequest,
