@@ -92,6 +92,7 @@ export class AuthService {
     return result;
   }
 
+  // sign out 시키고 ac, ref 토큰 초기화해야 함.
   async changePermission(changePermissionDto: ChangePermissionDto) {
     return await this.userService.changePermission(
       changePermissionDto.email,
