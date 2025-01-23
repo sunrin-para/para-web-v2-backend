@@ -8,11 +8,13 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Permission } from '../enums/Permission.enum';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AdminGuard extends AuthGuard('jwt') {
   constructor(
     private reflector: Reflector,
+    private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {
     super();
@@ -34,7 +36,9 @@ export class AdminGuard extends AuthGuard('jwt') {
     }
 
     const request = context.switchToHttp().getRequest();
-    const user = request.user;
+    const user = request.user
+      ? await this.userService.findUserByEmail(request.user.email)
+      : null;
 
     if (
       !user ||
