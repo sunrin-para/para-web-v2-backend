@@ -125,6 +125,9 @@ export class AuthService {
     }
   }
 
+  // 말 그대로 토큰 리프레시 해주는 기능.
+  // 근데 애초에 refreshToken이 만료되면 아예 튕기는게 맞지 않나..?
+  // 이거 accessToken refresh로 바꾸는게 나을 듯.
   async refreshTokens(refreshToken: string) {
     const decoded: JwtPayload = this.jwtService.verify(refreshToken);
     const user = await this.userService.findUserByEmail(decoded.email);

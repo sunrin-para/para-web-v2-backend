@@ -125,6 +125,13 @@ export class AuthController {
     const result = await this.authService.changePermission(changePermissionDto);
   }
 
+  @Post('/refresh')
+  @UseGuards(UserGuard)
+  async refreshAccessToken(
+    @Req() req: IRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {}
+
   // 계정 삭제 이후에는 accessToken에 정보가 담겨있어도 사용할 수 없게 해야 함.
   @Delete('/account')
   @UseGuards(AdminGuard)

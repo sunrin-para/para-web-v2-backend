@@ -22,6 +22,7 @@ model User {
   permission    Permission  @default(USER) // permission은 'super(총괄유저)', 'moderator(지원폼까지 접근 가능)', 'manager(사이트 기본 설정만 접근 가능)', 'user(관리자 X, 지원 폼만 접근 가능)'
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  validationKey String // access, refresh Token의 유효성을 재검증할 수 있는 키입니다.
   refreshToken  String?
 }
 
