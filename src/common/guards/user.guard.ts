@@ -27,7 +27,7 @@ export class UserGuard extends AuthGuard('jwt') {
     if (!user) {
       throw new UnauthorizedException('로그인이 필요합니다.');
     }
-
+    
     if (
       !user.email.endsWith('@sunrint.hs.kr') ||
       !user.email.endsWith('@sunrin-para.dev') ||

@@ -3,6 +3,7 @@ import {
   Injectable,
   ForbiddenException,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
@@ -46,6 +47,12 @@ export class AdminGuard extends AuthGuard('jwt') {
       !(Permission[user.permission] <= Permission[requiredPermission])
     ) {
       throw new ForbiddenException('해당 페이지에 접근할 권한이 없습니다.');
+    }
+
+    if (user.validationKey !== request.user.validationKey) {
+      throw new UnauthorizedException(
+        '다른 기기에서 로그인하여 로그아웃 되었습니다.',
+      );
     }
 
     return true;
