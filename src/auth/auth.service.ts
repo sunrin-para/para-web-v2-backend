@@ -17,6 +17,7 @@ import bcrypt from 'bcryptjs';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { ChangePermissionDto } from './dto/changePermission.dto';
 import { Permission } from 'src/common/enums/Permission.enum';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -36,10 +37,21 @@ export class AuthService {
       user = await this.userService.createUser(newUserData);
     }
 
-    const accessToken = await this.generateToken('access', user.email);
-    const refreshToken = await this.generateToken('refresh', user.email);
+    const validationKey = await this.generateValidationKey();
+
+    const accessToken = await this.generateToken(
+      'access',
+      user.email,
+      validationKey,
+    );
+    const refreshToken = await this.generateToken(
+      'refresh',
+      user.email,
+      validationKey,
+    );
 
     await this.userService.setRefreshToken(user.email, refreshToken);
+    await this.userService.setValidationKey(user.email, validationKey);
 
     return {
       accessToken: accessToken,
@@ -64,10 +76,21 @@ export class AuthService {
 
     const match = await bcrypt.compare(user.password, signInDto.password);
     if (match) {
-      const accessToken = await this.generateToken('access', user.email);
-      const refreshToken = await this.generateToken('refresh', user.email);
+      const validationKey = await this.generateValidationKey();
+
+      const accessToken = await this.generateToken(
+        'access',
+        user.email,
+        validationKey,
+      );
+      const refreshToken = await this.generateToken(
+        'refresh',
+        user.email,
+        validationKey,
+      );
 
       await this.userService.setRefreshToken(user.email, refreshToken);
+      await this.userService.setValidationKey(user.email, validationKey);
 
       return {
         accessToken: accessToken,
@@ -77,7 +100,6 @@ export class AuthService {
     throw new UnauthorizedException();
   }
 
-  // access, refreshToken reset required
   async changePassword(email: string, changePasswordDto: ChangePasswordDto) {
     if (
       email !== changePasswordDto.email ||
@@ -85,32 +107,63 @@ export class AuthService {
     ) {
       throw new BadRequestException();
     }
-    const result = await this.userService.changePassword(
-      email,
-      changePasswordDto.newPassword,
-    );
+    const result = await this.userService
+      .changePassword(email, changePasswordDto.newPassword)
+      .then(async () => {
+        await this.signOut(email);
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
     return result;
   }
 
-  // sign out 시키고 ac, ref 토큰 초기화해야 함.
   async changePermission(changePermissionDto: ChangePermissionDto) {
-    return await this.userService.changePermission(
-      changePermissionDto.email,
-      changePermissionDto.newPermission,
-    );
+    await this.userService
+      .changePermission(
+        changePermissionDto.email,
+        changePermissionDto.newPermission,
+      )
+      .then(async () => {
+        await this.signOut(changePermissionDto.email);
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
   }
 
   async signOut(email: string) {
-    await this.invalidateRefreshToken(email);
+    const user = await this.userService.findUserByEmail(email);
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    await this.userService.removeRefreshToken(user.email);
+    await this.userService.removeValidationKey(user.email);
+
+    return {
+      result: true,
+    };
   }
 
   /* 여기서부터 토큰 관리 함수들입니다. */
-  async generateToken(tokenType: string = 'access', email: string) {
+  async generateValidationKey(length: number = 32) {
+    return crypto.randomBytes(length).toString('hex');
+  }
+
+  async generateToken(
+    tokenType: string = 'access',
+    email: string,
+    validationKey: string,
+  ) {
     const user = await this.userService.findUserByEmail(email);
+
     const payload: JwtPayload = {
       uid: user.uid,
       email: user.email,
       permission: user.permission,
+      validationKey: validationKey,
     };
 
     switch (tokenType) {
@@ -125,10 +178,7 @@ export class AuthService {
     }
   }
 
-  // 말 그대로 토큰 리프레시 해주는 기능.
-  // 근데 애초에 refreshToken이 만료되면 아예 튕기는게 맞지 않나..?
-  // 이거 accessToken refresh로 바꾸는게 나을 듯.
-  async refreshTokens(refreshToken: string) {
+  async refreshAccessToken(refreshToken: string) {
     const decoded: JwtPayload = this.jwtService.verify(refreshToken);
     const user = await this.userService.findUserByEmail(decoded.email);
 
@@ -136,27 +186,14 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const newAccessToken = await this.generateToken('access', user.email);
-    const newRefreshToken = await this.generateToken('refresh', user.email);
-    await this.userService.setRefreshToken(user.email, newRefreshToken);
+    const newAccessToken = await this.generateToken(
+      'access',
+      user.email,
+      user.validationKey,
+    );
 
     return {
       accessToken: newAccessToken,
-      refreshToken: newRefreshToken,
-    };
-  }
-
-  // sign out controller에서 사용할 예정
-  async invalidateRefreshToken(email: string) {
-    const user = await this.userService.findUserByEmail(email);
-
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-
-    await this.userService.removeRefreshToken(user.email);
-    return {
-      result: true,
     };
   }
   /* 여기까지 토큰 관리 함수들입니다. */

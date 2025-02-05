@@ -69,6 +69,34 @@ export class UserService {
       });
   }
 
+  async setValidationKey(email: string, valKey: string) {
+    await this.prismaService.user
+      .update({
+        where: { email: email },
+        data: { validationKey: valKey },
+      })
+      .then(() => {
+        return true;
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+  }
+
+  async removeValidationKey(email: string) {
+    await this.prismaService.user
+      .update({
+        where: { email: email },
+        data: { validationKey: null },
+      })
+      .then(() => {
+        return true;
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+  }
+
   async setRefreshToken(email: string, refreshToken: string) {
     await this.prismaService.user
       .update({

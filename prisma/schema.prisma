@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,35 +7,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// 로그인 시 사용하는 유저 모델입니다. admin id, google id데이터를 공유합니다.
 model User {
-  uid           Int         @id @default(autoincrement())
-  email         String      @unique
-  password      String? // password가 null일 경우 authService or Dto 단에서 null은 401 처리 부탁드립니다.
+  uid           Int        @id @default(autoincrement())
+  email         String     @unique
+  password      String?
   name          String
-  permission    Permission  @default(USER) // permission은 'super(총괄유저)', 'moderator(지원폼까지 접근 가능)', 'manager(사이트 기본 설정만 접근 가능)', 'user(관리자 X, 지원 폼만 접근 가능)'
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  validationKey String // access, refresh Token의 유효성을 재검증할 수 있는 키입니다.
+  permission    Permission @default(USER)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   refreshToken  String?
+  validationKey String?
 }
 
-enum Permission {
-  SUPER        // 모든 정보 접근 가능
-  MODERATOR    // 지원 폼 및 지원 현황 접근 가능
-  MANAGER      // 사이트 기본 설정 접근 가능
-  USER         // 지원 폼만 접근 가능
-}
-
-// para web에 표시할 부원 정보 모델입니다.
 model Member {
   id            Int      @id @default(autoincrement())
-  generation    Int // 기수 ()
+  generation    Int
   name          String
   department    String
   specialty     String
   introduction  String
-  profile_image String @default("/default.png") // 이 부분은 member controller image return 구현 후 기본 이미지 엔드포인트로 변경 요함.
+  profile_image String   @default("/default.png")
   discord       String?
   github        String?
   instagram     String?
@@ -52,35 +37,42 @@ model Member {
 }
 
 model Portfolio {
-  id            Int      @id @default(autoincrement())
-  tags          String[]
-  title         String
-  summary       String
-  description   String
-  thumbnail     String
-  image         String[]
-  member        String[]
-  filePath      String
-  date          DateTime[]
-  link          String?
-  github        String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id          Int        @id @default(autoincrement())
+  tags        String[]
+  title       String
+  summary     String
+  description String
+  thumbnail   String
+  image       String[]
+  member      String[]
+  filePath    String
+  date        DateTime[]
+  link        String?
+  github      String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
 
 model Question {
-  id            Int      @id @default(autoincrement())
-  title         String
-  content       String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Award {
-  id            Int      @id @default(autoincrement())
-  name          String
-  member        String[]
-  year          Int  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String
+  member    String[]
+  year      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Permission {
+  SUPER
+  MODERATOR
+  MANAGER
+  USER
 }

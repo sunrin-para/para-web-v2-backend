@@ -7,4 +7,5 @@ export class UserDataDto {
   createdAt: Date;
   updatedAt: Date;
   refreshToken?: string;
+  validationKey?: string;
 }
