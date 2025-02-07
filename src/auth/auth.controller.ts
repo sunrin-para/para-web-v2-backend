@@ -26,6 +26,7 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { SignInDto } from './dto/signIn.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { DeleteAccountDto } from './dto/delete-account.dto';
+import { RefreshAcTokenDto } from './dto/refresh-token.dto';
 
 interface IRequest extends Request {
   user?: any;
@@ -101,7 +102,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const user = req.user;
-    await this.authService.changePassword(user.email, changePasswordDto);
+    return await this.authService.changePassword(user.email, changePasswordDto);
   }
 
   @UseGuards(AdminGuard)
@@ -132,14 +133,19 @@ export class AuthController {
   async refreshAccessToken(
     @Req() req: IRequest,
     @Res({ passthrough: true }) res: Response,
-  ) {}
+    @Body() refreshAcTokenDto: RefreshAcTokenDto,
+  ) {
+    return await this.authService.refreshAccessToken(
+      refreshAcTokenDto.refreshToken,
+    );
+  }
 
   // 계정 삭제 이후에는 accessToken에 정보가 담겨있어도 사용할 수 없게 해야 함.
   @Delete('/account')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'SUPER')
   async deleteAccount(@Body() deleteAccountDto: DeleteAccountDto) {
-    return this.authService.deleteAccount(deleteAccountDto);
+    return await this.authService.deleteAccount(deleteAccountDto);
   }
 
   @Get('/logout')
