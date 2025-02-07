@@ -25,6 +25,7 @@ import { AdminGuard } from 'src/common/guards/admin.guard';
 import { CreateUserDto } from './dto/createUser.dto';
 import { SignInDto } from './dto/signIn.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
+import { DeleteAccountDto } from './dto/delete-account.dto';
 
 interface IRequest extends Request {
   user?: any;
@@ -123,6 +124,7 @@ export class AuthController {
   @SetMetadata('permission', 'SUPER')
   async changePermission(@Body() changePermissionDto) {
     const result = await this.authService.changePermission(changePermissionDto);
+    return result;
   }
 
   @Post('/refresh')
@@ -136,7 +138,9 @@ export class AuthController {
   @Delete('/account')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'SUPER')
-  async deleteAccount() {}
+  async deleteAccount(@Body() deleteAccountDto: DeleteAccountDto) {
+    return this.authService.deleteAccount(deleteAccountDto);
+  }
 
   @Get('/logout')
   @UseGuards(UserGuard)

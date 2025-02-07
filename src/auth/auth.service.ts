@@ -18,6 +18,7 @@ import { ChangePasswordDto } from './dto/changePassword.dto';
 import { ChangePermissionDto } from './dto/changePermission.dto';
 import { Permission } from 'src/common/enums/Permission.enum';
 import * as crypto from 'crypto';
+import { DeleteAccountDto } from './dto/delete-account.dto';
 
 @Injectable()
 export class AuthService {
@@ -63,8 +64,18 @@ export class AuthService {
     let user: UserDataDto = await this.userService.findUserByEmail(
       createUserDto.email,
     );
-    if (user) throw new ConflictException('Account already Exists');
-    else {
+    if (user) {
+      await this.integrateAccount(
+        createUserDto.email,
+        createUserDto.permission,
+      ).catch((e) => {
+        throw new Error(e);
+      });
+      const editedUser = await this.userService.findUserByEmail(
+        createUserDto.email,
+      );
+      return editedUser;
+    } else {
       user = await this.userService.createUser(createUserDto);
       return user;
     }
@@ -98,6 +109,23 @@ export class AuthService {
       };
     }
     throw new UnauthorizedException();
+  }
+
+  /**
+   *
+   * @param email string
+   * @param existingAccountType string
+   * @param adminPermission string
+   * @description Admin 계정 등록 시, 이미 구글 계정이 등록되어 있다면 해당 계정과 통합시키는 함수입니다.
+   * @returns Boolean
+   */
+  private async integrateAccount(email: string, adminPermission: string) {
+    await this.userService
+      .changePermission(email, Permission[adminPermission])
+      .catch((e) => {
+        throw new Error(e);
+      });
+    return true;
   }
 
   async changePassword(email: string, changePasswordDto: ChangePasswordDto) {
@@ -147,12 +175,16 @@ export class AuthService {
     };
   }
 
+  async deleteAccount(deleteAccountDto: DeleteAccountDto) {
+    return await this.userService.deleteAccount(deleteAccountDto.email);
+  }
+
   /* 여기서부터 토큰 관리 함수들입니다. */
-  async generateValidationKey(length: number = 32) {
+  private async generateValidationKey(length: number = 32) {
     return crypto.randomBytes(length).toString('hex');
   }
 
-  async generateToken(
+  private async generateToken(
     tokenType: string = 'access',
     email: string,
     validationKey: string,

@@ -61,12 +61,21 @@ export class UserService {
         where: { email: email },
         data: { permission: PrismaPermission[newPermission] },
       })
-      .then(() => {
-        return true;
+      .catch((e) => {
+        throw new Error(e);
+      });
+    return true;
+  }
+
+  async deleteAccount(email: string) {
+    await this.prismaService.user
+      .delete({
+        where: { email: email },
       })
       .catch((e) => {
         throw new Error(e);
       });
+    return true;
   }
 
   async setValidationKey(email: string, valKey: string) {
