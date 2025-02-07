@@ -18,23 +18,25 @@ import { DeleteFAQDto } from './dto/delete.dto';
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
-  private readonly requiredPermission = 'df';
-
   @Post()
   @UseGuards(AdminGuard)
-  @SetMetadata('permission', 'NOT SET')
-  async createFAQ(@Body() createFAQDto: CreateFAQDto) {}
+  @SetMetadata('permission', 'MANAGER')
+  async createFAQ(@Body() createFAQDto: CreateFAQDto) {
+    return await this.questionsService.createFaq(createFAQDto);
+  }
 
   @Get()
   async getAllFAQ() {}
 
   @Patch()
   @UseGuards(AdminGuard)
-  @SetMetadata('permission', 'NOT SET')
-  async editFAQ(@Body() editFAQDto: EditFAQDto) {}
+  @SetMetadata('permission', 'MANAGER')
+  async editFAQ(@Body() editFAQDto: EditFAQDto) {
+    return await this.questionsService.updateFaq(editFAQDto);
+  }
 
   @Delete()
   @UseGuards(AdminGuard)
-  @SetMetadata('permission', 'NOT SET')
-  async DeleteFAQDto(@Body() deleteFAQDto: DeleteFAQDto) {}
+  @SetMetadata('permission', 'MANAGER')
+  async deleteFAQDto(@Body() deleteFAQDto: DeleteFAQDto) {}
 }

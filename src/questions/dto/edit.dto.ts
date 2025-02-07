@@ -1,5 +1,5 @@
 export class EditFAQDto {
-  id: string;
-  question: string;
-  answer: string;
+  id: number;
+  question?: string;
+  answer?: string;
 }

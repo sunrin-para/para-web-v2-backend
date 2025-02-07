@@ -1,3 +1,3 @@
 export class DeleteFAQDto {
-  id: string;
+  id: number;
 }
