@@ -18,6 +18,8 @@ import { DeleteFAQDto } from './dto/delete.dto';
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
+  private readonly requiredPermission = 'df';
+
   @Post()
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'NOT SET')

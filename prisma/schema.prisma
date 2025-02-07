@@ -53,10 +53,10 @@ model Portfolio {
   updatedAt   DateTime   @updatedAt
 }
 
-model Question {
+model Faq {
   id        Int      @id @default(autoincrement())
-  title     String
-  content   String
+  question  String
+  answer    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
