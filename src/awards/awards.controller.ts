@@ -32,10 +32,24 @@ export class AwardsController {
   @Put('/:id')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
-  async updateAwardsHistory() {}
+  async updateAwardsHistory(
+    @Param('id') id: number,
+    @Body() updateAwardDto: CreateAwardsDto,
+  ) {
+    return await this.awardsService.updateAwardsHistory(id, updateAwardDto);
+  }
 
-  @Delete('/:id')
+  @Delete('/id/:id')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
-  async deleteAwardsHistory() {}
+  async deleteAwardsHistoryById(@Param('id') id: number) {
+    return await this.awardsService.deleteAwardById(id);
+  }
+
+  @Delete('/year/:year')
+  @UseGuards(AdminGuard)
+  @SetMetadata('permission', 'MANAGER')
+  async deleteManyAwardsHistoryByYear(@Param('year') year: number) {
+    return await this.awardsService.deleteManyAwardsByYear(year);
+  }
 }

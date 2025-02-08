@@ -26,4 +26,42 @@ export class AwardsRepository {
       });
     return awards;
   }
+
+  async updateAwardHistory(id: number, updateAwardDto: CreateAwardsDto) {
+    const award = await this.prismaService.award
+      .update({
+        where: { id: id },
+        data: {
+          name: updateAwardDto.name,
+          member: updateAwardDto.member,
+          year: updateAwardDto.year,
+        },
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+    return award;
+  }
+
+  async deleteAwardById(id: number) {
+    await this.prismaService.award
+      .delete({
+        where: { id: id },
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+    return true;
+  }
+
+  async deleteManyAwardsByYear(year: number) {
+    await this.prismaService.award
+      .deleteMany({
+        where: { year: year },
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+    return true;
+  }
 }

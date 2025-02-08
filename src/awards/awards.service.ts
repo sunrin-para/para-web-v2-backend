@@ -13,4 +13,19 @@ export class AwardsService {
   async getAwardsHistoryByYear(year: number) {
     return await this.awardsRepository.getAwardsHistoryByYear(year);
   }
+
+  async updateAwardsHistory(awardId: number, updateAwardDto: CreateAwardsDto) {
+    return await this.awardsRepository.updateAwardHistory(
+      awardId,
+      updateAwardDto,
+    );
+  }
+
+  async deleteAwardById(id: number) {
+    return await this.awardsRepository.deleteAwardById(id);
+  }
+
+  async deleteManyAwardsByYear(year: number) {
+    return await this.awardsRepository.deleteManyAwardsByYear(year);
+  }
 }
