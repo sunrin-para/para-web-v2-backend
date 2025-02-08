@@ -13,6 +13,7 @@ import { AdminGuard } from 'src/common/guards/admin.guard';
 import { CreateFAQDto } from './dto/register.dto';
 import { EditFAQDto } from './dto/edit.dto';
 import { DeleteFAQDto } from './dto/delete.dto';
+import { FAQDto } from './dto/get.dto';
 
 @Controller('questions')
 export class QuestionsController {
@@ -26,7 +27,9 @@ export class QuestionsController {
   }
 
   @Get()
-  async getAllFAQ() {}
+  async getAllFAQ(): Promise<FAQDto[]> {
+    return await this.questionsService.getAllFaq();
+  }
 
   @Patch()
   @UseGuards(AdminGuard)
@@ -38,5 +41,7 @@ export class QuestionsController {
   @Delete()
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
-  async deleteFAQDto(@Body() deleteFAQDto: DeleteFAQDto) {}
+  async deleteFAQDto(@Body() deleteFAQDto: DeleteFAQDto) {
+    return await this.questionsService.deleteFaq(deleteFAQDto);
+  }
 }

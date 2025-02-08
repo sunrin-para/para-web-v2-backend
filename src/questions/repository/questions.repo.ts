@@ -3,6 +3,7 @@ import { CreateFAQDto } from '../dto/register.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditFAQDto } from '../dto/edit.dto';
 import { DeleteFAQDto } from '../dto/delete.dto';
+import { FAQDto } from '../dto/get.dto';
 
 @Injectable()
 export class QuestionsRepository {
@@ -20,6 +21,11 @@ export class QuestionsRepository {
       });
 
     return newFaq;
+  }
+
+  async getAllFaq(): Promise<FAQDto[]> {
+    const Faqs: FAQDto[] = await this.prismaService.faq.findMany();
+    return Faqs;
   }
 
   async updateFaq(editFAQDto: EditFAQDto) {
