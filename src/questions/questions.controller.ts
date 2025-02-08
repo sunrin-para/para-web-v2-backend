@@ -13,8 +13,6 @@ import {
 import { QuestionsService } from './questions.service';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import { CreateFAQDto } from './dto/register.dto';
-import { EditFAQDto } from './dto/edit.dto';
-import { DeleteFAQDto } from './dto/delete.dto';
 import { FAQDto } from './dto/get.dto';
 
 @Controller('questions')
