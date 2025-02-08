@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateFAQDto } from './dto/register.dto';
 import { QuestionsRepository } from './repository/questions.repo';
-import { EditFAQDto } from './dto/edit.dto';
-import { DeleteFAQDto } from './dto/delete.dto';
 import { FAQDto } from './dto/get.dto';
 
 @Injectable()
@@ -19,13 +17,16 @@ export class QuestionsService {
     return faqs;
   }
 
-  async updateFaq(editFAQDto: EditFAQDto) {
-    const updatedFaq = await this.questionsRepository.updateFaq(editFAQDto);
+  async updateFaq(faqId: number, editFAQDto: CreateFAQDto) {
+    const updatedFaq = await this.questionsRepository.updateFaq(
+      faqId,
+      editFAQDto,
+    );
     return updatedFaq;
   }
 
-  async deleteFaq(deleteFAQDto: DeleteFAQDto) {
-    const result = await this.questionsRepository.deleteFaq(deleteFAQDto.id);
+  async deleteFaq(faqId: number) {
+    const result = await this.questionsRepository.deleteFaq(faqId);
     return result;
   }
 }

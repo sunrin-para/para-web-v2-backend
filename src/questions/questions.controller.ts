@@ -3,8 +3,10 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Patch,
   Post,
+  Put,
   SetMetadata,
   UseGuards,
 } from '@nestjs/common';
@@ -31,17 +33,17 @@ export class QuestionsController {
     return await this.questionsService.getAllFaq();
   }
 
-  @Patch()
+  @Put('/:id')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
-  async editFAQ(@Body() editFAQDto: EditFAQDto) {
-    return await this.questionsService.updateFaq(editFAQDto);
+  async editFAQ(@Param() faqId: number, @Body() editFAQDto: CreateFAQDto) {
+    return await this.questionsService.updateFaq(faqId, editFAQDto);
   }
 
-  @Delete()
+  @Delete('/:id')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
-  async deleteFAQDto(@Body() deleteFAQDto: DeleteFAQDto) {
-    return await this.questionsService.deleteFaq(deleteFAQDto);
+  async deleteFAQDto(@Param('id') faqId: number) {
+    return await this.questionsService.deleteFaq(faqId);
   }
 }

@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateFAQDto } from '../dto/register.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { EditFAQDto } from '../dto/edit.dto';
-import { DeleteFAQDto } from '../dto/delete.dto';
 import { FAQDto } from '../dto/get.dto';
 
 @Injectable()
@@ -28,10 +26,10 @@ export class QuestionsRepository {
     return Faqs;
   }
 
-  async updateFaq(editFAQDto: EditFAQDto) {
+  async updateFaq(faqId: number, editFAQDto: CreateFAQDto) {
     const updatedFaq = await this.prismaService.faq
       .update({
-        where: { id: editFAQDto.id },
+        where: { id: faqId },
         // 수정한 데이터만 잘 반영되는지 확인.
         data: { question: editFAQDto.question, answer: editFAQDto.answer },
       })
