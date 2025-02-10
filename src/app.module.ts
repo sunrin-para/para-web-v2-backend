@@ -9,6 +9,7 @@ import { UserModule } from './user/user.module';
 import { QuestionsModule } from './questions/questions.module';
 import { AwardsModule } from './awards/awards.module';
 import { MembersModule } from './members/members.module';
+import { MinioModule } from './minio/minio.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MembersModule } from './members/members.module';
     QuestionsModule,
     AwardsModule,
     MembersModule,
+    MinioModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, UserService],
