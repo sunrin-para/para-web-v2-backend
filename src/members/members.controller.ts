@@ -1,34 +1,72 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  SetMetadata,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { MembersService } from './members.service';
-import { CreateMemberDto } from './dto/create-member.dto';
-import { UpdateMemberDto } from './dto/update-member.dto';
+import { AdminGuard } from 'src/common/guards/admin.guard';
+import { MemberDto } from './dto/member.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { MinioService } from 'src/minio/minio.service';
+import { FileType } from 'src/multer.config';
+import { v4 as uuidv4 } from 'uuid';
 
 @Controller('members')
 export class MembersController {
-  constructor(private readonly membersService: MembersService) {}
+  constructor(
+    private readonly membersService: MembersService,
+    private readonly minioService: MinioService,
+  ) {}
+  private generateFilename(originalname): string {
+    const extension = originalname.split('.').pop();
+    return `${uuidv4()}.${extension}`;
+  }
 
   @Post()
-  create(@Body() createMemberDto: CreateMemberDto) {
-    return this.membersService.create(createMemberDto);
+  @UseGuards(AdminGuard)
+  @SetMetadata('permission', 'MANAGER')
+  @UseInterceptors(FileInterceptor('file'))
+  async createMember(
+    @Body() createMemberDto: MemberDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const filename = await this.generateFilename(file.originalname);
+    const fileUrl = await this.minioService.uploadFile(
+      new File([file.buffer], file.originalname),
+      filename,
+      FileType.MEMBERS,
+    );
+    const result = await this.membersService.createMember(
+      createMemberDto,
+      fileUrl,
+    );
+
+    return {
+      message: '멤버가 성공적으로 등록되었습니다!',
+      result: result,
+    };
   }
 
   @Get()
-  findAll() {
-    return this.membersService.findAll();
+  async getAllMembers() {
+    return await this.membersService.getAllMembers();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.membersService.findOne(+id);
+  @Get('/:generation')
+  async getMembersByGeneration(@Param('generation') generation: number) {
+    return await this.membersService.getMembersByGeneration(generation);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMemberDto: UpdateMemberDto) {
-    return this.membersService.update(+id, updateMemberDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.membersService.remove(+id);
+  @Get('/:memberId')
+  async getMemberDetail(@Param('memberId') memberId: number) {
+    return await this.membersService.getMemberDetail(memberId);
   }
 }

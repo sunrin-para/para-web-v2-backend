@@ -24,7 +24,7 @@ model Member {
   generation    Int
   name          String
   department    String
-  specialty     String
+  speciality     String
   introduction  String
   profile_image String   @default("/default.png")
   discord       String?
