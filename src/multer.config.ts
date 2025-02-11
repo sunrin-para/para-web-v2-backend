@@ -22,6 +22,13 @@ export const multerConfig = {
   },
 };
 
+export enum FileType {
+  MEMBERS = 'members',
+  PORTFOLIO = 'portfolios',
+  GALLARY = 'gallary',
+  APPLICANTS = 'apply',
+}
+
 Object.values(multerConfig).forEach(({ dest }) => {
   if (!existsSync(dest)) {
     mkdirSync(dest, { recursive: true });
