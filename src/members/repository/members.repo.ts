@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MemberDto } from '../dto/member.dto';
+import { UpdateMemberDto } from '../dto/update-member.dto';
 
 @Injectable()
 export class MembersRepository {
@@ -44,5 +45,45 @@ export class MembersRepository {
       });
 
     return memberDetail;
+  }
+
+  async deleteMember(memberId: number) {
+    await this.prismaService.member
+      .delete({
+        where: { id: memberId },
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+    return true;
+  }
+
+  async updateMemberDetail(
+    memberId: number,
+    updateMemberDto?: UpdateMemberDto,
+    fileUrl?: string,
+  ) {
+    const updateData: Partial<UpdateMemberDto> = {};
+
+    Object.keys(updateMemberDto).forEach((key) => {
+      if (updateMemberDto[key] !== undefined) {
+        updateData[key] = updateMemberDto[key];
+      }
+    });
+
+    if (fileUrl) {
+      updateData.profile_image = fileUrl;
+    }
+
+    const updatedMember = await this.prismaService.member
+      .update({
+        where: { id: memberId },
+        data: updateData,
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+
+    return updatedMember;
   }
 }
