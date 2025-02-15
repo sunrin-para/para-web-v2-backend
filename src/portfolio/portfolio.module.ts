@@ -3,9 +3,10 @@ import { PortfolioService } from './portfolio.service';
 import { PortfolioController } from './portfolio.controller';
 import { PortfolioRepository } from './repository/portfolio.repo';
 import { MinioService } from 'src/minio/minio.service';
+import { UserService } from 'src/user/user.service';
 
 @Module({
   controllers: [PortfolioController],
-  providers: [PortfolioRepository, PortfolioService, MinioService],
+  providers: [PortfolioRepository, PortfolioService, MinioService, UserService],
 })
 export class PortfolioModule {}

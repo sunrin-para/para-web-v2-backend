@@ -16,7 +16,7 @@ export class AdminGuard extends AuthGuard('jwt') {
   constructor(
     private reflector: Reflector,
     private readonly userService: UserService,
-    private readonly jwtService: JwtService,
+    // private readonly jwtService: JwtService,
   ) {
     super();
   }
