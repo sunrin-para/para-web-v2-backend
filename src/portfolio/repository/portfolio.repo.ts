@@ -19,4 +19,15 @@ export class PortfolioRepository {
       });
     return true;
   }
+
+  async deletePortfolio(portfolioId: number) {
+    await this.prismaService.portfolio
+      .delete({
+        where: { id: portfolioId },
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+    return true;
+  }
 }

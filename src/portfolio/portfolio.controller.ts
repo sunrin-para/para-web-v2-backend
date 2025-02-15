@@ -63,4 +63,11 @@ export class PortfolioController {
     );
     return result;
   }
+
+  @Delete('/:id')
+  @UseGuards(AdminGuard)
+  @SetMetadata('permission', 'MANAGER')
+  async deletePortfolio(@Param('id') portfolioId: number) {
+    return await this.portfolioService.deletePortfolio(portfolioId);
+  }
 }
