@@ -18,6 +18,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { MinioService } from 'src/minio/minio.service';
 import { FileType } from 'src/multer.config';
+import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 
 @Controller('portfolio')
 export class PortfolioController {
@@ -39,8 +40,8 @@ export class PortfolioController {
     @Body() createPortfolioDto: CreatePortfolioDto,
     @UploadedFiles()
     files: {
-      thumbnail?: Express.Multer.File[];
-      portfolioPdf?: Express.Multer.File[];
+      thumbnail: Express.Multer.File[];
+      portfolioPdf: Express.Multer.File[];
     },
   ) {
     const thumbnailUrl = await this.minioService.uploadFile(
@@ -62,6 +63,54 @@ export class PortfolioController {
       portfolioUrl,
     );
     return result;
+  }
+
+  @Patch('/:id')
+  @UseGuards(AdminGuard)
+  @SetMetadata('permission', 'MANAGER')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'thumbnail', maxCount: 1 },
+      { name: 'portfolioPdf', maxCount: 1 },
+    ]),
+  )
+  async updatePortfolio(
+    @Param('id') portfolioId: number,
+    @Body() updatePortfolioDto?: UpdatePortfolioDto,
+    @UploadedFiles()
+    files?: {
+      thumbnail?: Express.Multer.File[];
+      portfolioPdf?: Express.Multer.File[];
+    },
+  ) {
+    let thumbnailUrl = files.thumbnail[0]
+      ? await this.minioService.uploadFile(
+          new File(
+            [files.thumbnail[0].buffer],
+            files.thumbnail[0].originalname,
+          ),
+          this.minioService.generateFilename(files.thumbnail[0].originalname),
+          FileType.PORTFOLIO,
+        )
+      : null;
+    let portfolioUrl = files.portfolioPdf[0]
+      ? await this.minioService.uploadFile(
+          new File(
+            [files.portfolioPdf[0].buffer],
+            files.portfolioPdf[0].originalname,
+          ),
+          this.minioService.generateFilename(
+            files.portfolioPdf[0].originalname,
+          ),
+          FileType.PORTFOLIO,
+        )
+      : null;
+    return await this.portfolioService.updatePortfolio(
+      portfolioId,
+      updatePortfolioDto,
+      thumbnailUrl,
+      portfolioUrl,
+    );
   }
 
   @Delete('/:id')

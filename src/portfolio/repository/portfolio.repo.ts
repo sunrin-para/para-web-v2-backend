@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePortfolioDto } from '../dto/create-portfolio.dto';
+import { UpdatePortfolioDto } from '../dto/update-portfolio.dto';
 
 @Injectable()
 export class PortfolioRepository {
@@ -13,6 +14,21 @@ export class PortfolioRepository {
           filePath: createPortfolioDto.filePath,
           ...createPortfolioDto,
         },
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+    return true;
+  }
+
+  async updatePortfolio(
+    portfolioId: number,
+    updatePortfolioDto: UpdatePortfolioDto,
+  ) {
+    await this.prismaService.portfolio
+      .update({
+        where: { id: portfolioId },
+        data: updatePortfolioDto,
       })
       .catch((e) => {
         throw new Error(e);
