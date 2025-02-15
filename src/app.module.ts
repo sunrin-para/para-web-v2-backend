@@ -10,7 +10,6 @@ import { QuestionsModule } from './questions/questions.module';
 import { AwardsModule } from './awards/awards.module';
 import { MembersModule } from './members/members.module';
 import { MinioModule } from './minio/minio.module';
-import { GallaryModule } from './gallary/gallary.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
 
 @Module({
@@ -22,7 +21,6 @@ import { PortfolioModule } from './portfolio/portfolio.module';
     AwardsModule,
     MembersModule,
     MinioModule,
-    GallaryModule,
     PortfolioModule,
   ],
   controllers: [AppController],
