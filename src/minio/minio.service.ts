@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as Minio from 'minio';
 import { FileType } from 'src/multer.config';
+import { v4 as uuidv4 } from 'uuid';
 
 const env = process.env;
 
@@ -18,5 +19,10 @@ export class MinioService {
     const path = type ? `${type}/${fileName}` : fileName;
     await minioClient.putObject(env.BUCKET_NAME, path, buffer, file.size);
     return `https://${env.MINIO_URL}/${env.BUCKET_NAME}/${path}`;
+  }
+
+  generateFilename(originalname): string {
+    const extension = originalname.split('.').pop();
+    return `${uuidv4()}.${extension}`;
   }
 }

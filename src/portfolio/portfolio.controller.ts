@@ -1,9 +1,66 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  SetMetadata,
+  UseInterceptors,
+  UseGuards,
+  UploadedFile,
+  UploadedFiles,
+} from '@nestjs/common';
 import { PortfolioService } from './portfolio.service';
+import { AdminGuard } from 'src/common/guards/admin.guard';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { CreatePortfolioDto } from './dto/create-portfolio.dto';
+import { MinioService } from 'src/minio/minio.service';
+import { FileType } from 'src/multer.config';
 
 @Controller('portfolio')
 export class PortfolioController {
-  constructor(private readonly portfolioService: PortfolioService) {}
+  constructor(
+    private readonly portfolioService: PortfolioService,
+    private readonly minioService: MinioService,
+  ) {}
 
-  
+  @Post()
+  @UseGuards(AdminGuard)
+  @SetMetadata('permission', 'MANAGER')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'thumbnail', maxCount: 1 },
+      { name: 'portfolioPdf', maxCount: 1 },
+    ]),
+  )
+  async createPortfolio(
+    @Body() createPortfolioDto: CreatePortfolioDto,
+    @UploadedFiles()
+    files: {
+      thumbnail?: Express.Multer.File[];
+      portfolioPdf?: Express.Multer.File[];
+    },
+  ) {
+    const thumbnailUrl = await this.minioService.uploadFile(
+      new File([files.thumbnail[0].buffer], files.thumbnail[0].originalname),
+      this.minioService.generateFilename(files.thumbnail[0].originalname),
+      FileType.PORTFOLIO,
+    );
+    const portfolioUrl = await this.minioService.uploadFile(
+      new File(
+        [files.portfolioPdf[0].buffer],
+        files.portfolioPdf[0].originalname,
+      ),
+      this.minioService.generateFilename(files.portfolioPdf[0].originalname),
+      FileType.PORTFOLIO,
+    );
+    const result = await this.portfolioService.createPortfolio(
+      createPortfolioDto,
+      thumbnailUrl,
+      portfolioUrl,
+    );
+    return result;
+  }
 }

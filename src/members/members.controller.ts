@@ -20,7 +20,7 @@ import { MemberDto } from './dto/member.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MinioService } from 'src/minio/minio.service';
 import { FileType } from 'src/multer.config';
-import { v4 as uuidv4 } from 'uuid';
+
 import { UpdateMemberDto } from './dto/update-member.dto';
 
 @Controller('members')
@@ -29,10 +29,6 @@ export class MembersController {
     private readonly membersService: MembersService,
     private readonly minioService: MinioService,
   ) {}
-  private generateFilename(originalname): string {
-    const extension = originalname.split('.').pop();
-    return `${uuidv4()}.${extension}`;
-  }
 
   @Post()
   @UseGuards(AdminGuard)
@@ -42,7 +38,7 @@ export class MembersController {
     @Body() createMemberDto: MemberDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    const filename = await this.generateFilename(file.originalname);
+    const filename = this.minioService.generateFilename(file.originalname);
     const fileUrl = await this.minioService.uploadFile(
       new File([file.buffer], file.originalname),
       filename,
@@ -85,7 +81,7 @@ export class MembersController {
   ) {
     let fileUrl = undefined;
     if (file) {
-      const filename = await this.generateFilename(file.originalname);
+      const filename = await this.minioService.generateFilename(file.originalname);
       fileUrl = await this.minioService.uploadFile(
         new File([file.buffer], file.originalname),
         filename,

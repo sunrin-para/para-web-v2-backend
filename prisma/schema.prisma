@@ -37,20 +37,20 @@ model Member {
 }
 
 model Portfolio {
-  id          Int        @id @default(autoincrement())
-  tags        String[]
-  title       String
-  summary     String
-  description String
-  thumbnail   String
-  image       String[]
-  member      String[]
-  filePath    String
-  date        DateTime[]
-  link        String?
-  github      String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id                Int        @id @default(autoincrement())
+  tags              String[]
+  title             String
+  summary           String
+  description       String?
+  thumbnail         String
+  para_member       String[]
+  outside_member    String[]
+  filePath          String
+  date              DateTime[]
+  link              String?
+  github            String?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 }
 
 model Faq {
