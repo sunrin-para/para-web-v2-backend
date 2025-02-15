@@ -1,7 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { PortfolioRepository } from './repository/portfolio.repo';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
+import { PortfolioDto } from './dto/portfolio.dto';
+import { Portfolio } from '@prisma/client';
+import { MonoPortfolioList } from './dto/portfolio-list.dto';
 
 @Injectable()
 export class PortfolioService {
@@ -18,6 +25,36 @@ export class PortfolioService {
       ...createPortfolioDto,
     };
     await this.portfolioRepository.createPortfolio(newPortfolio);
+  }
+
+  async searchPortfolioByName(keyword: string): Promise<MonoPortfolioList[]> {
+    return await this.portfolioRepository.searchPortfolioByName(keyword);
+  }
+
+  async getPortfolioDetail(portfolioId: number): Promise<PortfolioDto> {
+    if (portfolioId < 0) {
+      throw new BadRequestException('portfolioId 값은 0보다 커야 합니다.');
+    }
+    return await this.portfolioRepository.getPortfolioDetail(portfolioId);
+  }
+
+  async getPortfoliosByCategory(
+    category: string,
+  ): Promise<MonoPortfolioList[]> {
+    return await this.portfolioRepository.getPortfoliosByCategory(category);
+  }
+
+  async getPortfolioList(count: number = 50): Promise<MonoPortfolioList[]> {
+    if (count < 1) {
+      throw new InternalServerErrorException(
+        'portfolio count는 0보다 커야합니다.',
+      );
+    }
+    return await this.portfolioRepository.getPortfolioList(count);
+  }
+
+  async getTagsList() {
+    return await this.portfolioRepository.getAllCategories();
   }
 
   async updatePortfolio(

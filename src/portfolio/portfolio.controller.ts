@@ -65,6 +65,31 @@ export class PortfolioController {
     return result;
   }
 
+  @Get('/search/:keyword')
+  async searchPortfolioByName(@Param('keyword') keyword: string) {
+    return await this.portfolioService.searchPortfolioByName(keyword);
+  }
+
+  @Get('/id/:id')
+  async getPortfolioDetail(@Param('id') portfolioId: number) {
+    return await this.portfolioService.getPortfolioDetail(portfolioId);
+  }
+
+  @Get('/category/:category')
+  async getPortfoliosByCategory(@Param('category') category: string) {
+    return await this.portfolioService.getPortfoliosByCategory(category);
+  }
+
+  @Get('/all/portfolio')
+  async getPortfolioList() {
+    return await this.portfolioService.getPortfolioList();
+  }
+
+  @Get('/all/category')
+  async getTagsList() {
+    return await this.portfolioService.getTagsList();
+  }
+
   @Patch('/:id')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
