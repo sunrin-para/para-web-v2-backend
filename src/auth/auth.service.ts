@@ -13,7 +13,8 @@ import { UserDataDto } from './dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './dto/JwtPayload.dto';
 import { SignInDto } from './dto/signIn.dto';
-import bcrypt from 'bcryptjs';
+// import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { ChangePermissionDto } from './dto/changePermission.dto';
 import { Permission } from 'src/common/enums/Permission.enum';
@@ -150,11 +151,13 @@ export class AuthService {
   }
 
   async generatedefaultadminaccount() {
-    const existingAdmin = await this.prismaService.user.findFirst({
-      where: { permission: PrismaPermission.SUPER },
-    });
+    const existingAdmin = await this.prismaService.user
+      .findFirstOrThrow({
+        where: { permission: PrismaPermission.SUPER },
+      })
+      .catch((e) => {});
     if (!existingAdmin) {
-      const salt = await bcrypt.genSalt(process.env.SALT_ROUND);
+      const salt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUND));
       const encryptedPassword = await bcrypt.hash(
         process.env.DEFAULT_ADMIN_PW,
         salt,

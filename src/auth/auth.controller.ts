@@ -16,7 +16,7 @@ import {
 import { AuthService } from './auth.service';
 import { GoogleGuard } from 'src/common/guards/google.guard';
 import { Request, Response } from 'express';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { JwtPayload } from './dto/JwtPayload.dto';
 import { UserGuard } from 'src/common/guards/user.guard';
 import { AdminGuard } from 'src/common/guards/admin.guard';
@@ -36,12 +36,16 @@ interface IRequest extends Request {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiOperation({ summary: '구글 로그인', description: '구글 OAuth를 통한 로그인을 시도합니다.' })
+  @ApiResponse({ status: 200, description: '구글 로그인 성공' })
   @Get('/google')
   @UseGuards(GoogleGuard)
   async googleSignIn(@Req() req: IRequest) {
     return req.user;
   }
 
+  @ApiOperation({ summary: '구글 로그인 리다이렉트', description: '구글 OAuth 로그인 후 리다이렉트되는 엔드포인트입니다.' })
+  @ApiResponse({ status: 200, description: '토큰 발급 성공', type: Object })
   @Get('/google/redirect')
   @UseGuards(GoogleGuard)
   async googleRedirection(
@@ -55,12 +59,15 @@ export class AuthController {
     });
 
     res.header('Access-Control-Allow-Origin', process.env.DOMAIN);
-
     res.header('Access-Control-Allow-Credentials', 'true');
 
     return tokens;
   }
 
+  @ApiOperation({ summary: '일반 로그인', description: '이메일과 비밀번호를 통한 로그인을 시도합니다.' })
+  @ApiBody({ type: SignInDto })
+  @ApiResponse({ status: 200, description: '로그인 성공', type: Object })
+  @ApiResponse({ status: 400, description: '이메일 또는 비밀번호가 누락됨' })
   @Post('/signin')
   async signIn(
     @Body() signInDto: SignInDto,
@@ -73,13 +80,15 @@ export class AuthController {
     const tokens = await this.authService.handleSignIn(signInDto);
 
     res.header('Access-Control-Allow-Origin', process.env.DOMAIN);
-
     res.header('Access-Control-Allow-Credentials', 'true');
 
     return tokens;
   }
 
-  // Super permission을 요구함.
+  @ApiOperation({ summary: '관리자 계정 생성', description: 'Super 권한을 가진 관리자만 새로운 계정을 생성할 수 있습니다.' })
+  @ApiBody({ type: CreateUserDto })
+  @ApiResponse({ status: 201, description: '계정 생성 성공' })
+  @ApiResponse({ status: 400, description: '필수 데이터 누락' })
   @Post('/register')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'SUPER')
@@ -91,7 +100,9 @@ export class AuthController {
     return user;
   }
 
-  // 본인 비밀번호 변경 요청 또는 super user 요청이면 바로 변경할 수 있도록.
+  @ApiOperation({ summary: '비밀번호 변경', description: '본인의 비밀번호를 변경합니다.' })
+  @ApiBody({ type: ChangePasswordDto })
+  @ApiResponse({ status: 200, description: '비밀번호 변경 성공' })
   @Post('/password/change')
   @UseGuards(UserGuard)
   async changePassword(
@@ -103,6 +114,9 @@ export class AuthController {
     return await this.authService.changePassword(user.email, changePasswordDto);
   }
 
+  @ApiOperation({ summary: '비밀번호 초기화', description: 'Super 관리자가 다른 사용자의 비밀번호를 초기화합니다.' })
+  @ApiBody({ type: ChangePasswordDto })
+  @ApiResponse({ status: 200, description: '비밀번호 초기화 성공' })
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'SUPER')
   @Post('/password/reset')
@@ -110,7 +124,6 @@ export class AuthController {
     @Body() changePasswordDto: ChangePasswordDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    // super user가 user pw 변경하는 컨트롤러.
     const result = await this.authService.changePassword(
       changePasswordDto.email,
       changePasswordDto,
@@ -118,6 +131,8 @@ export class AuthController {
     return result;
   }
 
+  @ApiOperation({ summary: '권한 변경', description: 'Super 관리자가 사용자의 권한을 변경합니다.' })
+  @ApiResponse({ status: 200, description: '권한 변경 성공' })
   @Post('/permission/change')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'SUPER')
@@ -126,6 +141,9 @@ export class AuthController {
     return result;
   }
 
+  @ApiOperation({ summary: '액세스 토큰 갱신', description: '리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급받습니다.' })
+  @ApiBody({ type: RefreshAcTokenDto })
+  @ApiResponse({ status: 200, description: '토큰 갱신 성공' })
   @Post('/refresh')
   @UseGuards(UserGuard)
   async refreshAccessToken(
@@ -138,12 +156,16 @@ export class AuthController {
     );
   }
 
+  @ApiOperation({ summary: '기본 관리자 계정 생성', description: '시스템 초기 설정을 위한 기본 관리자 계정을 생성합니다.' })
+  @ApiResponse({ status: 201, description: '기본 관리자 계정 생성 성공' })
   @Post('/generate/default/account')
   async generateDefaultAccount() {
     return await this.authService.generatedefaultadminaccount();
   }
 
-  // 계정 삭제 이후에는 accessToken에 정보가 담겨있어도 사용할 수 없게 해야 함.
+  @ApiOperation({ summary: '계정 삭제', description: 'Super 관리자가 계정을 삭제합니다.' })
+  @ApiBody({ type: DeleteAccountDto })
+  @ApiResponse({ status: 200, description: '계정 삭제 성공' })
   @Delete('/account')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'SUPER')
@@ -151,6 +173,9 @@ export class AuthController {
     return await this.authService.deleteAccount(deleteAccountDto);
   }
 
+  @ApiOperation({ summary: '로그아웃', description: '현재 로그인된 사용자를 로그아웃 처리합니다.' })
+  @ApiResponse({ status: 200, description: '로그아웃 성공' })
+  @ApiResponse({ status: 401, description: '인증되지 않은 사용자' })
   @Get('/logout')
   @UseGuards(UserGuard)
   @HttpCode(HttpStatus.OK)
@@ -168,12 +193,5 @@ export class AuthController {
     } catch (e) {
       throw new UnauthorizedException();
     }
-  }
-
-  @Get('/test1')
-  @UseGuards(AdminGuard)
-  @SetMetadata('permission', 'MANAGER')
-  async test1() {
-    return 'passed';
   }
 }
