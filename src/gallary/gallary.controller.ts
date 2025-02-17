@@ -17,6 +17,7 @@ import { MinioService } from 'src/minio/minio.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { FileType } from 'src/multer.config';
+import { UpdateAlbumDto } from './dto/update-album.dto';
 
 @Controller('gallary')
 export class GallaryController {
@@ -33,7 +34,7 @@ export class GallaryController {
     @Body() createAlbumDto: CreateAlbumDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    let filesUrlList = [];
+    let filesUrlList: string[] = [];
     for (const file of files) {
       const fileUrl = await this.minioService.uploadFile(
         new File([file.buffer], file.originalname),
@@ -43,6 +44,35 @@ export class GallaryController {
       filesUrlList.push(fileUrl);
     }
     return await this.gallaryService.createAlbum(createAlbumDto, filesUrlList);
+  }
+
+  @Patch('/:albumId')
+  @UseGuards(AdminGuard)
+  @SetMetadata('permission', 'MANAGER')
+  @UseInterceptors(FilesInterceptor('files'))
+  async updateAlbum(
+    @Param('albumId') albumId: number,
+    @Body() updateAlbumDto: UpdateAlbumDto,
+    @UploadedFiles() files?: Array<Express.Multer.File>,
+  ) {
+    let newPhotosUrls: string[] = [];
+
+    if (files && files.length > 0) {
+      for (const file of files) {
+        const fileUrl = await this.minioService.uploadFile(
+          new File([file.buffer], file.originalname),
+          this.minioService.generateFilename(file.originalname),
+          FileType.GALLARY,
+        );
+        newPhotosUrls.push(fileUrl);
+      }
+    }
+
+    return await this.gallaryService.updateAlbum(
+      albumId,
+      updateAlbumDto,
+      newPhotosUrls,
+    );
   }
 
   @Delete('/:albumId')
