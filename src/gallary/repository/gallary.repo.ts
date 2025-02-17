@@ -29,6 +29,46 @@ export class GallaryRepository {
     return album;
   }
 
+  async getAlbumDetail(albumId: number) {
+    const album = await this.prismaService.gallary
+      .findUnique({
+        where: { id: albumId },
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+    return album;
+  }
+
+  async getAlbumsByYear(year: number) {
+    const albums = await this.prismaService.gallary
+      .findMany({
+        where: {
+          AND: [
+            { date: { gte: new Date(year, 0, 1) } },
+            { date: { lt: new Date(year + 1, 0, 1) } },
+          ],
+        },
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+    return albums;
+  }
+
+  async getAllAlbums() {
+    const albums = await this.prismaService.gallary
+      .findMany({
+        orderBy: {
+          date: 'desc',
+        },
+      })
+      .catch((e) => {
+        throw new Error(e);
+      });
+    return albums;
+  }
+
   async updateAlbum(
     albumId: number,
     updateAlbumDto: UpdateAlbumDto,

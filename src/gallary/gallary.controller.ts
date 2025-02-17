@@ -46,6 +46,29 @@ export class GallaryController {
     return await this.gallaryService.createAlbum(createAlbumDto, filesUrlList);
   }
 
+  @Get('/detail/:albumId')
+  async getAlbumDetail(@Param('albumId') albumId: number) {
+    return await this.gallaryService.getAlbumDetail(albumId);
+  }
+
+  @Get()
+  async getAllAlbums() {
+    return await this.gallaryService.getAllAlbums();
+  }
+
+  @Get('/year/:year')
+  async getAlbumsByYear(@Param('year') year: number) {
+    const albums = await this.gallaryService.getAlbumsByYear(year);
+    return {
+      year,
+      albums: albums.map((album) => ({
+        title: album.title,
+        date: album.date,
+        thumbnailUrl: album.photos[0], // 첫 번째 사진을 썸네일로 사용
+      })),
+    };
+  }
+
   @Patch('/:albumId')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
