@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { GallaryService } from './gallary.service';
 import { GallaryController } from './gallary.controller';
 import { GallaryRepository } from './repository/gallary.repo';
+import { MinioService } from 'src/minio/minio.service';
 import { UserService } from 'src/user/user.service';
 
 @Module({
   controllers: [GallaryController],
-  providers: [GallaryRepository, GallaryService, UserService],
+  providers: [GallaryRepository, GallaryService, UserService, MinioService],
 })
 export class GallaryModule {}
