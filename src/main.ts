@@ -52,7 +52,7 @@ async function bootstrap() {
     .setDescription(process.env.DESCRIPTION)
     .setVersion(process.env.VERSION)
     .addTag(process.env.TAG)
-    .addCookieAuth('sessionId')
+    .addCookieAuth('Bearer')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
