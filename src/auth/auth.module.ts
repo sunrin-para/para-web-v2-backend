@@ -24,6 +24,7 @@ import { LocalStrategy } from 'src/common/strategies/local.strategy';
     JwtStrategy,
     GoogleStrategy,
     LocalStrategy,
+    PrismaService,
   ],
 })
 export class AuthModule {}

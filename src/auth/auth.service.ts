@@ -17,14 +17,17 @@ import bcrypt from 'bcryptjs';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { ChangePermissionDto } from './dto/changePermission.dto';
 import { Permission } from 'src/common/enums/Permission.enum';
+import { Prisma, Permission as PrismaPermission } from '@prisma/client';
 import * as crypto from 'crypto';
 import { DeleteAccountDto } from './dto/delete-account.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly prismaService: PrismaService,
   ) {}
   async handleGoogleSignIn(googleUser: GoogleUserDto) {
     let user: UserDataDto = await this.userService.findUserByEmail(
@@ -144,6 +147,29 @@ export class AuthService {
         throw new Error(e);
       });
     return result;
+  }
+
+  async generatedefaultadminaccount() {
+    const existingAdmin = await this.prismaService.user.findFirst({
+      where: { permission: PrismaPermission.SUPER },
+    });
+    if (!existingAdmin) {
+      const salt = await bcrypt.genSalt(process.env.SALT_ROUND);
+      const encryptedPassword = await bcrypt.hash(
+        process.env.DEFAULT_ADMIN_PW,
+        salt,
+      );
+      const new_admin = await this.prismaService.user.create({
+        data: {
+          email: 'dev.juany@gmail.com',
+          name: '이주안',
+          permission: PrismaPermission.SUPER,
+          password: encryptedPassword,
+        },
+      });
+      return new_admin;
+    }
+    throw new ConflictException('계정이미존재함.');
   }
 
   async changePermission(changePermissionDto: ChangePermissionDto) {

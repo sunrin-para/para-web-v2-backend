@@ -1,4 +1,15 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export class CreateFAQDto {
+  @ApiProperty({
+    description: 'FAQ 질문',
+    example: 'PARA는 무엇인가요?'
+  })
   question: string;
+
+  @ApiProperty({
+    description: 'FAQ 답변', 
+    example: 'PARA는 선린인터넷고등학교의 프로그래밍 동아리입니다.'
+  })
   answer: string;
 }
