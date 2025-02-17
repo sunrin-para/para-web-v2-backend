@@ -11,6 +11,7 @@ import { AwardsModule } from './awards/awards.module';
 import { MembersModule } from './members/members.module';
 import { MinioModule } from './minio/minio.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
+import { GallaryModule } from './gallary/gallary.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { PortfolioModule } from './portfolio/portfolio.module';
     MembersModule,
     MinioModule,
     PortfolioModule,
+    GallaryModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, UserService],
