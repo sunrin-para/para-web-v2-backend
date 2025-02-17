@@ -8,10 +8,15 @@ import {
   Delete,
   SetMetadata,
   UseGuards,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { GallaryService } from './gallary.service';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import { MinioService } from 'src/minio/minio.service';
+import { CreateAlbumDto } from './dto/create-album.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileType } from 'src/multer.config';
 
 @Controller('gallary')
 export class GallaryController {
@@ -19,6 +24,26 @@ export class GallaryController {
     private readonly gallaryService: GallaryService,
     private readonly minioService: MinioService,
   ) {}
+
+  @Post()
+  @UseGuards(AdminGuard)
+  @SetMetadata('permission', 'MANAGER')
+  @UseInterceptors(FilesInterceptor('files'))
+  async createAlbum(
+    @Body() createAlbumDto: CreateAlbumDto,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+  ) {
+    let filesUrlList = [];
+    for (const file of files) {
+      const fileUrl = await this.minioService.uploadFile(
+        new File([file.buffer], file.originalname),
+        this.minioService.generateFilename(file.originalname),
+        FileType.GALLARY,
+      );
+      filesUrlList.push(fileUrl);
+    }
+    return await this.gallaryService.createAlbum(createAlbumDto, filesUrlList);
+  }
 
   @Delete('/:albumId')
   @UseGuards(AdminGuard)
