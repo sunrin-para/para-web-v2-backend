@@ -17,7 +17,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    console.log('p3');
+    console.log(payload);
     if (!payload || !payload.uid) {
+      console.log('ret exp tkn');
       throw new UnauthorizedException('유효하지 않은 토큰입니다.');
     }
 
@@ -25,6 +28,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       uid: payload.uid,
       email: payload.email,
       permission: payload.permission,
+      validationKey: payload.validationKey,
     };
   }
 }

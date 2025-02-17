@@ -52,7 +52,17 @@ async function bootstrap() {
     .setDescription(process.env.DESCRIPTION)
     .setVersion(process.env.VERSION)
     .addTag(process.env.TAG)
-    .addCookieAuth('Bearer')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'access-token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

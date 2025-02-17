@@ -26,17 +26,23 @@ export class AdminGuard extends AuthGuard('jwt') {
       'permission',
       context.getHandler(),
     );
-    if (!requiredPermission || !Permission[requiredPermission])
+    if (!requiredPermission || !Permission[requiredPermission]) {
       throw new InternalServerErrorException(
         'Please set Guard permission via setMetaData decorator.',
       );
+    }
+
+    console.log('p1');
 
     const canActivate = await super.canActivate(context);
+    console.log(context);
     if (!canActivate) {
       return false;
     }
 
+    console.log('p2');
     const request = context.switchToHttp().getRequest();
+    console.log(`req user ${JSON.stringify(request.user)}`);
     const user = request.user
       ? await this.userService.findUserByEmail(request.user.email)
       : null;

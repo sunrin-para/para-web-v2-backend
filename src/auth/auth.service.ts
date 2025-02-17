@@ -89,7 +89,7 @@ export class AuthService {
     const user = await this.userService.findUserByEmail(signInDto.email);
     if (!user) throw new NotFoundException();
 
-    const match = await bcrypt.compare(user.password, signInDto.password);
+    const match = await bcrypt.compare(signInDto.password, user.password);
     if (match) {
       const validationKey = await this.generateValidationKey();
 
