@@ -70,6 +70,16 @@ model Award {
   updatedAt DateTime @updatedAt
 }
 
+model Gallary {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  photos      String[]
+  date        DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
 enum Permission {
   SUPER // 유저까지 다 관리
   MODERATOR // 지원폼까지 볼 수 있음
