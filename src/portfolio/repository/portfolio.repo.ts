@@ -14,6 +14,10 @@ export class PortfolioRepository {
         data: {
           thumbnail: createPortfolioDto.thumbnail,
           filePath: createPortfolioDto.filePath,
+          date:
+            createPortfolioDto.date.length > 0
+              ? createPortfolioDto.date.map((date) => new Date(date))
+              : [],
           ...createPortfolioDto,
         },
       })
