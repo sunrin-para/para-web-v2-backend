@@ -11,24 +11,27 @@ RUN npm install -g pm2
 RUN corepack enable && corepack prepare yarn@stable --activate
 
 # Copy package files
-COPY package*.json ./
+COPY package*.json yarn.lock ./
 
 # Install dependencies
 RUN yarn install
 
-# Install Prisma CLI and generate client
-RUN yarn add @prisma/client && yarn prisma generate
-
-# Copy Prisma schema
+# ✅ Prisma 관련 파일 복사 (중요!)
 COPY prisma ./prisma
 
-# Run Prisma migrations
+# ✅ Prisma Client 설치 및 생성
+RUN yarn add @prisma/client && yarn prisma generate
+
+# ✅ Prisma 마이그레이션 적용
 RUN yarn prisma migrate deploy
 
-# Bundle app source
+# ✅ Seed 데이터 실행
+RUN yarn prisma db seed
+
+# Copy app source
 COPY . .
 
-# Creates a "dist" folder with the production build
+# Build the application
 RUN yarn run build
 
 # Start the server using PM2
