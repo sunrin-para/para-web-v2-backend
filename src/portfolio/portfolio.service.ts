@@ -7,7 +7,6 @@ import { PortfolioRepository } from './repository/portfolio.repo';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 import { PortfolioDto } from './dto/portfolio.dto';
-import { Portfolio } from '@prisma/client';
 import { MonoPortfolioList } from './dto/portfolio-list.dto';
 
 @Injectable()
@@ -22,6 +21,7 @@ export class PortfolioService {
     const newPortfolio: CreatePortfolioDto = {
       filePath: portfolioUrl,
       thumbnail: thumbnailUrl,
+      date: createPortfolioDto.date.map((date) => new Date(date)),
       ...createPortfolioDto,
     };
     await this.portfolioRepository.createPortfolio(newPortfolio);
