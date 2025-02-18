@@ -37,7 +37,7 @@ export class PortfolioController {
     private readonly minioService: MinioService,
   ) {}
 
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @ApiOperation({
     summary: '포트폴리오 생성',
     description: '새로운 포트폴리오를 생성합니다.',
@@ -197,7 +197,7 @@ export class PortfolioController {
     return await this.portfolioService.getTagsList();
   }
 
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @ApiOperation({
     summary: '포트폴리오 수정',
     description: '기존 포트폴리오 정보를 수정합니다.',
@@ -315,7 +315,7 @@ export class PortfolioController {
     );
   }
 
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @ApiOperation({
     summary: '포트폴리오 삭제',
     description: '포트폴리오를 삭제합니다.',

@@ -10,7 +10,11 @@ export class CreateAwardsDto {
   @ApiProperty({
     description: '수상 멤버',
     example: ['홍길동', '김철수'],
-    isArray: true,
+    type: [String],
+    items: {
+      type: 'string',
+      example: '홍길동'
+    }
   })
   member: string[];
 

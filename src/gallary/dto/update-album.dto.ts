@@ -26,7 +26,11 @@ export class UpdateAlbumDto {
     description: '삭제할 사진 인덱스 배열',
     example: [0, 1, 2],
     required: false,
-    isArray: true,
+    type: [Number],
+    items: {
+      type: 'number',
+      example: 0
+    }
   })
   deletedPhotoIndexes?: number[];
 }

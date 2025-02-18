@@ -20,7 +20,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Post()
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
@@ -33,7 +33,7 @@ export class QuestionsController {
     return await this.questionsService.getAllFaq();
   }
 
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Put('/:id')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
@@ -41,7 +41,7 @@ export class QuestionsController {
     return await this.questionsService.updateFaq(faqId, editFAQDto);
   }
 
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Delete('/:id')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')

@@ -22,6 +22,7 @@ import { MinioService } from 'src/minio/minio.service';
 import { FileType } from 'src/multer.config';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { UpdateMemberDto } from './dto/update-member.dto';
+import { CreateMemberDto } from './dto/create-member.dto';
 
 @Controller('members')
 export class MembersController {
@@ -30,13 +31,13 @@ export class MembersController {
     private readonly minioService: MinioService,
   ) {}
 
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Post()
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
   @UseInterceptors(FileInterceptor('file'))
   async createMember(
-    @Body() createMemberDto: MemberDto,
+    @Body() createMemberDto: CreateMemberDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     const filename = this.minioService.generateFilename(file.originalname);
@@ -71,7 +72,7 @@ export class MembersController {
     return await this.membersService.getMemberDetail(memberId);
   }
 
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Patch('/:memberId')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
@@ -105,7 +106,7 @@ export class MembersController {
     };
   }
 
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Delete('/:memberId')
   async deleteMember(@Param('memberId') memberId: number) {
     return await this.membersService.deleteMember(memberId);

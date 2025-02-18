@@ -16,7 +16,13 @@ import {
 import { AuthService } from './auth.service';
 import { GoogleGuard } from 'src/common/guards/google.guard';
 import { Request, Response } from 'express';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { JwtPayload } from './dto/JwtPayload.dto';
 import { UserGuard } from 'src/common/guards/user.guard';
 import { AdminGuard } from 'src/common/guards/admin.guard';
@@ -101,7 +107,7 @@ export class AuthController {
   @ApiBody({ type: CreateUserDto })
   @ApiResponse({ status: 201, description: '계정 생성 성공' })
   @ApiResponse({ status: 400, description: '필수 데이터 누락' })
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Post('/register')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'SUPER')
@@ -119,7 +125,7 @@ export class AuthController {
   })
   @ApiBody({ type: ChangePasswordDto })
   @ApiResponse({ status: 200, description: '비밀번호 변경 성공' })
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Post('/password/change')
   @UseGuards(UserGuard)
   async changePassword(
@@ -137,7 +143,7 @@ export class AuthController {
   })
   @ApiBody({ type: ChangePasswordDto })
   @ApiResponse({ status: 200, description: '비밀번호 초기화 성공' })
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'SUPER')
   @Post('/password/reset')
@@ -157,7 +163,7 @@ export class AuthController {
     description: 'Super 관리자가 사용자의 권한을 변경합니다.',
   })
   @ApiResponse({ status: 200, description: '권한 변경 성공' })
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Post('/permission/change')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'SUPER')
@@ -172,7 +178,7 @@ export class AuthController {
   })
   @ApiBody({ type: RefreshAcTokenDto })
   @ApiResponse({ status: 200, description: '토큰 갱신 성공' })
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Post('/refresh')
   @UseGuards(UserGuard)
   async refreshAccessToken(
@@ -201,7 +207,7 @@ export class AuthController {
   })
   @ApiBody({ type: DeleteAccountDto })
   @ApiResponse({ status: 200, description: '계정 삭제 성공' })
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Delete('/account')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'SUPER')
@@ -215,7 +221,7 @@ export class AuthController {
   })
   @ApiResponse({ status: 200, description: '로그아웃 성공' })
   @ApiResponse({ status: 401, description: '인증되지 않은 사용자' })
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Get('/logout')
   @UseGuards(UserGuard)
   @HttpCode(HttpStatus.OK)

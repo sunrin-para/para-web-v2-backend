@@ -27,7 +27,7 @@ export class GallaryController {
     private readonly minioService: MinioService,
   ) {}
 
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Post()
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
@@ -71,7 +71,7 @@ export class GallaryController {
     };
   }
 
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Patch('/:albumId')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
@@ -101,7 +101,7 @@ export class GallaryController {
     );
   }
 
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Delete('/:albumId')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
