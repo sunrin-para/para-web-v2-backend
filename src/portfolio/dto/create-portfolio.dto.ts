@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsArray, IsOptional, IsDate } from 'class-validator';
+import {
+  IsString,
+  IsArray,
+  IsOptional,
+  IsDate,
+  IsDateString,
+} from 'class-validator';
 
 export class CreatePortfolioDto {
   @ApiProperty({
@@ -58,8 +64,7 @@ export class CreatePortfolioDto {
     isArray: true,
   })
   @IsArray()
-  @IsDate({ each: true })
-  date: Date[];
+  date: string[];
 
   @ApiProperty({
     description: '프로젝트 링크',
