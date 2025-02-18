@@ -21,7 +21,6 @@ export class PortfolioService {
     const newPortfolio: CreatePortfolioDto = {
       filePath: portfolioUrl,
       thumbnail: thumbnailUrl,
-      date: createPortfolioDto.date.map((date) => new Date(date)),
       ...createPortfolioDto,
     };
     await this.portfolioRepository.createPortfolio(newPortfolio);
