@@ -13,6 +13,9 @@ RUN corepack enable && corepack prepare yarn@stable --activate
 # Copy package files
 COPY package*.json yarn.lock ./
 
+# ✅ 환경 변수 파일 복사 (중요!)
+COPY .env .env
+
 # Install dependencies
 RUN yarn install
 
@@ -24,9 +27,6 @@ RUN yarn add @prisma/client && yarn prisma generate
 
 # ✅ Prisma 마이그레이션 적용
 RUN yarn prisma migrate deploy
-
-# ✅ Seed 데이터 실행
-RUN yarn prisma db seed
 
 # Copy app source
 COPY . .
