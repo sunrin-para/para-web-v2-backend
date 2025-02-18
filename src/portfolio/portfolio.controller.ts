@@ -157,8 +157,10 @@ export class PortfolioController {
   @ApiParam({ name: 'id', description: '포트폴리오 ID' })
   @ApiResponse({ status: 200, description: '조회 성공' })
   @Get('/id/:id')
-  async getPortfolioDetail(@Param('id') portfolioId: number) {
-    return await this.portfolioService.getPortfolioDetail(portfolioId);
+  async getPortfolioDetail(@Param('id') portfolioId: string) {
+    return await this.portfolioService.getPortfolioDetail(
+      parseInt(portfolioId),
+    );
   }
 
   @ApiOperation({
@@ -266,7 +268,7 @@ export class PortfolioController {
     ]),
   )
   async updatePortfolio(
-    @Param('id') portfolioId: number,
+    @Param('id') portfolioId: string,
     @Body(new FormDataToArrayPipe()) updatePortfolioDto?: UpdatePortfolioDto,
     @UploadedFiles()
     files?: {
@@ -297,7 +299,7 @@ export class PortfolioController {
         )
       : null;
     return await this.portfolioService.updatePortfolio(
-      portfolioId,
+      parseInt(portfolioId),
       updatePortfolioDto,
       thumbnailUrl,
       portfolioUrl,
@@ -314,7 +316,7 @@ export class PortfolioController {
   @Delete('/:id')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
-  async deletePortfolio(@Param('id') portfolioId: number) {
-    return await this.portfolioService.deletePortfolio(portfolioId);
+  async deletePortfolio(@Param('id') portfolioId: string) {
+    return await this.portfolioService.deletePortfolio(parseInt(portfolioId));
   }
 }
