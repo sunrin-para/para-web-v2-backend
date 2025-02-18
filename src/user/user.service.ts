@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from 'src/auth/dto/createUser.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Permission as PrismaPermission, User } from '@prisma/client';
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 import { UserDataDto } from 'src/auth/dto/user.dto';
 import { Permission as PermissionEnum } from 'src/common/enums/Permission.enum';
 
@@ -14,7 +14,7 @@ export class UserService {
     try {
       let encryptedPassword;
       if (userDto.password) {
-        const salt = await bcrypt.genSalt(process.env.SALT_ROUND);
+        const salt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUND));
         encryptedPassword = await bcrypt.hash(userDto.password, salt);
       }
       const user = await this.prismaService.user.create({
