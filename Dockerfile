@@ -26,8 +26,13 @@ COPY prisma ./prisma
 # ✅ Prisma Client 설치 및 생성
 RUN yarn add @prisma/client && yarn prisma generate
 
+RUN echo "DATABASE_URL: ${DATABASE_URL}"
+
 # ✅ Prisma 마이그레이션 실행 (환경 변수 직접 전달)
 RUN DATABASE_URL=${DATABASE_URL} yarn prisma migrate deploy || true
+
+# prisma db push
+RUN DATABASE_URL=${DATABASE_URL} yarn prisma db push
 
 # Copy app source
 COPY . .
