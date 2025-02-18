@@ -34,7 +34,7 @@ export class QuestionsController {
   @Put('/:id')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
-  async editFAQ(@Param() faqId: number, @Body() editFAQDto: CreateFAQDto) {
+  async editFAQ(@Param('id') faqId: number, @Body() editFAQDto: CreateFAQDto) {
     return await this.questionsService.updateFaq(faqId, editFAQDto);
   }
 

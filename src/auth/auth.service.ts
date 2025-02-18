@@ -87,7 +87,7 @@ export class AuthService {
 
   async handleSignIn(signInDto: SignInDto) {
     const user = await this.userService.findUserByEmail(signInDto.email);
-    if (!user) throw new NotFoundException();
+    if (!user) throw new BadRequestException();
 
     const match = await bcrypt.compare(signInDto.password, user.password);
     if (match) {

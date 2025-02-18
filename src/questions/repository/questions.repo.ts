@@ -29,7 +29,7 @@ export class QuestionsRepository {
   async updateFaq(faqId: number, editFAQDto: CreateFAQDto) {
     const updatedFaq = await this.prismaService.faq
       .update({
-        where: { id: faqId },
+        where: { id: parseInt(`${faqId}`) },
         // 수정한 데이터만 잘 반영되는지 확인.
         data: { question: editFAQDto.question, answer: editFAQDto.answer },
       })
@@ -43,7 +43,7 @@ export class QuestionsRepository {
   async deleteFaq(faqId: number) {
     await this.prismaService.faq
       .delete({
-        where: { id: faqId },
+        where: { id: parseInt(`${faqId}`) },
       })
       .catch((e) => {
         throw new Error(e);

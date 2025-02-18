@@ -19,7 +19,7 @@ export class AwardsRepository {
   async getAwardsHistoryByYear(year: number) {
     const awards = await this.prismaService.award
       .findMany({
-        where: { year: year },
+        where: { year: parseInt(`${year}`) },
       })
       .catch((e) => {
         throw new Error(e);
@@ -30,7 +30,7 @@ export class AwardsRepository {
   async updateAwardHistory(id: number, updateAwardDto: CreateAwardsDto) {
     const award = await this.prismaService.award
       .update({
-        where: { id: id },
+        where: { id: parseInt(`${id}`) },
         data: {
           name: updateAwardDto.name,
           member: updateAwardDto.member,
@@ -46,7 +46,7 @@ export class AwardsRepository {
   async deleteAwardById(id: number) {
     await this.prismaService.award
       .delete({
-        where: { id: id },
+        where: { id: parseInt(`${id}`) },
       })
       .catch((e) => {
         throw new Error(e);
@@ -57,7 +57,7 @@ export class AwardsRepository {
   async deleteManyAwardsByYear(year: number) {
     await this.prismaService.award
       .deleteMany({
-        where: { year: year },
+        where: { year: parseInt(`${year}`) },
       })
       .catch((e) => {
         throw new Error(e);
