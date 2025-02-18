@@ -16,6 +16,15 @@ COPY package*.json ./
 # Install dependencies
 RUN yarn install
 
+# Install Prisma CLI and generate client
+RUN yarn add @prisma/client && yarn prisma generate
+
+# Copy Prisma schema
+COPY prisma ./prisma
+
+# Run Prisma migrations
+RUN yarn prisma migrate deploy
+
 # Bundle app source
 COPY . .
 
