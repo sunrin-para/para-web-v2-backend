@@ -28,6 +28,7 @@ import {
   ApiConsumes,
   ApiBearerAuth,
 } from '@nestjs/swagger';
+import { FormDataToArrayPipe } from 'src/common/pipes/form-data-to-array.pipe';
 
 @ApiTags('Portfolio')
 @Controller('portfolio')
@@ -70,33 +71,27 @@ export class PortfolioController {
           description: '포트폴리오 상세 설명',
         },
         tags: {
-          type: 'array',
-          items: {
-            type: 'string',
-          },
-          description: '포트폴리오 태그 목록',
+          type: 'string',
+          description:
+            '포트폴리오 태그 목록 (JSON 배열 문자열 또는 쉼표로 구분된 문자열)',
+          example: '["React", "NestJS", "TypeScript"]',
         },
         para_member: {
-          type: 'array',
-          items: {
-            type: 'string',
-          },
-          description: '파라 멤버 목록',
+          type: 'string',
+          description:
+            '파라 멤버 목록 (JSON 배열 문자열 또는 쉼표로 구분된 문자열)',
+          example: '["홍길동", "김철수"]',
         },
         outside_member: {
-          type: 'array',
-          items: {
-            type: 'string',
-          },
-          description: '외부 멤버 목록',
+          type: 'string',
+          description:
+            '외부 멤버 목록 (JSON 배열 문자열 또는 쉼표로 구분된 문자열)',
+          example: '["이영희", "박민수"]',
         },
         date: {
-          type: 'array',
-          items: {
-            type: 'string',
-            format: 'date-time',
-          },
-          description: '포트폴리오 관련 날짜들',
+          type: 'string',
+          description: '포트폴리오 관련 날짜들 (JSON 배열 문자열)',
+          example: '["2024-01-01T00:00:00.000Z", "2024-12-31T00:00:00.000Z"]',
         },
         link: {
           type: 'string',
@@ -116,7 +111,7 @@ export class PortfolioController {
     ]),
   )
   async createPortfolio(
-    @Body() createPortfolioDto: CreatePortfolioDto,
+    @Body(new FormDataToArrayPipe()) createPortfolioDto: CreatePortfolioDto,
     @UploadedFiles()
     files: {
       thumbnail: Express.Multer.File[];
@@ -230,33 +225,27 @@ export class PortfolioController {
           description: '포트폴리오 상세 설명',
         },
         tags: {
-          type: 'array',
-          items: {
-            type: 'string',
-          },
-          description: '포트폴리오 태그 목록',
+          type: 'string',
+          description:
+            '포트폴리오 태그 목록 (JSON 배열 문자열 또는 쉼표로 구분된 문자열)',
+          example: '["React", "NestJS", "TypeScript"]',
         },
         para_member: {
-          type: 'array',
-          items: {
-            type: 'string',
-          },
-          description: '파라 멤버 목록',
+          type: 'string',
+          description:
+            '파라 멤버 목록 (JSON 배열 문자열 또는 쉼표로 구분된 문자열)',
+          example: '["홍길동", "김철수"]',
         },
         outside_member: {
-          type: 'array',
-          items: {
-            type: 'string',
-          },
-          description: '외부 멤버 목록',
+          type: 'string',
+          description:
+            '외부 멤버 목록 (JSON 배열 문자열 또는 쉼표로 구분된 문자열)',
+          example: '["이영희", "박민수"]',
         },
         date: {
-          type: 'array',
-          items: {
-            type: 'string',
-            format: 'date-time',
-          },
-          description: '포트폴리오 관련 날짜들',
+          type: 'string',
+          description: '포트폴리오 관련 날짜들 (JSON 배열 문자열)',
+          example: '["2024-01-01T00:00:00.000Z", "2024-12-31T00:00:00.000Z"]',
         },
         link: {
           type: 'string',
@@ -278,7 +267,7 @@ export class PortfolioController {
   )
   async updatePortfolio(
     @Param('id') portfolioId: number,
-    @Body() updatePortfolioDto?: UpdatePortfolioDto,
+    @Body(new FormDataToArrayPipe()) updatePortfolioDto?: UpdatePortfolioDto,
     @UploadedFiles()
     files?: {
       thumbnail?: Express.Multer.File[];
