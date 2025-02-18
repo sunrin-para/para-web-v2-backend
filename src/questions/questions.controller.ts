@@ -14,11 +14,13 @@ import { QuestionsService } from './questions.service';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import { CreateFAQDto } from './dto/register.dto';
 import { FAQDto } from './dto/get.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('questions')
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
+  @ApiBearerAuth('access-token')
   @Post()
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
@@ -31,6 +33,7 @@ export class QuestionsController {
     return await this.questionsService.getAllFaq();
   }
 
+  @ApiBearerAuth('access-token')
   @Put('/:id')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
@@ -38,6 +41,7 @@ export class QuestionsController {
     return await this.questionsService.updateFaq(faqId, editFAQDto);
   }
 
+  @ApiBearerAuth('access-token')
   @Delete('/:id')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')

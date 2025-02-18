@@ -12,11 +12,13 @@ import {
 import { AwardsService } from './awards.service';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import { CreateAwardsDto } from './dto/createAwards.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('awards')
 export class AwardsController {
   constructor(private readonly awardsService: AwardsService) {}
 
+  @ApiBearerAuth('access-token')
   @Post()
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
@@ -29,6 +31,7 @@ export class AwardsController {
     return await this.awardsService.getAwardsHistoryByYear(year);
   }
 
+  @ApiBearerAuth('access-token')
   @Put('/:id')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
@@ -39,6 +42,7 @@ export class AwardsController {
     return await this.awardsService.updateAwardsHistory(id, updateAwardDto);
   }
 
+  @ApiBearerAuth('access-token')
   @Delete('/id/:id')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
@@ -46,6 +50,7 @@ export class AwardsController {
     return await this.awardsService.deleteAwardById(id);
   }
 
+  @ApiBearerAuth('access-token')
   @Delete('/year/:year')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')

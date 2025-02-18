@@ -19,7 +19,15 @@ import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { MinioService } from 'src/minio/minio.service';
 import { FileType } from 'src/multer.config';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiConsumes } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiParam,
+  ApiConsumes,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 
 @ApiTags('Portfolio')
 @Controller('portfolio')
@@ -29,7 +37,11 @@ export class PortfolioController {
     private readonly minioService: MinioService,
   ) {}
 
-  @ApiOperation({ summary: '포트폴리오 생성', description: '새로운 포트폴리오를 생성합니다.' })
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: '포트폴리오 생성',
+    description: '새로운 포트폴리오를 생성합니다.',
+  })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -60,21 +72,21 @@ export class PortfolioController {
         tags: {
           type: 'array',
           items: {
-            type: 'string'
+            type: 'string',
           },
           description: '포트폴리오 태그 목록',
         },
         para_member: {
           type: 'array',
           items: {
-            type: 'string'
+            type: 'string',
           },
           description: '파라 멤버 목록',
         },
         outside_member: {
           type: 'array',
           items: {
-            type: 'string'
+            type: 'string',
           },
           description: '외부 멤버 목록',
         },
@@ -82,7 +94,7 @@ export class PortfolioController {
           type: 'array',
           items: {
             type: 'string',
-            format: 'date-time'
+            format: 'date-time',
           },
           description: '포트폴리오 관련 날짜들',
         },
@@ -132,7 +144,10 @@ export class PortfolioController {
     return result;
   }
 
-  @ApiOperation({ summary: '포트폴리오 검색', description: '키워드로 포트폴리오를 검색합니다.' })
+  @ApiOperation({
+    summary: '포트폴리오 검색',
+    description: '키워드로 포트폴리오를 검색합니다.',
+  })
   @ApiParam({ name: 'keyword', description: '검색 키워드' })
   @ApiResponse({ status: 200, description: '검색 성공' })
   @Get('/search/:keyword')
@@ -140,7 +155,10 @@ export class PortfolioController {
     return await this.portfolioService.searchPortfolioByName(keyword);
   }
 
-  @ApiOperation({ summary: '포트폴리오 상세 조회', description: 'ID로 포트폴리오 상세 정보를 조회합니다.' })
+  @ApiOperation({
+    summary: '포트폴리오 상세 조회',
+    description: 'ID로 포트폴리오 상세 정보를 조회합니다.',
+  })
   @ApiParam({ name: 'id', description: '포트폴리오 ID' })
   @ApiResponse({ status: 200, description: '조회 성공' })
   @Get('/id/:id')
@@ -148,7 +166,10 @@ export class PortfolioController {
     return await this.portfolioService.getPortfolioDetail(portfolioId);
   }
 
-  @ApiOperation({ summary: '카테고리별 포트폴리오 조회', description: '특정 카테고리의 포트폴리오 목록을 조회합니다.' })
+  @ApiOperation({
+    summary: '카테고리별 포트폴리오 조회',
+    description: '특정 카테고리의 포트폴리오 목록을 조회합니다.',
+  })
   @ApiParam({ name: 'category', description: '카테고리명' })
   @ApiResponse({ status: 200, description: '조회 성공' })
   @Get('/category/:category')
@@ -156,21 +177,31 @@ export class PortfolioController {
     return await this.portfolioService.getPortfoliosByCategory(category);
   }
 
-  @ApiOperation({ summary: '전체 포트폴리오 조회', description: '모든 포트폴리오 목록을 조회합니다.' })
+  @ApiOperation({
+    summary: '전체 포트폴리오 조회',
+    description: '모든 포트폴리오 목록을 조회합니다.',
+  })
   @ApiResponse({ status: 200, description: '조회 성공' })
   @Get('/all/portfolio')
   async getPortfolioList() {
     return await this.portfolioService.getPortfolioList();
   }
 
-  @ApiOperation({ summary: '전체 카테고리 조회', description: '모든 태그(카테고리) 목록을 조회합니다.' })
+  @ApiOperation({
+    summary: '전체 카테고리 조회',
+    description: '모든 태그(카테고리) 목록을 조회합니다.',
+  })
   @ApiResponse({ status: 200, description: '조회 성공' })
   @Get('/all/category')
   async getTagsList() {
     return await this.portfolioService.getTagsList();
   }
 
-  @ApiOperation({ summary: '포트폴리오 수정', description: '기존 포트폴리오 정보를 수정합니다.' })
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: '포트폴리오 수정',
+    description: '기존 포트폴리오 정보를 수정합니다.',
+  })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -201,21 +232,21 @@ export class PortfolioController {
         tags: {
           type: 'array',
           items: {
-            type: 'string'
+            type: 'string',
           },
           description: '포트폴리오 태그 목록',
         },
         para_member: {
           type: 'array',
           items: {
-            type: 'string'
+            type: 'string',
           },
           description: '파라 멤버 목록',
         },
         outside_member: {
           type: 'array',
           items: {
-            type: 'string'
+            type: 'string',
           },
           description: '외부 멤버 목록',
         },
@@ -223,7 +254,7 @@ export class PortfolioController {
           type: 'array',
           items: {
             type: 'string',
-            format: 'date-time'
+            format: 'date-time',
           },
           description: '포트폴리오 관련 날짜들',
         },
@@ -284,7 +315,11 @@ export class PortfolioController {
     );
   }
 
-  @ApiOperation({ summary: '포트폴리오 삭제', description: '포트폴리오를 삭제합니다.' })
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: '포트폴리오 삭제',
+    description: '포트폴리오를 삭제합니다.',
+  })
   @ApiParam({ name: 'id', description: '포트폴리오 ID' })
   @ApiResponse({ status: 200, description: '삭제 성공' })
   @Delete('/:id')

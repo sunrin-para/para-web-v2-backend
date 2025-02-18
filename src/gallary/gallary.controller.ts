@@ -18,6 +18,7 @@ import { CreateAlbumDto } from './dto/create-album.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { FileType } from 'src/multer.config';
 import { UpdateAlbumDto } from './dto/update-album.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('gallary')
 export class GallaryController {
@@ -26,6 +27,7 @@ export class GallaryController {
     private readonly minioService: MinioService,
   ) {}
 
+  @ApiBearerAuth('access-token')
   @Post()
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
@@ -69,6 +71,7 @@ export class GallaryController {
     };
   }
 
+  @ApiBearerAuth('access-token')
   @Patch('/:albumId')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
@@ -98,6 +101,7 @@ export class GallaryController {
     );
   }
 
+  @ApiBearerAuth('access-token')
   @Delete('/:albumId')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
