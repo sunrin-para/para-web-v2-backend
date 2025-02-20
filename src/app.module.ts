@@ -12,6 +12,7 @@ import { MembersModule } from './members/members.module';
 import { MinioModule } from './minio/minio.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { GallaryModule } from './gallary/gallary.module';
+import { ApplyModule } from './apply/apply.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { GallaryModule } from './gallary/gallary.module';
     MinioModule,
     PortfolioModule,
     GallaryModule,
+    ApplyModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, UserService],
