@@ -8,6 +8,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtStrategy } from 'src/common/strategies/jwt.strategy';
 import { GoogleStrategy } from 'src/common/strategies/google.strategy';
 import { LocalStrategy } from 'src/common/strategies/local.strategy';
+import { AuthRepository } from './repository/auth.repo';
+
 @Module({
   imports: [
     PassportModule,
@@ -25,6 +27,7 @@ import { LocalStrategy } from 'src/common/strategies/local.strategy';
     GoogleStrategy,
     LocalStrategy,
     PrismaService,
+    AuthRepository,
   ],
 })
 export class AuthModule {}

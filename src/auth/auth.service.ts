@@ -22,6 +22,7 @@ import { Prisma, Permission as PrismaPermission } from '@prisma/client';
 import * as crypto from 'crypto';
 import { DeleteAccountDto } from './dto/delete-account.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { AuthRepository } from './repository/auth.repo';
 
 @Injectable()
 export class AuthService {
@@ -29,9 +30,10 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly prismaService: PrismaService,
+    private readonly authRepository: AuthRepository,
   ) {}
   async handleGoogleSignIn(googleUser: GoogleUserDto) {
-    let user: UserDataDto = await this.userService.findUserByEmail(
+    let user: UserDataDto = await this.authRepository.findUserByEmail(
       googleUser.email,
     );
     if (!user) {
@@ -39,7 +41,7 @@ export class AuthService {
         email: googleUser.email,
         name: googleUser.name,
       };
-      user = await this.userService.createUser(newUserData);
+      user = await this.authRepository.createUser(newUserData);
     }
 
     const validationKey = await this.generateValidationKey();
@@ -65,7 +67,7 @@ export class AuthService {
   }
 
   async registerUser(createUserDto: CreateUserDto) {
-    let user: UserDataDto = await this.userService.findUserByEmail(
+    let user: UserDataDto = await this.authRepository.findUserByEmail(
       createUserDto.email,
     );
     if (user) {
@@ -75,18 +77,21 @@ export class AuthService {
       ).catch((e) => {
         throw new Error(e);
       });
-      const editedUser = await this.userService.findUserByEmail(
+      const editedUser = await this.authRepository.findUserByEmail(
         createUserDto.email,
       );
       return editedUser;
     } else {
-      user = await this.userService.createUser(createUserDto);
+      const salt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUND));
+      const encryptedPassword = await bcrypt.hash(createUserDto.password, salt);
+      createUserDto.password = encryptedPassword;
+      user = await this.authRepository.createUser(createUserDto);
       return user;
     }
   }
 
   async handleSignIn(signInDto: SignInDto) {
-    const user = await this.userService.findUserByEmail(signInDto.email);
+    const user = await this.authRepository.findUserByEmail(signInDto.email);
     if (!user) throw new BadRequestException();
 
     const match = await bcrypt.compare(signInDto.password, user.password);
@@ -124,28 +129,29 @@ export class AuthService {
    * @returns Boolean
    */
   private async integrateAccount(email: string, adminPermission: string) {
-    await this.userService
-      .changePermission(email, Permission[adminPermission])
-      .catch((e) => {
-        throw new Error(e);
-      });
+    await this.authRepository.changePermission(
+      email,
+      Permission[adminPermission],
+    );
     return true;
   }
 
   async changePassword(email: string, changePasswordDto: ChangePasswordDto) {
     if (
       email !== changePasswordDto.email ||
-      !(await this.userService.findUserByEmail(email))
+      !(await this.authRepository.findUserByEmail(email))
     ) {
       throw new BadRequestException();
     }
-    const result = await this.userService
-      .changePassword(email, changePasswordDto.newPassword)
+    const salt = await bcrypt.genSalt(process.env.SALT_ROUND);
+    const encryptedPassword = await bcrypt.hash(
+      changePasswordDto.newPassword,
+      salt,
+    );
+    const result = await this.authRepository
+      .changePassword(email, encryptedPassword)
       .then(async () => {
         await this.signOut(email);
-      })
-      .catch((e) => {
-        throw new Error(e);
       });
     return result;
   }
@@ -176,7 +182,7 @@ export class AuthService {
   }
 
   async changePermission(changePermissionDto: ChangePermissionDto) {
-    await this.userService
+    await this.authRepository
       .changePermission(
         changePermissionDto.email,
         changePermissionDto.newPermission,
@@ -190,7 +196,7 @@ export class AuthService {
   }
 
   async signOut(email: string) {
-    const user = await this.userService.findUserByEmail(email);
+    const user = await this.authRepository.findUserByEmail(email);
 
     if (!user) {
       throw new UnauthorizedException();
@@ -205,7 +211,7 @@ export class AuthService {
   }
 
   async deleteAccount(deleteAccountDto: DeleteAccountDto) {
-    return await this.userService.deleteAccount(deleteAccountDto.email);
+    return await this.authRepository.deleteAccount(deleteAccountDto.email);
   }
 
   /* 여기서부터 토큰 관리 함수들입니다. */
@@ -218,7 +224,7 @@ export class AuthService {
     email: string,
     validationKey: string,
   ) {
-    const user = await this.userService.findUserByEmail(email);
+    const user = await this.authRepository.findUserByEmail(email);
 
     const payload: JwtPayload = {
       uid: user.uid,
@@ -241,7 +247,7 @@ export class AuthService {
 
   async refreshAccessToken(refreshToken: string) {
     const decoded: JwtPayload = this.jwtService.verify(refreshToken);
-    const user = await this.userService.findUserByEmail(decoded.email);
+    const user = await this.authRepository.findUserByEmail(decoded.email);
 
     if (!user || user.refreshToken !== refreshToken) {
       throw new UnauthorizedException();
