@@ -198,7 +198,7 @@ export class AuthController {
   @ApiResponse({ status: 201, description: '기본 관리자 계정 생성 성공' })
   @Post('/generate/default/account')
   async generateDefaultAccount() {
-    return await this.authService.generatedefaultadminaccount();
+    return await this.authService.generateDefaultAdminAccount();
   }
 
   @ApiOperation({
