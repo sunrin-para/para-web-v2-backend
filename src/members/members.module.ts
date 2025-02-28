@@ -7,6 +7,6 @@ import { UserService } from 'src/user/user.service';
 
 @Module({
   controllers: [MembersController],
-  providers: [MembersRepository, MembersService, MinioService, UserService],
+  providers: [MembersRepository, MembersService, MinioService,],
 })
 export class MembersModule {}

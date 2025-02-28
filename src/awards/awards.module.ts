@@ -6,6 +6,6 @@ import { UserService } from 'src/user/user.service';
 
 @Module({
   controllers: [AwardsController],
-  providers: [AwardsRepository, AwardsService, UserService],
+  providers: [AwardsRepository, AwardsService,],
 })
 export class AwardsModule {}
