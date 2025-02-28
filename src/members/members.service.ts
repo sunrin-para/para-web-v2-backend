@@ -9,7 +9,7 @@ export class MembersService {
   async createMember(
     createMemberDto: MemberDto,
     fileUrl: string,
-  ): Promise<Boolean> {
+  ): Promise<boolean> {
     return await this.memberRepository.registerMember(createMemberDto, fileUrl);
   }
 

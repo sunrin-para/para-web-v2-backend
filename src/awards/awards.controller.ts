@@ -10,7 +10,7 @@ import {
   Param,
 } from '@nestjs/common';
 import { AwardsService } from './awards.service';
-import { AdminGuard } from 'src/common/guards/admin.guard';
+import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { CreateAwardsDto } from './dto/createAwards.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 

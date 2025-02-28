@@ -29,8 +29,8 @@ export class UpdateAlbumDto {
     type: [Number],
     items: {
       type: 'number',
-      example: 0
-    }
+      example: 0,
+    },
   })
   deletedPhotoIndexes?: number[];
 }

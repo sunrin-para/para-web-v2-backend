@@ -13,8 +13,8 @@ export class CreateAwardsDto {
     type: [String],
     items: {
       type: 'string',
-      example: '홍길동'
-    }
+      example: '홍길동',
+    },
   })
   member: string[];
 

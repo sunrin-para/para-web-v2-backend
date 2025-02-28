@@ -15,7 +15,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { MembersService } from './members.service';
-import { AdminGuard } from 'src/common/guards/admin.guard';
+import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { MemberDto } from './dto/member.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MinioService } from 'src/minio/minio.service';

@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
-import { AdminGuard } from 'src/common/guards/admin.guard';
+import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { CreateFAQDto } from './dto/register.dto';
 import { FAQDto } from './dto/get.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
