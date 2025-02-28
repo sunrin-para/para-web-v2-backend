@@ -3,7 +3,6 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { GoogleUserDto } from './dto/googleUser.dto';
@@ -13,14 +12,14 @@ import { UserDataDto } from './dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './dto/JwtPayload.dto';
 import { SignInDto } from './dto/signIn.dto';
-// import bcrypt from 'bcryptjs';
 import * as bcrypt from 'bcryptjs';
-import { ChangePasswordDto } from './dto/changePassword.dto';
-import { ChangePermissionDto } from './dto/changePermission.dto';
+import {
+  ChangePasswordDto,
+  ChangePermissionDto,
+} from './dto/changeInformations.dto';
 import { Permission } from 'src/common/enums/Permission.enum';
-import { Prisma, Permission as PrismaPermission } from '@prisma/client';
+import { Permission as PrismaPermission } from '@prisma/client';
 import * as crypto from 'crypto';
-import { DeleteAccountDto } from './dto/delete-account.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthRepository } from './repository/auth.repo';
 
@@ -208,8 +207,8 @@ export class AuthService {
     };
   }
 
-  async deleteAccount(deleteAccountDto: DeleteAccountDto) {
-    return await this.authRepository.deleteAccount(deleteAccountDto.email);
+  async deleteAccount(email: string) {
+    return await this.authRepository.deleteAccount(email);
   }
 
   /* 여기서부터 토큰 관리 함수들입니다. */

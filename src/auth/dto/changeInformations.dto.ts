@@ -1,5 +1,19 @@
-import { Permission } from 'src/common/enums/Permission.enum';
 import { ApiProperty } from '@nestjs/swagger';
+import { Permission } from 'src/common/enums/Permission.enum';
+
+export class ChangePasswordDto {
+  @ApiProperty({
+    description: '사용자 이메일',
+    example: 'user@example.com',
+  })
+  email: string;
+
+  @ApiProperty({
+    description: '새로운 비밀번호',
+    example: 'newPassword123',
+  })
+  newPassword: string;
+}
 
 export class ChangePermissionDto {
   @ApiProperty({

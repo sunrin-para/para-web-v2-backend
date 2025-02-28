@@ -28,9 +28,7 @@ import { UserGuard } from 'src/auth/guards/user.guard';
 import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { CreateUserDto } from './dto/createUser.dto';
 import { SignInDto } from './dto/signIn.dto';
-import { ChangePasswordDto } from './dto/changePassword.dto';
-import { DeleteAccountDto } from './dto/delete-account.dto';
-import { RefreshAcTokenDto } from './dto/refresh-token.dto';
+import { ChangePasswordDto } from './dto/changeInformations.dto';
 
 interface IRequest extends Request {
   user?: any;
@@ -44,7 +42,6 @@ export class AuthController {
 
   @ApiOperation({
     summary: '구글 로그인',
-    description: '구글 OAuth를 통한 로그인을 시도합니다.',
   })
   @ApiResponse({ status: 200, description: '구글 로그인 성공' })
   @Get('/google')
@@ -86,7 +83,6 @@ export class AuthController {
   @Post('/signin')
   async signIn(
     @Body() signInDto: SignInDto,
-    @Req() req: IRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
     if (!signInDto.email || !signInDto.password) {
@@ -102,7 +98,6 @@ export class AuthController {
 
   @ApiOperation({
     summary: '관리자 계정 생성',
-    description: 'Super 권한을 가진 관리자만 새로운 계정을 생성할 수 있습니다.',
   })
   @ApiBody({ type: CreateUserDto })
   @ApiResponse({ status: 201, description: '계정 생성 성공' })
@@ -131,7 +126,6 @@ export class AuthController {
   async changePassword(
     @Body() changePasswordDto: ChangePasswordDto,
     @Req() req: IRequest,
-    @Res({ passthrough: true }) res: Response,
   ) {
     const user = req.user;
     return await this.authService.changePassword(user.email, changePasswordDto);
@@ -147,10 +141,7 @@ export class AuthController {
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'SUPER')
   @Post('/password/reset')
-  async resetPassword(
-    @Body() changePasswordDto: ChangePasswordDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async resetPassword(@Body() changePasswordDto: ChangePasswordDto) {
     const result = await this.authService.changePassword(
       changePasswordDto.email,
       changePasswordDto,
@@ -176,19 +167,18 @@ export class AuthController {
     summary: '액세스 토큰 갱신',
     description: '리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급받습니다.',
   })
-  @ApiBody({ type: RefreshAcTokenDto })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: { refreshToken: { type: 'string' } },
+    },
+  })
   @ApiResponse({ status: 200, description: '토큰 갱신 성공' })
   @ApiBearerAuth()
   @Post('/refresh')
   @UseGuards(UserGuard)
-  async refreshAccessToken(
-    @Req() req: IRequest,
-    @Res({ passthrough: true }) res: Response,
-    @Body() refreshAcTokenDto: RefreshAcTokenDto,
-  ) {
-    return await this.authService.refreshAccessToken(
-      refreshAcTokenDto.refreshToken,
-    );
+  async refreshAccessToken(@Body('refreshToken') refreshToken: string) {
+    return await this.authService.refreshAccessToken(refreshToken);
   }
 
   @ApiOperation({
@@ -203,16 +193,20 @@ export class AuthController {
 
   @ApiOperation({
     summary: '계정 삭제',
-    description: 'Super 관리자가 계정을 삭제합니다.',
   })
-  @ApiBody({ type: DeleteAccountDto })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: { email: { type: 'string' } },
+    },
+  })
   @ApiResponse({ status: 200, description: '계정 삭제 성공' })
   @ApiBearerAuth()
   @Delete('/account')
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'SUPER')
-  async deleteAccount(@Body() deleteAccountDto: DeleteAccountDto) {
-    return await this.authService.deleteAccount(deleteAccountDto);
+  async deleteAccount(@Body('email') email: string) {
+    return await this.authService.deleteAccount(email);
   }
 
   @ApiOperation({
@@ -225,10 +219,7 @@ export class AuthController {
   @Get('/logout')
   @UseGuards(UserGuard)
   @HttpCode(HttpStatus.OK)
-  async logout(
-    @Req() req: IRequest,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async logout(@Req() req: IRequest) {
     const user: JwtPayload = req.user;
     try {
       await this.authService.signOut(user.email);
