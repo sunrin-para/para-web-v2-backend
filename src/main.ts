@@ -2,12 +2,17 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import * as session from 'express-session';
 import { PrismaService } from './common/prisma/prisma.service';
 import { UnauthorizedExceptionFilter } from './common/filters/unauthorized.filter';
+import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  app.useGlobalFilters(
+    new UnauthorizedExceptionFilter(),
+    new PrismaExceptionFilter(),
+  );
 
   app.enableCors({
     origin: [
@@ -20,29 +25,6 @@ async function bootstrap() {
     credentials: true,
     allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'Set-Cookie'],
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-  });
-
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET,
-      resave: false,
-      saveUninitialized: false,
-      name: 'sessionId',
-      proxy: true, // 프록시 뒤에서 실행되는 경우 필요
-      cookie: {
-        httpOnly: true,
-        secure: false, // 개발환경에서는 false로 설정
-        sameSite: 'lax', // 개발환경에서는 'lax'로 설정
-        maxAge: 60 * 60 * 1000 * 6, // 6 hour
-      },
-    }),
-  );
-
-  app.use((req: any, res: any, next: any) => {
-    if (!req.session.data) {
-      req.session.data = {};
-    }
-    next();
   });
 
   const prismaService = app.get(PrismaService);
@@ -62,8 +44,6 @@ async function bootstrap() {
     explorer: true,
     yamlDocumentUrl: 'api-docs/yaml',
   });
-
-  app.useGlobalFilters(new UnauthorizedExceptionFilter());
 
   await app.listen(process.env.PORT ?? 3000);
 }
