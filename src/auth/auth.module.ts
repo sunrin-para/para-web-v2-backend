@@ -7,7 +7,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
-import { LocalStrategy } from './strategies/local.strategy';
 import { AuthRepository } from './repository/auth.repo';
 
 @Module({
@@ -25,7 +24,6 @@ import { AuthRepository } from './repository/auth.repo';
     PrismaService,
     JwtStrategy,
     GoogleStrategy,
-    LocalStrategy,
     PrismaService,
     AuthRepository,
   ],

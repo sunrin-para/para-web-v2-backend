@@ -5,7 +5,6 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { GoogleUserDto } from './dto/googleUser.dto';
 import { UserService } from 'src/user/user.service';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UserDataDto } from './dto/user.dto';
@@ -31,14 +30,14 @@ export class AuthService {
     private readonly prismaService: PrismaService,
     private readonly authRepository: AuthRepository,
   ) {}
-  async handleGoogleSignIn(googleUser: GoogleUserDto) {
+  async handleGoogleSignIn(email: string, userName: string) {
     let user: UserDataDto = await this.authRepository.findUserByEmail(
-      googleUser.email,
+      email,
     );
     if (!user) {
       const newUserData: CreateUserDto = {
-        email: googleUser.email,
-        name: googleUser.name,
+        email: email,
+        name: userName,
       };
       user = await this.authRepository.createUser(newUserData);
     }
