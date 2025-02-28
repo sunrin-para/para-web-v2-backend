@@ -97,6 +97,10 @@ export class PortfolioController {
           type: 'string',
           description: '관련 링크',
         },
+        github: {
+          type: 'string',
+          description: '깃허브 링크'
+        }
       },
     },
   })
