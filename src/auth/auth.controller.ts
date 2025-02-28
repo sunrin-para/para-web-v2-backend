@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Delete,
   UseGuards,
   Req,
   Res,
@@ -28,7 +27,6 @@ import { UserGuard } from 'src/auth/guards/user.guard';
 import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { CreateUserDto } from './dto/createUser.dto';
 import { SignInDto } from './dto/signIn.dto';
-import { ChangePasswordDto } from './dto/changeInformations.dto';
 
 interface IRequest extends Request {
   user?: any;
@@ -65,10 +63,7 @@ export class AuthController {
     return tokens;
   }
 
-  @ApiOperation({
-    summary: '일반 로그인',
-    description: '이메일과 비밀번호를 통한 로그인을 시도합니다.',
-  })
+  @ApiOperation({ summary: '일반 로그인' })
   @ApiBody({ type: SignInDto })
   @ApiResponse({ status: 200, description: '로그인 성공', type: Object })
   @ApiResponse({ status: 400, description: '이메일 또는 비밀번호가 누락됨' })
@@ -88,9 +83,7 @@ export class AuthController {
     return tokens;
   }
 
-  @ApiOperation({
-    summary: '관리자 계정 생성',
-  })
+  @ApiOperation({ summary: 'PARA INTERNAL 계정 생성' })
   @ApiBody({ type: CreateUserDto })
   @ApiResponse({ status: 201, description: '계정 생성 성공' })
   @ApiResponse({ status: 400, description: '필수 데이터 누락' })
@@ -106,61 +99,7 @@ export class AuthController {
     return user;
   }
 
-  @ApiOperation({
-    summary: '비밀번호 변경',
-    description: '본인의 비밀번호를 변경합니다.',
-  })
-  @ApiBody({ type: ChangePasswordDto })
-  @ApiResponse({ status: 200, description: '비밀번호 변경 성공' })
-  @ApiBearerAuth()
-  @Post('/password/change')
-  @UseGuards(UserGuard)
-  async changePassword(
-    @Body() changePasswordDto: ChangePasswordDto,
-    @Req() req: IRequest,
-  ) {
-    return await this.authService.changePassword(
-      req.user.email,
-      changePasswordDto,
-    );
-  }
-
-  @ApiOperation({
-    summary: '비밀번호 초기화',
-    description: 'Super 관리자가 다른 사용자의 비밀번호를 초기화합니다.',
-  })
-  @ApiBody({ type: ChangePasswordDto })
-  @ApiResponse({ status: 200, description: '비밀번호 초기화 성공' })
-  @ApiBearerAuth()
-  @UseGuards(AdminGuard)
-  @SetMetadata('permission', 'SUPER')
-  @Post('/password/reset')
-  async resetPassword(@Body() changePasswordDto: ChangePasswordDto) {
-    const result = await this.authService.changePassword(
-      changePasswordDto.email,
-      changePasswordDto,
-    );
-    return result;
-  }
-
-  @ApiOperation({
-    summary: '권한 변경',
-    description: 'Super 관리자가 사용자의 권한을 변경합니다.',
-  })
-  @ApiResponse({ status: 200, description: '권한 변경 성공' })
-  @ApiBearerAuth()
-  @Post('/permission/change')
-  @UseGuards(AdminGuard)
-  @SetMetadata('permission', 'SUPER')
-  async changePermission(@Body() changePermissionDto) {
-    const result = await this.authService.changePermission(changePermissionDto);
-    return result;
-  }
-
-  @ApiOperation({
-    summary: '액세스 토큰 갱신',
-    description: '리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급받습니다.',
-  })
+  @ApiOperation({ summary: '액세스 토큰 갱신' })
   @ApiBody({
     schema: {
       type: 'object',
@@ -173,24 +112,6 @@ export class AuthController {
   @UseGuards(UserGuard)
   async refreshAccessToken(@Body('refreshToken') refreshToken: string) {
     return await this.authService.refreshAccessToken(refreshToken);
-  }
-
-  @ApiOperation({
-    summary: '계정 삭제',
-  })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: { email: { type: 'string' } },
-    },
-  })
-  @ApiResponse({ status: 200, description: '계정 삭제 성공' })
-  @ApiBearerAuth()
-  @Delete('/account')
-  @UseGuards(AdminGuard)
-  @SetMetadata('permission', 'SUPER')
-  async deleteAccount(@Body('email') email: string) {
-    return await this.authService.deleteAccount(email);
   }
 
   @ApiOperation({

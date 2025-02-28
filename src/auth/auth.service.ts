@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ConflictException,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
@@ -12,33 +11,25 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './dto/JwtPayload.dto';
 import { SignInDto } from './dto/signIn.dto';
 import * as bcrypt from 'bcryptjs';
-import {
-  ChangePasswordDto,
-  ChangePermissionDto,
-} from './dto/changeInformations.dto';
-import { Permission } from 'src/common/enums/Permission.enum';
-import { Permission as PrismaPermission } from '@prisma/client';
+import { Permission as PermissionEnum } from 'src/common/enums/Permission.enum';
 import * as crypto from 'crypto';
-import { PrismaService } from 'src/common/prisma/prisma.service';
-import { AuthRepository } from './repository/auth.repo';
-import { ConfigService } from '@nestjs/config';
+import { TokenRepository } from './repository/token.repo';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-    private readonly authRepository: AuthRepository,
-    private readonly configService: ConfigService,
+    private readonly tokenRepository: TokenRepository,
   ) {}
   async handleGoogleSignIn(email: string, userName: string) {
-    let user: UserDataDto = await this.authRepository.findUserByEmail(email);
+    let user: UserDataDto = await this.userService.findUserByEmail(email);
     if (!user) {
       const newUserData: CreateUserDto = {
         email: email,
         name: userName,
       };
-      user = await this.authRepository.createUser(newUserData);
+      user = await this.userService.createUser(email, userName);
     }
 
     const validationKey = await this.generateValidationKey();
@@ -54,8 +45,8 @@ export class AuthService {
       validationKey,
     );
 
-    await this.userService.setRefreshToken(user.email, refreshToken);
-    await this.userService.setValidationKey(user.email, validationKey);
+    await this.tokenRepository.setRefreshToken(user.email, refreshToken);
+    await this.tokenRepository.setValidationKey(user.email, validationKey);
 
     return {
       accessToken: accessToken,
@@ -64,33 +55,16 @@ export class AuthService {
   }
 
   async registerUser(createUserDto: CreateUserDto) {
-    let user: UserDataDto = await this.authRepository.findUserByEmail(
+    return await this.userService.createUser(
       createUserDto.email,
+      createUserDto.name,
+      PermissionEnum[createUserDto.permission],
+      createUserDto.password,
     );
-    if (user) {
-      await this.integrateAccount(
-        createUserDto.email,
-        createUserDto.permission,
-      ).catch((e) => {
-        throw new Error(e);
-      });
-      const editedUser = await this.authRepository.findUserByEmail(
-        createUserDto.email,
-      );
-      return editedUser;
-    } else {
-      const salt = await bcrypt.genSalt(
-        this.configService.get<number>('SALT_ROUND'),
-      );
-      const encryptedPassword = await bcrypt.hash(createUserDto.password, salt);
-      createUserDto.password = encryptedPassword;
-      user = await this.authRepository.createUser(createUserDto);
-      return user;
-    }
   }
 
   async handleSignIn(signInDto: SignInDto) {
-    const user = await this.authRepository.findUserByEmail(signInDto.email);
+    const user = await this.userService.findUserByEmail(signInDto.email);
     if (!user) throw new BadRequestException();
 
     const match = await bcrypt.compare(signInDto.password, user.password);
@@ -108,8 +82,8 @@ export class AuthService {
         validationKey,
       );
 
-      await this.userService.setRefreshToken(user.email, refreshToken);
-      await this.userService.setValidationKey(user.email, validationKey);
+      await this.tokenRepository.setRefreshToken(user.email, refreshToken);
+      await this.tokenRepository.setValidationKey(user.email, validationKey);
 
       return {
         accessToken: accessToken,
@@ -119,75 +93,19 @@ export class AuthService {
     throw new UnauthorizedException();
   }
 
-  /**
-   *
-   * @param email string
-   * @param existingAccountType string
-   * @param adminPermission string
-   * @description Admin 계정 등록 시, 이미 구글 계정이 등록되어 있다면 해당 계정과 통합시키는 함수입니다.
-   * @returns Boolean
-   */
-  private async integrateAccount(email: string, adminPermission: string) {
-    await this.authRepository.changePermission(
-      email,
-      Permission[adminPermission],
-    );
-    return true;
-  }
-
-  async changePassword(email: string, changePasswordDto: ChangePasswordDto) {
-    if (
-      email !== changePasswordDto.email ||
-      !(await this.authRepository.findUserByEmail(email))
-    ) {
-      throw new BadRequestException();
-    }
-    const salt = await bcrypt.genSalt(
-      this.configService.get<number>('SALT_ROUND'),
-    );
-    const encryptedPassword = await bcrypt.hash(
-      changePasswordDto.newPassword,
-      salt,
-    );
-    const result = await this.authRepository
-      .changePassword(email, encryptedPassword)
-      .then(async () => {
-        await this.signOut(email);
-      });
-    return result;
-  }
-
-  async changePermission(changePermissionDto: ChangePermissionDto) {
-    await this.authRepository
-      .changePermission(
-        changePermissionDto.email,
-        changePermissionDto.newPermission,
-      )
-      .then(async () => {
-        await this.signOut(changePermissionDto.email);
-      })
-      .catch((e) => {
-        throw new Error(e);
-      });
-  }
-
   async signOut(email: string) {
-    const user = await this.authRepository.findUserByEmail(email);
+    const user = await this.userService.findUserByEmail(email);
 
     if (!user) {
       throw new UnauthorizedException();
     }
 
-    await this.userService.removeRefreshToken(user.email);
-    await this.userService.removeValidationKey(user.email);
+    await this.tokenRepository.removeRefreshToken(user.email);
+    await this.tokenRepository.removeValidationKey(user.email);
 
     return {
       result: true,
     };
-  }
-
-  async deleteAccount(email: string) {
-    return await this.authRepository.deleteAccount(email);
   }
 
   /* 여기서부터 토큰 관리 함수들입니다. */
@@ -200,7 +118,7 @@ export class AuthService {
     email: string,
     validationKey: string,
   ) {
-    const user = await this.authRepository.findUserByEmail(email);
+    const user = await this.userService.findUserByEmail(email);
 
     const payload: JwtPayload = {
       uid: user.uid,
@@ -223,7 +141,7 @@ export class AuthService {
 
   async refreshAccessToken(refreshToken: string) {
     const decoded: JwtPayload = this.jwtService.verify(refreshToken);
-    const user = await this.authRepository.findUserByEmail(decoded.email);
+    const user = await this.userService.findUserByEmail(decoded.email);
 
     if (!user || user.refreshToken !== refreshToken) {
       throw new UnauthorizedException();
