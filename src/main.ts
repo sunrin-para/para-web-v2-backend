@@ -17,10 +17,11 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000',
-      'http://localhost:5173',
       'http://127.0.0.1:3000',
-      'http://127.0.0.1:5173',
       'https://sunrin-para.dev',
+      'https://api.sunrin-para.dev',
+      'https://apply.sunrin-para.dev',
+      'https://internal.sunrin-para.dev'
     ],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'Set-Cookie'],
