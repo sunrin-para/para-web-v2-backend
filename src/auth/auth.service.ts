@@ -21,14 +21,15 @@ import { Permission as PrismaPermission } from '@prisma/client';
 import * as crypto from 'crypto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { AuthRepository } from './repository/auth.repo';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-    private readonly prismaService: PrismaService,
     private readonly authRepository: AuthRepository,
+    private readonly configService: ConfigService,
   ) {}
   async handleGoogleSignIn(email: string, userName: string) {
     let user: UserDataDto = await this.authRepository.findUserByEmail(email);
@@ -78,7 +79,9 @@ export class AuthService {
       );
       return editedUser;
     } else {
-      const salt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUND));
+      const salt = await bcrypt.genSalt(
+        this.configService.get<number>('SALT_ROUND'),
+      );
       const encryptedPassword = await bcrypt.hash(createUserDto.password, salt);
       createUserDto.password = encryptedPassword;
       user = await this.authRepository.createUser(createUserDto);
@@ -139,7 +142,9 @@ export class AuthService {
     ) {
       throw new BadRequestException();
     }
-    const salt = await bcrypt.genSalt(process.env.SALT_ROUND);
+    const salt = await bcrypt.genSalt(
+      this.configService.get<number>('SALT_ROUND'),
+    );
     const encryptedPassword = await bcrypt.hash(
       changePasswordDto.newPassword,
       salt,
