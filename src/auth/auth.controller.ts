@@ -62,10 +62,10 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const user = req.user;
-    const tokens: any = await this.authService.handleGoogleSignIn({
-      email: user._json.email,
-      name: user._json.name,
-    });
+    const tokens: any = await this.authService.handleGoogleSignIn(
+      user._json.email,
+      user._json.name,
+    );
 
     res.header('Access-Control-Allow-Origin', process.env.DOMAIN);
     res.header('Access-Control-Allow-Credentials', 'true');
