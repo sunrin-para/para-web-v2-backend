@@ -15,10 +15,9 @@ import { AuthService } from 'src/auth/auth.service';
 @Injectable()
 export class UserService {
   constructor(
-    private readonly prismaService: PrismaService,
     private readonly userRepository: UserRepository,
     private readonly configService: ConfigService,
-    private readonly authService: AuthService,
+    // private readonly authService: AuthService,
   ) {}
   async findUserByEmail(email: string): Promise<UserDataDto | null> {
     return await this.userRepository.findUserByEmail(email);
@@ -81,7 +80,7 @@ export class UserService {
     const result = await this.userRepository
       .changePassword(userEmail, encryptedPassword)
       .then(async () => {
-        await this.authService.signOut(userEmail);
+        // await this.authService.signOut(userEmail);
       });
     return result;
   }
@@ -90,7 +89,7 @@ export class UserService {
     await this.userRepository
       .changePermission(email, newPermission)
       .then(async () => {
-        await this.authService.signOut(email);
+        // await this.authService.signOut(email);
       })
       .catch((e) => {
         throw new Error(e);

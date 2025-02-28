@@ -7,6 +7,6 @@ import { UserService } from 'src/user/user.service';
 
 @Module({
   controllers: [GallaryController],
-  providers: [GallaryRepository, GallaryService, UserService, MinioService],
+  providers: [GallaryRepository, GallaryService, MinioService],
 })
 export class GallaryModule {}

@@ -22,7 +22,7 @@ import { TokenRepository } from './repository/token.repo';
     TokenRepository,
     AuthService,
     UserService,
-    PrismaService,
+    // PrismaService,
     JwtStrategy,
     GoogleStrategy,
     PrismaService,

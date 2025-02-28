@@ -7,6 +7,6 @@ import { UserService } from 'src/user/user.service';
 
 @Module({
   controllers: [PortfolioController],
-  providers: [PortfolioRepository, PortfolioService, MinioService, UserService],
+  providers: [PortfolioRepository, PortfolioService, MinioService],
 })
 export class PortfolioModule {}

@@ -7,6 +7,6 @@ import { MinioService } from 'src/minio/minio.service';
 
 @Module({
   controllers: [ApplyController],
-  providers: [ApplyService, ApplyRepository, UserService, MinioService],
+  providers: [ApplyService, ApplyRepository, MinioService],
 })
 export class ApplyModule {}
