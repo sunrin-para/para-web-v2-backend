@@ -13,7 +13,7 @@ import {
   UploadedFiles,
 } from '@nestjs/common';
 import { PortfolioService } from './portfolio.service';
-import { AdminGuard } from 'src/common/guards/admin.guard';
+import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { MinioService } from 'src/minio/minio.service';
@@ -99,8 +99,8 @@ export class PortfolioController {
         },
         github: {
           type: 'string',
-          description: '깃허브 링크'
-        }
+          description: '깃허브 링크',
+        },
       },
     },
   })
@@ -280,7 +280,7 @@ export class PortfolioController {
       portfolioPdf?: Express.Multer.File[];
     },
   ) {
-    let thumbnailUrl = files.thumbnail[0]
+    const thumbnailUrl = files.thumbnail[0]
       ? await this.minioService.uploadFile(
           new File(
             [files.thumbnail[0].buffer],
@@ -290,7 +290,7 @@ export class PortfolioController {
           FileType.PORTFOLIO,
         )
       : null;
-    let portfolioUrl = files.portfolioPdf[0]
+    const portfolioUrl = files.portfolioPdf[0]
       ? await this.minioService.uploadFile(
           new File(
             [files.portfolioPdf[0].buffer],

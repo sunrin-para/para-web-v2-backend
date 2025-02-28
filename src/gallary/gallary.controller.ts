@@ -12,7 +12,7 @@ import {
   UploadedFiles,
 } from '@nestjs/common';
 import { GallaryService } from './gallary.service';
-import { AdminGuard } from 'src/common/guards/admin.guard';
+import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { MinioService } from 'src/minio/minio.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -36,7 +36,7 @@ export class GallaryController {
     @Body() createAlbumDto: CreateAlbumDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    let filesUrlList: string[] = [];
+    const filesUrlList: string[] = [];
     for (const file of files) {
       const fileUrl = await this.minioService.uploadFile(
         new File([file.buffer], file.originalname),
@@ -81,7 +81,7 @@ export class GallaryController {
     @Body() updateAlbumDto: UpdateAlbumDto,
     @UploadedFiles() files?: Array<Express.Multer.File>,
   ) {
-    let newPhotosUrls: string[] = [];
+    const newPhotosUrls: string[] = [];
 
     if (files && files.length > 0) {
       for (const file of files) {

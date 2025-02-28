@@ -14,7 +14,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { GoogleGuard } from 'src/common/guards/google.guard';
+import { GoogleGuard } from 'src/auth/guards/google.guard';
 import { Request, Response } from 'express';
 import {
   ApiTags,
@@ -24,8 +24,8 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { JwtPayload } from './dto/JwtPayload.dto';
-import { UserGuard } from 'src/common/guards/user.guard';
-import { AdminGuard } from 'src/common/guards/admin.guard';
+import { UserGuard } from 'src/auth/guards/user.guard';
+import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { CreateUserDto } from './dto/createUser.dto';
 import { SignInDto } from './dto/signIn.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';

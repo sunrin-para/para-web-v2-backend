@@ -8,7 +8,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
-import { Permission } from '../enums/Permission.enum';
+import { Permission } from '../../common/enums/Permission.enum';
 import { UserService } from 'src/user/user.service';
 
 @Injectable()
