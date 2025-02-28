@@ -16,7 +16,7 @@ import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { MinioService } from 'src/minio/minio.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { FileType } from 'src/multer.config';
+import { FileType } from 'src/common/enums/FileType.enum';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 

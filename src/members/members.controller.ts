@@ -19,7 +19,7 @@ import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { MemberDto } from './dto/member.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MinioService } from 'src/minio/minio.service';
-import { FileType } from 'src/multer.config';
+import { FileType } from 'src/common/enums/FileType.enum';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { CreateMemberDto } from './dto/create-member.dto';

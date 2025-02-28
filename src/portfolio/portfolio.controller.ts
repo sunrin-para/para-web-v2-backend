@@ -17,7 +17,7 @@ import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { MinioService } from 'src/minio/minio.service';
-import { FileType } from 'src/multer.config';
+import { FileType } from 'src/common/enums/FileType.enum';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 import {
   ApiTags,
