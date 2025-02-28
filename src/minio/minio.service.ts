@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as Minio from 'minio';
-import { FileType } from 'src/multer.config';
+import { FileType } from 'src/common/enums/FileType.enum';
 import { v4 as uuidv4 } from 'uuid';
 
 const env = process.env;
