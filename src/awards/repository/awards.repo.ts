@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAwardsDto } from '../dto/createAwards.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 
 @Injectable()
 export class AwardsRepository {

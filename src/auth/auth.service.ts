@@ -19,7 +19,7 @@ import {
 import { Permission } from 'src/common/enums/Permission.enum';
 import { Permission as PrismaPermission } from '@prisma/client';
 import * as crypto from 'crypto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 import { AuthRepository } from './repository/auth.repo';
 
 @Injectable()
@@ -31,9 +31,7 @@ export class AuthService {
     private readonly authRepository: AuthRepository,
   ) {}
   async handleGoogleSignIn(email: string, userName: string) {
-    let user: UserDataDto = await this.authRepository.findUserByEmail(
-      email,
-    );
+    let user: UserDataDto = await this.authRepository.findUserByEmail(email);
     if (!user) {
       const newUserData: CreateUserDto = {
         email: email,

@@ -4,7 +4,7 @@ import { Permission as PermissionEnum } from 'src/common/enums/Permission.enum';
 import { Permission as PrismaPermission, User } from '@prisma/client';
 import { CreateUserDto } from '../dto/createUser.dto';
 import { UserDataDto } from '../dto/user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 
 @Injectable()
 export class AuthRepository {
