@@ -175,7 +175,6 @@ export class AuthController {
     return await this.authService.refreshAccessToken(refreshToken);
   }
 
-
   @ApiOperation({
     summary: '계정 삭제',
   })
@@ -208,9 +207,6 @@ export class AuthController {
     const user: JwtPayload = req.user;
     try {
       await this.authService.signOut(user.email);
-      if (req.session) {
-        req.session.user = '';
-      }
       return true;
     } catch (e) {
       throw new UnauthorizedException();
