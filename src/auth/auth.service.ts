@@ -152,29 +152,6 @@ export class AuthService {
     return result;
   }
 
-  async generateDefaultAdminAccount() {
-    const existingAdmin = await this.prismaService.user
-      .findFirstOrThrow({
-        where: { permission: PrismaPermission.SUPER },
-      })
-      .catch((e) => {});
-    if (!existingAdmin) {
-      const salt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUND));
-      const encryptedPassword = await bcrypt.hash(
-        process.env.DEFAULT_ADMIN_PW,
-        salt,
-      );
-      await this.authRepository.createUser({
-        email: 'dev.juany@gmail.com',
-        name: 'PARA Admin',
-        permission: PrismaPermission.SUPER,
-        password: encryptedPassword,
-      });
-      return true;
-    }
-    throw new ConflictException('계정이미존재함.');
-  }
-
   async changePermission(changePermissionDto: ChangePermissionDto) {
     await this.authRepository
       .changePermission(

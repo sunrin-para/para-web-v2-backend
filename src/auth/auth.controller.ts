@@ -40,20 +40,12 @@ interface IRequest extends Request {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiOperation({
-    summary: '구글 로그인',
-  })
-  @ApiResponse({ status: 200, description: '구글 로그인 성공' })
+  @ApiOperation({ summary: '구글 로그인' })
   @Get('/google')
   @UseGuards(GoogleGuard)
-  async googleSignIn(@Req() req: IRequest) {
-    return req.user;
-  }
+  async googleSignIn() {}
 
-  @ApiOperation({
-    summary: '구글 로그인 리다이렉트',
-    description: '구글 OAuth 로그인 후 리다이렉트되는 엔드포인트입니다.',
-  })
+  @ApiOperation({ summary: '구글 로그인 리다이렉트' })
   @ApiResponse({ status: 200, description: '토큰 발급 성공', type: Object })
   @Get('/google/redirect')
   @UseGuards(GoogleGuard)
@@ -127,8 +119,10 @@ export class AuthController {
     @Body() changePasswordDto: ChangePasswordDto,
     @Req() req: IRequest,
   ) {
-    const user = req.user;
-    return await this.authService.changePassword(user.email, changePasswordDto);
+    return await this.authService.changePassword(
+      req.user.email,
+      changePasswordDto,
+    );
   }
 
   @ApiOperation({
@@ -181,15 +175,6 @@ export class AuthController {
     return await this.authService.refreshAccessToken(refreshToken);
   }
 
-  @ApiOperation({
-    summary: '기본 관리자 계정 생성',
-    description: '시스템 초기 설정을 위한 기본 관리자 계정을 생성합니다.',
-  })
-  @ApiResponse({ status: 201, description: '기본 관리자 계정 생성 성공' })
-  @Post('/generate/default/account')
-  async generateDefaultAccount() {
-    return await this.authService.generateDefaultAdminAccount();
-  }
 
   @ApiOperation({
     summary: '계정 삭제',
