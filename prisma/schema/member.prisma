@@ -1,0 +1,16 @@
+model Member {
+  id            Int      @id @default(autoincrement())
+  generation    Int
+  name          String
+  department    String
+  speciality     String
+  introduction  String
+  profile_image String   @default("/default.png")
+  discord       String?
+  github        String?
+  instagram     String?
+  solvedac      String?
+  email         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

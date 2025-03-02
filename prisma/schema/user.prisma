@@ -1,0 +1,18 @@
+model User {
+  uid           Int        @id @default(autoincrement())
+  email         String     @unique
+  password      String?
+  name          String
+  permission    Permission @default(USER)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  refreshToken  String?
+  validationKey String?
+}
+
+enum Permission {
+  SUPER // 유저까지 다 관리
+  MODERATOR // 지원폼까지 볼 수 있음
+  MANAGER // 사이트 기본 설정만
+  USER
+}

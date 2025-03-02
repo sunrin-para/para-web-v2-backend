@@ -1,0 +1,9 @@
+model ApplyForm {
+  id  Int @id @default(autoincrement())
+  name  String
+  startsAt  DateTime
+  endsAt  DateTime
+  // responses ApplyResponse[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
