@@ -80,6 +80,21 @@ model Gallary {
   updatedAt   DateTime  @updatedAt
 }
 
+model ApplyForm {
+  id  Int @id @default(autoincrement())
+  name  String
+  startsAt  DateTime
+  endsAt  DateTime
+  responses ApplyResponse[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model ApplyResponse {
+  id  String @id @default(uuid())
+  portfolio
+}
+
 enum Permission {
   SUPER // 유저까지 다 관리
   MODERATOR // 지원폼까지 볼 수 있음

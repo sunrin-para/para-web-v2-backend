@@ -6,12 +6,17 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
-import { ApplyService } from './apply.service';
+import { ApplyService } from '../apply.service';
 import { MinioService } from 'src/minio/minio.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { UserGuard } from 'src/auth/guards/user.guard';
 
+@ApiBearerAuth()
+@UseGuards(UserGuard)
 @Controller('apply')
-export class ApplyController {
+export class ApplyPublicController {
   constructor(
     private readonly applyService: ApplyService,
     private readonly minioService: MinioService,
