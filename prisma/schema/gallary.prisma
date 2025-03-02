@@ -1,0 +1,9 @@
+model Gallary {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  photos      String[]
+  date        DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
