@@ -1,0 +1,61 @@
+import {
+  ExecutionContext,
+  Injectable,
+  ForbiddenException,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
+import { Permission } from '../../common/enums/Permission.enum';
+import { UserService } from '@/user/user.service';
+
+@Injectable()
+export class AdminGuard extends AuthGuard('jwt') {
+  constructor(
+    private reflector: Reflector,
+    private readonly userService: UserService,
+  ) {
+    super();
+  }
+
+  async canActivate(context: ExecutionContext): Promise<boolean | null> {
+    const requiredPermission = this.reflector.get<string>(
+      'permission',
+      context.getHandler(),
+    );
+
+    if (!requiredPermission || Permission[requiredPermission] < 0) {
+      throw new InternalServerErrorException(
+        'Please set Guard permission via setMetaData decorator.',
+      );
+    }
+
+    const canActivate = await super.canActivate(context);
+
+    if (!canActivate) {
+      return false;
+    }
+
+    const request = context.switchToHttp().getRequest();
+    const user = request.user
+      ? await this.userService.findUserByEmail(request.user.email)
+      : null;
+
+    if (
+      !user ||
+      !user.permission ||
+      !(Permission[user.permission] <= Permission[requiredPermission])
+    ) {
+      throw new ForbiddenException('해당 페이지에 접근할 권한이 없습니다.');
+    }
+
+    if (user.validationKey !== request.user.validationKey) {
+      throw new UnauthorizedException(
+        '다른 기기에서 로그인하여 로그아웃 되었습니다.',
+      );
+    }
+
+    return true;
+  }
+}
