@@ -6,12 +6,9 @@ import {
   UseGuards,
   Req,
   Res,
-  HttpCode,
-  HttpStatus,
   SetMetadata,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { GoogleGuard } from '@/auth/guards/google.guard';
 import { Request, Response } from 'express';
 import {
   ApiTags,
@@ -24,6 +21,8 @@ import { UserGuard } from '@/auth/guards/user.guard';
 import { AdminGuard } from '@/auth/guards/admin.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { SignInDto } from './dto/sign-in.dto';
+import { UserDataDto } from './dto/user.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 interface IRequest extends Request {
   user?: any;
@@ -37,13 +36,23 @@ export class AuthController {
 
   @ApiOperation({ summary: '구글 로그인' })
   @Get('/google')
-  @UseGuards(GoogleGuard)
+  @UseGuards(AuthGuard('google'))
   async googleSignIn() {}
 
   @ApiOperation({ summary: '구글 로그인 리다이렉트' })
-  @ApiResponse({ status: 200, description: '토큰 발급 성공', type: Object })
+  @ApiResponse({
+    status: 200,
+    description: '토큰 발급 성공',
+    schema: {
+      type: 'object',
+      properties: {
+        accessToken: { type: 'string' },
+        refreshToken: { type: 'string' },
+      },
+    },
+  })
   @Get('/google/redirect')
-  @UseGuards(GoogleGuard)
+  @UseGuards(AuthGuard('google'))
   async googleRedirection(
     @Req() req: IRequest,
     @Res({ passthrough: true }) res: Response,
@@ -59,7 +68,17 @@ export class AuthController {
 
   @ApiOperation({ summary: '일반 로그인' })
   @ApiBody({ type: SignInDto })
-  @ApiResponse({ status: 200, description: '로그인 성공', type: Object })
+  @ApiResponse({
+    status: 200,
+    description: '로그인 성공',
+    schema: {
+      type: 'object',
+      properties: {
+        accessToken: { type: 'string' },
+        refreshToken: { type: 'string' },
+      },
+    },
+  })
   @ApiResponse({ status: 400, description: '이메일 또는 비밀번호가 누락됨' })
   @Post('/signin')
   async signIn(
@@ -74,7 +93,11 @@ export class AuthController {
 
   @ApiOperation({ summary: 'PARA INTERNAL 계정 생성' })
   @ApiBody({ type: CreateUserDto })
-  @ApiResponse({ status: 201, description: '계정 생성 성공' })
+  @ApiResponse({
+    status: 201,
+    description: '계정 생성 성공',
+    type: UserDataDto,
+  })
   @ApiResponse({ status: 400, description: '필수 데이터 누락' })
   @ApiBearerAuth()
   @Post('/register')
@@ -91,7 +114,16 @@ export class AuthController {
       properties: { refreshToken: { type: 'string' } },
     },
   })
-  @ApiResponse({ status: 200, description: '토큰 갱신 성공' })
+  @ApiResponse({
+    status: 200,
+    description: '토큰 갱신 성공',
+    schema: {
+      type: 'object',
+      properties: {
+        accessToken: { type: 'string' },
+      },
+    },
+  })
   @ApiBearerAuth()
   @Post('/refresh')
   @UseGuards(UserGuard)
@@ -108,7 +140,6 @@ export class AuthController {
   @ApiBearerAuth()
   @Get('/logout')
   @UseGuards(UserGuard)
-  @HttpCode(HttpStatus.OK)
   async logout(@Req() req: IRequest) {
     return await this.authService.signOut(req.user.email);
   }
