@@ -4,7 +4,6 @@ import {
   ExceptionFilter,
   HttpStatus,
 } from '@nestjs/common';
-// import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaClientKnownRequestError } from '@sunrin-para/database/runtime/library'
 import { Response } from 'express';
 import {

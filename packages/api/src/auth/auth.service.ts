@@ -7,11 +7,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from '@/user/user.service';
-import { CreateUserDto } from './dto/createUser.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UserDataDto } from './dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './dto/JwtPayload.dto';
-import { SignInDto } from './dto/signIn.dto';
+import { SignInDto } from './dto/sign-in.dto';
 import * as bcrypt from 'bcryptjs';
 import { Permission as PermissionEnum } from '@/common/enums/Permission.enum';
 import * as crypto from 'crypto';
@@ -53,6 +53,10 @@ export class AuthService {
   }
 
   async registerUser(createUserDto: CreateUserDto) {
+    if (!createUserDto.password || !createUserDto.permission) {
+      throw new BadRequestException('There is null data in createUserDto');
+    }
+
     return await this.userService.createUser(
       createUserDto.email,
       createUserDto.name,
@@ -62,6 +66,10 @@ export class AuthService {
   }
 
   async handleSignIn(signInDto: SignInDto) {
+    if (!signInDto.email || !signInDto.password) {
+      throw new BadRequestException('Email or Password is null.');
+    }
+
     const user = await this.userService.findUserByEmail(signInDto.email);
     if (!user) throw new BadRequestException();
 
@@ -98,8 +106,12 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    await this.tokenRepository.removeRefreshToken(user.email);
-    await this.tokenRepository.removeValidationKey(user.email);
+    try {
+      await this.tokenRepository.removeRefreshToken(user.email);
+      await this.tokenRepository.removeValidationKey(user.email);
+    } catch (e) {
+      throw new InternalServerErrorException();
+    }
 
     return {
       result: true,

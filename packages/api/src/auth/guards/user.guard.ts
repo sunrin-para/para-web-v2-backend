@@ -14,7 +14,6 @@ export class UserGuard extends AuthGuard('jwt') {
     super();
   }
 
-  // 여기서 validationKey 확인 안 하는 이유는 지원폼 로그인하는 학생들의 불편함을 덜기 위함.
   async canActivate(context: ExecutionContext): Promise<boolean | null> {
     const canActivate = await super.canActivate(context);
     if (!canActivate) {

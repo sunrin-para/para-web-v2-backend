@@ -8,9 +8,7 @@ import {
   Res,
   HttpCode,
   HttpStatus,
-  UnauthorizedException,
   SetMetadata,
-  BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleGuard } from '@/auth/guards/google.guard';
@@ -22,11 +20,10 @@ import {
   ApiBody,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { JwtPayload } from './dto/JwtPayload.dto';
 import { UserGuard } from '@/auth/guards/user.guard';
 import { AdminGuard } from '@/auth/guards/admin.guard';
-import { CreateUserDto } from './dto/createUser.dto';
-import { SignInDto } from './dto/signIn.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { SignInDto } from './dto/sign-in.dto';
 
 interface IRequest extends Request {
   user?: any;
@@ -51,16 +48,13 @@ export class AuthController {
     @Req() req: IRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const user = req.user;
-    const tokens: any = await this.authService.handleGoogleSignIn(
-      user._json.email,
-      user._json.name,
-    );
-
     res.header('Access-Control-Allow-Origin', process.env.DOMAIN);
     res.header('Access-Control-Allow-Credentials', 'true');
 
-    return tokens;
+    return await this.authService.handleGoogleSignIn(
+      req.user._json.email,
+      req.user._json.name,
+    );
   }
 
   @ApiOperation({ summary: '일반 로그인' })
@@ -72,15 +66,10 @@ export class AuthController {
     @Body() signInDto: SignInDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    if (!signInDto.email || !signInDto.password) {
-      throw new BadRequestException('Email or Password is null.');
-    }
-    const tokens = await this.authService.handleSignIn(signInDto);
-
     res.header('Access-Control-Allow-Origin', process.env.DOMAIN);
     res.header('Access-Control-Allow-Credentials', 'true');
 
-    return tokens;
+    return await this.authService.handleSignIn(signInDto);
   }
 
   @ApiOperation({ summary: 'PARA INTERNAL 계정 생성' })
@@ -92,11 +81,7 @@ export class AuthController {
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'SUPER')
   async register(@Body() createUserDto: CreateUserDto) {
-    if (!createUserDto.password || !createUserDto.permission) {
-      throw new BadRequestException('There is null data in createUserDto');
-    }
-    const user = await this.authService.registerUser(createUserDto);
-    return user;
+    return await this.authService.registerUser(createUserDto);
   }
 
   @ApiOperation({ summary: '액세스 토큰 갱신' })
@@ -125,12 +110,6 @@ export class AuthController {
   @UseGuards(UserGuard)
   @HttpCode(HttpStatus.OK)
   async logout(@Req() req: IRequest) {
-    const user: JwtPayload = req.user;
-    try {
-      await this.authService.signOut(user.email);
-      return true;
-    } catch (e) {
-      throw new UnauthorizedException();
-    }
+    return await this.authService.signOut(req.user.email);
   }
 }
