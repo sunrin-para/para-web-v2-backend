@@ -5,11 +5,10 @@ import {
   Body,
   UseGuards,
   Req,
-  Res,
   SetMetadata,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import {
   ApiTags,
   ApiOperation,
@@ -23,10 +22,10 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { UserDataDto } from './dto/user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { GoogleUserDto } from './dto/google-user.dto';
 
 interface IRequest extends Request {
   user?: any;
-  session?: any;
 }
 
 @ApiTags('Authorization')
@@ -54,16 +53,12 @@ export class AuthController {
   @Get('/google/redirect')
   @UseGuards(AuthGuard('google'))
   async googleRedirection(
-    @Req() req: IRequest,
-    @Res({ passthrough: true }) res: Response,
+    @Req()
+    req: Request & {
+      user: GoogleUserDto;
+    },
   ) {
-    res.header('Access-Control-Allow-Origin', process.env.DOMAIN);
-    res.header('Access-Control-Allow-Credentials', 'true');
-
-    return await this.authService.handleGoogleSignIn(
-      req.user._json.email,
-      req.user._json.name,
-    );
+    return await this.authService.handleGoogleSignIn(req.user, req);
   }
 
   @ApiOperation({ summary: '일반 로그인' })
@@ -81,14 +76,8 @@ export class AuthController {
   })
   @ApiResponse({ status: 400, description: '이메일 또는 비밀번호가 누락됨' })
   @Post('/signin')
-  async signIn(
-    @Body() signInDto: SignInDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    res.header('Access-Control-Allow-Origin', process.env.DOMAIN);
-    res.header('Access-Control-Allow-Credentials', 'true');
-
-    return await this.authService.handleSignIn(signInDto);
+  async signIn(@Body() signInDto: SignInDto, @Req() req: IRequest) {
+    return await this.authService.handleSignIn(signInDto, req);
   }
 
   @ApiOperation({ summary: 'PARA INTERNAL 계정 생성' })
@@ -141,6 +130,6 @@ export class AuthController {
   @Get('/logout')
   @UseGuards(UserGuard)
   async logout(@Req() req: IRequest) {
-    return await this.authService.signOut(req.user.email);
+    return await this.authService.signOut(req.user?.email);
   }
 }

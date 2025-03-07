@@ -16,6 +16,14 @@ import * as bcrypt from 'bcryptjs';
 import { Permission as PermissionEnum } from '@/common/enums/Permission.enum';
 import * as crypto from 'crypto';
 import { TokenRepository } from './repository/token.repo';
+import { Request } from 'express';
+import { GoogleUserDto } from './dto/google-user.dto';
+import { map } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
+
+interface IRequest extends Request {
+  user?: any;
+}
 
 @Injectable()
 export class AuthService {
@@ -24,27 +32,56 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly tokenRepository: TokenRepository,
+    private readonly httpService: HttpService,
   ) {}
-  async handleGoogleSignIn(email: string, userName: string) {
-    let user: UserDataDto =
-      (await this.userService.findUserByEmail(email)) ??
-      (await this.userService.createUser(email, userName));
+  async handleGoogleSignIn(googleUser: GoogleUserDto, req: IRequest) {
+    const existingUser = await this.userService.findUserByEmail(
+      googleUser.email,
+    );
+
+    let payload: UserDataDto;
+    if (!existingUser) {
+      const newMember = await new Promise(async (resolve, reject) => {
+        this.httpService
+          .get<GoogleProfile>('/userinfo/v2/me', {
+            headers: { Authorization: `Bearer ${googleUser.accessToken}` },
+          })
+          .pipe(map((response) => response.data))
+          .subscribe({
+            next: async (data) => {
+              const member = await this.userService.createUser(
+                data.email,
+                data.name,
+                PermissionEnum.USER,
+              );
+
+              resolve(member);
+            },
+            error: (_error) => {
+              reject(new InternalServerErrorException(''));
+            },
+          });
+      });
+      payload = newMember as UserDataDto;
+    } else {
+      payload = existingUser as UserDataDto;
+    }
 
     const validationKey = await this.generateValidationKey();
 
     const accessToken = await this.generateToken(
       'access',
-      user.email,
+      payload.email,
       validationKey,
     );
     const refreshToken = await this.generateToken(
       'refresh',
-      user.email,
+      payload.email,
       validationKey,
     );
 
-    await this.tokenRepository.setRefreshToken(user.email, refreshToken);
-    await this.tokenRepository.setValidationKey(user.email, validationKey);
+    await this.tokenRepository.setRefreshToken(payload.email, refreshToken);
+    await this.tokenRepository.setValidationKey(payload.email, validationKey);
 
     return {
       accessToken: accessToken,
@@ -65,13 +102,14 @@ export class AuthService {
     );
   }
 
-  async handleSignIn(signInDto: SignInDto) {
+  async handleSignIn(signInDto: SignInDto, req: IRequest) {
     if (!signInDto.email || !signInDto.password) {
       throw new BadRequestException('Email or Password is null.');
     }
 
     const user = await this.userService.findUserByEmail(signInDto.email);
     if (!user) throw new BadRequestException();
+    req.user = user;
 
     const match = await bcrypt.compare(signInDto.password, user.password);
     if (match) {
@@ -96,12 +134,11 @@ export class AuthService {
         refreshToken: refreshToken,
       };
     }
-    throw new UnauthorizedException();
+    throw new BadRequestException();
   }
 
   async signOut(email: string) {
     const user = await this.userService.findUserByEmail(email);
-
     if (!user) {
       throw new UnauthorizedException();
     }
@@ -168,4 +205,14 @@ export class AuthService {
     };
   }
   /* 여기까지 토큰 관리 함수들입니다. */
+}
+
+interface GoogleProfile {
+  family_name: string;
+  name: string;
+  picture: string;
+  email: string;
+  given_name: string;
+  id: string;
+  verified_email: boolean;
 }

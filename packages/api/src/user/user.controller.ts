@@ -23,7 +23,6 @@ import { AdminGuard } from '@/auth/guards/admin.guard';
 
 interface IRequest extends Request {
   user?: any;
-  session?: any;
 }
 
 @ApiTags('User')

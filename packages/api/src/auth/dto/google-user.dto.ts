@@ -1,18 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsString } from 'class-validator';
 
-export class SignInDto {
+export class GoogleUserDto {
   @IsEmail()
   @ApiProperty({
     description: '사용자 이메일',
-    example: 'user@example.com',
+    example: 'dev.juany@gmail.com',
   })
   email: string;
 
   @IsString()
   @ApiProperty({
-    description: '사용자 비밀번호',
-    example: 'password123',
+    description: '액세스 토큰',
+    example: 'ya29.a0AfH6SMB',
   })
-  password: string;
+  accessToken: string;
 }

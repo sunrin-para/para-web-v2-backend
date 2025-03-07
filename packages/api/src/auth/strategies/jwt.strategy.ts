@@ -1,20 +1,31 @@
+import { UserService } from '@/user/user.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Request } from 'express';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(
+    private readonly userService: UserService,
+    private readonly configService: ConfigService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || '293hefkjxdr@',
+      secretOrKey: configService.get<string>('JWT_SECRET'),
+      passReqToCallback: true,
     });
   }
 
-  async validate(payload: any) {
-    if (!payload || !payload.uid) {
-      throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+  async validate(req: Request, payload: any) {
+    if (!payload) {
+      throw new UnauthorizedException('JWT Payload가 없습니다.');
+    }
+    const user = await this.userService.findUserByEmail(payload.email);
+    if (!user) {
+      throw new UnauthorizedException('유저를 찾을 수 없습니다.');
     }
 
     return {

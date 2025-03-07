@@ -31,16 +31,13 @@ export class AdminGuard extends AuthGuard('jwt') {
       );
     }
 
-    const canActivate = await super.canActivate(context);
-
+    const canActivate = (await super.canActivate(context)) as boolean;
     if (!canActivate) {
       return false;
     }
 
     const request = context.switchToHttp().getRequest();
-    const user = request.user
-      ? await this.userService.findUserByEmail(request.user.email)
-      : null;
+    const user = request.user;
 
     if (
       !user ||
