@@ -37,7 +37,7 @@ export class UserService {
       throw new ConflictException('이미 계정이 존재합니다.');
     }
     const salt = await bcrypt.genSalt(
-      this.configService.get<number>('SALT_ROUND'),
+      parseInt(this.configService.get('SALT_ROUND')),
     );
     password = await bcrypt.hash(password, salt);
     if (user) {
@@ -82,7 +82,7 @@ export class UserService {
     const result = await this.userRepository
       .changePassword(userEmail, encryptedPassword)
       .then(async () => {
-        // await this.authService.signOut(userEmail);
+        await this.authService.signOut(userEmail);
       });
     return result;
   }
@@ -91,7 +91,7 @@ export class UserService {
     await this.userRepository
       .changePermission(email, newPermission)
       .then(async () => {
-        // await this.authService.signOut(email);
+        await this.authService.signOut(email);
       })
       .catch((e) => {
         throw new Error(e);

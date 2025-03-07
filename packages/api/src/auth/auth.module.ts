@@ -8,14 +8,23 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { TokenRepository } from './repository/token.repo';
 import { UserModule } from '@/user/user.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
     forwardRef(() => UserModule),
     PassportModule,
-    JwtModule.register({
-      secret: process.env.JWT_SECRET || '293hefkjxdr@',
-      signOptions: { expiresIn: '2h' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '2h' },
+      }),
+    }),
+    HttpModule.registerAsync({
+      useFactory: () => ({ baseURL: 'https://www.googleapis.com' }),
     }),
   ],
   controllers: [AuthController],
@@ -26,6 +35,6 @@ import { UserModule } from '@/user/user.module';
     GoogleStrategy,
     PrismaService,
   ],
-  exports: [AuthService, JwtModule, TokenRepository],
+  exports: [AuthService, JwtModule, TokenRepository, HttpModule],
 })
 export class AuthModule {}
