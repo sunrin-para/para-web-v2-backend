@@ -6,21 +6,15 @@ import { UpdateMemberDto } from './dto/update-member.dto';
 @Injectable()
 export class MembersService {
   constructor(private readonly memberRepository: MembersRepository) {}
-  async createMember(
-    createMemberDto: MemberDto,
-    fileUrl: string,
-  ): Promise<boolean> {
-    return await this.memberRepository.registerMember(createMemberDto, fileUrl);
+  async createMember(createMemberDto: MemberDto) {
+    return await this.memberRepository.registerMember(createMemberDto);
   }
 
-  async getAllMembers(): Promise<MemberDto[]> {
+  async getAllMembers() {
     return await this.memberRepository.getAllMembers();
   }
 
-  async getMembersByGeneration(generation: number): Promise<MemberDto[]> {
-    if (generation < 0) {
-      throw new BadRequestException('기수(Generation) 값은 0보다 커야 합니다.');
-    }
+  async getMembersByGeneration(generation: number) {
     return await this.memberRepository.getMembersByGeneration(generation);
   }
 
@@ -31,15 +25,13 @@ export class MembersService {
   async updateMemberDetail(
     memberId: number,
     updateMemberDto?: UpdateMemberDto,
-    fileUrl?: string,
   ) {
-    if (!updateMemberDto && !fileUrl) {
+    if (!updateMemberDto) {
       throw new BadRequestException('수정할 값을 전송해주세요!');
     }
     return await this.memberRepository.updateMemberDetail(
       memberId,
       updateMemberDto,
-      fileUrl,
     );
   }
 

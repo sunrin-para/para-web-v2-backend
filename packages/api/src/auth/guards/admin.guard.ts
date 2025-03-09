@@ -16,9 +16,9 @@ export class AdminGuard extends AuthGuard('jwt') {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean | null> {
-    const requiredPermission = this.reflector.get<string>(
+    const requiredPermission = this.reflector.getAllAndOverride<string>(
       'permission',
-      context.getHandler(),
+      [context.getHandler(), context.getClass()],
     );
 
     if (!requiredPermission || Permission[requiredPermission] < 0) {

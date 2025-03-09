@@ -5,21 +5,18 @@ export class MemberDto {
   @ApiProperty({
     description: '멤버 고유 ID',
     example: 1,
-    required: false,
   })
   id?: number;
 
   @ApiProperty({
     description: '생성일',
     example: '2024-01-01T00:00:00.000Z',
-    required: false,
   })
   createdAt?: Date;
 
   @ApiProperty({
     description: '수정일',
     example: '2024-01-01T00:00:00.000Z',
-    required: false,
   })
   updatedAt?: Date;
 
@@ -61,7 +58,6 @@ export class MemberDto {
   @ApiProperty({
     description: '프로필 이미지 URL',
     example: 'https://example.com/profile.jpg',
-    required: false,
   })
   @IsOptional()
   @IsString()
@@ -70,7 +66,6 @@ export class MemberDto {
   @ApiProperty({
     description: '디스코드 아이디',
     example: 'example#1234',
-    required: false,
   })
   @IsOptional()
   @IsString()
@@ -79,7 +74,6 @@ export class MemberDto {
   @ApiProperty({
     description: '깃허브 아이디',
     example: 'github-example',
-    required: false,
   })
   @IsOptional()
   @IsString()
@@ -88,7 +82,6 @@ export class MemberDto {
   @ApiProperty({
     description: '인스타그램 아이디',
     example: 'instagram-example',
-    required: false,
   })
   @IsOptional()
   @IsString()
@@ -97,7 +90,6 @@ export class MemberDto {
   @ApiProperty({
     description: 'solved.ac 아이디',
     example: 'solvedac-example',
-    required: false,
   })
   @IsOptional()
   @IsString()
@@ -106,7 +98,6 @@ export class MemberDto {
   @ApiProperty({
     description: '이메일',
     example: 'example@example.com',
-    required: false,
   })
   @IsOptional()
   @IsString()

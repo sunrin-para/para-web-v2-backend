@@ -5,7 +5,7 @@ import { GalleryPrivateController } from './controllers/gallery.private.controll
 import { GalleryPublicController } from './controllers/gallery.public.controller';
 
 @Module({
-  controllers: [GalleryPrivateController, GalleryPublicController],
+  controllers: [GalleryPublicController, GalleryPrivateController],
   providers: [GalleryRepository, GalleryService],
 })
 export class GalleryModule {}
