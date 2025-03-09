@@ -22,9 +22,6 @@ export class GalleryService {
   }
 
   async getAlbumDetail(albumId: number) {
-    if (albumId < 0) {
-      throw new BadRequestException('albumId 값은 0보다 커야 합니다.');
-    }
     return await this.galleryRepository.getAlbumDetail(albumId);
   }
 
@@ -61,10 +58,6 @@ export class GalleryService {
   }
 
   async updateAlbum(albumId: number, updateAlbumDto: UpdateAlbumDto) {
-    if (albumId < 0) {
-      throw new BadRequestException('albumId 값은 0보다 커야 합니다.');
-    }
-
     const album = await this.galleryRepository.findById(albumId);
     if (!album) {
       throw new NotFoundException('Album not found');
@@ -74,9 +67,6 @@ export class GalleryService {
   }
 
   async deleteAlbum(albumId: number) {
-    if (albumId < 0) {
-      throw new BadRequestException('albumId 값은 0보다 커야 합니다.');
-    }
     return await this.galleryRepository.deleteAlbum(albumId);
   }
 }

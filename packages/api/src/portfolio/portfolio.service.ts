@@ -31,9 +31,6 @@ export class PortfolioService {
   }
 
   async getPortfolioDetail(portfolioId: number): Promise<PortfolioDto> {
-    if (portfolioId < 0) {
-      throw new BadRequestException('portfolioId 값은 0보다 커야 합니다.');
-    }
     return await this.portfolioRepository.getPortfolioDetail(portfolioId);
   }
 
@@ -44,11 +41,6 @@ export class PortfolioService {
   }
 
   async getPortfolioList(count: number = 50): Promise<MonoPortfolioList[]> {
-    if (count < 1) {
-      throw new InternalServerErrorException(
-        'portfolio count는 0보다 커야합니다.',
-      );
-    }
     return await this.portfolioRepository.getPortfolioList(count);
   }
 
@@ -65,9 +57,6 @@ export class PortfolioService {
     if (!updatePortfolioDto && !thumbnailUrl && !portfolioUrl) {
       throw new BadRequestException('수정할 정보가 제공되지 않았습니다.');
     }
-    if (portfolioId < 0) {
-      throw new BadRequestException('portfolio ID 값은 0보다 커야 합니다.');
-    }
     if (thumbnailUrl) updatePortfolioDto.thumbnail = thumbnailUrl;
     if (portfolioUrl) updatePortfolioDto.filePath = portfolioUrl;
     return await this.portfolioRepository.updatePortfolio(
@@ -77,9 +66,6 @@ export class PortfolioService {
   }
 
   async deletePortfolio(portfolioId: number) {
-    if (portfolioId < 0) {
-      throw new BadRequestException('portfolio ID 값은 0보다 커야 합니다.');
-    }
     return await this.portfolioRepository.deletePortfolio(portfolioId);
   }
 }

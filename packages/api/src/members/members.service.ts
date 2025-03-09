@@ -25,9 +25,6 @@ export class MembersService {
   }
 
   async getMemberDetail(memberId: number) {
-    if (memberId < 0) {
-      throw new BadRequestException('memberId 값은 0보다 커야 합니다.');
-    }
     return await this.memberRepository.getMemberDetail(memberId);
   }
 
@@ -36,9 +33,6 @@ export class MembersService {
     updateMemberDto?: UpdateMemberDto,
     fileUrl?: string,
   ) {
-    if (memberId < 0) {
-      throw new BadRequestException('memberId 값은 0보다 커야 합니다.');
-    }
     if (!updateMemberDto && !fileUrl) {
       throw new BadRequestException('수정할 값을 전송해주세요!');
     }
@@ -50,9 +44,6 @@ export class MembersService {
   }
 
   async deleteMember(memberId: number) {
-    if (memberId < 0) {
-      throw new BadRequestException('memberId 값은 0보다 커야 합니다.');
-    }
     return await this.memberRepository.deleteMember(memberId);
   }
 }
