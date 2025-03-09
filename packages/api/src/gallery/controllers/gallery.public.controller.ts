@@ -1,8 +1,8 @@
-import { Controller, Get, HttpCode, Param } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { GalleryService } from '@/gallery/gallery.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { AlbumDto } from '../dto/album.dto';
-import { MonoAlbumDto } from '../dto/mini-album.dto';
+import { AlbumDto } from '@/gallery/dto/album.dto';
+import { MonoAlbumDto } from '@/gallery/dto/mini-album.dto';
 
 @Controller('gallery')
 export class GalleryPublicController {

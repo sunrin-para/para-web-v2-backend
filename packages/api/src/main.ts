@@ -46,7 +46,6 @@ async function bootstrap() {
     .setTitle(process.env.NAME)
     .setDescription(process.env.DESCRIPTION)
     .setVersion(process.env.VERSION)
-    .addTag(process.env.TAG)
     .addBearerAuth()
     .build();
 

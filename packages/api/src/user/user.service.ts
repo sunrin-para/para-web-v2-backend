@@ -1,13 +1,13 @@
 import {
-  BadRequestException,
   ConflictException,
+  ForbiddenException,
   forwardRef,
   Inject,
   Injectable,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { Permission as PrismaPermission } from '@sunrin-para/database';
 import * as bcrypt from 'bcryptjs';
-import { UserDataDto } from '@/auth/dto/user.dto';
 import { Permission as PermissionEnum } from '@/common/enums/Permission.enum';
 import { UserRepository } from './repository/user.repo';
 import { ConfigService } from '@nestjs/config';
@@ -21,36 +21,9 @@ export class UserService {
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
   ) {}
-  async findUserByEmail(email: string): Promise<UserDataDto | null> {
-    return await this.userRepository.findUserByEmail(email);
-  }
 
-  async createUser(
-    email: string,
-    name: string,
-    permission: PermissionEnum = PermissionEnum['USER'],
-    password?: string,
-  ) {
-    let user: UserDataDto = await this.findUserByEmail(email);
-    if (user && user.password) {
-      // 계정 integration이 불가능한 상황에서 Exception 발생.
-      throw new ConflictException('이미 계정이 존재합니다.');
-    }
-    const salt = await bcrypt.genSalt(
-      parseInt(this.configService.get('SALT_ROUND')),
-    );
-    password = await bcrypt.hash(password, salt);
-    if (user) {
-      await this.integrateAccount(email, permission, password);
-      return await this.findUserByEmail(email);
-    } else {
-      return await this.userRepository.createUser(
-        email,
-        name,
-        PrismaPermission[permission],
-        password,
-      );
-    }
+  async findUserByEmail(email: string) {
+    return await this.userRepository.findUserByEmail(email);
   }
 
   private async integrateAccount(
@@ -60,7 +33,31 @@ export class UserService {
   ) {
     await this.userRepository.changePermission(email, adminPermission);
     await this.userRepository.changePassword(email, password);
-    return true;
+    return this.findUserByEmail(email);
+  }
+
+  async createUser(
+    email: string,
+    name: string,
+    permission: PermissionEnum = PermissionEnum['USER'],
+    password?: string,
+  ) {
+    let user = await this.findUserByEmail(email);
+    if (user?.password) throw new ConflictException('이미 계정이 존재합니다.');
+
+    password = await bcrypt.hash(
+      password,
+      await bcrypt.genSalt(+this.configService.get('SALT_ROUND')),
+    );
+
+    return user
+      ? await this.integrateAccount(email, permission, password)
+      : await this.userRepository.createUser(
+          email,
+          name,
+          PrismaPermission[permission],
+          password,
+        );
   }
 
   async changePassword(
@@ -68,34 +65,29 @@ export class UserService {
     userEmail: string,
     newPassword: string,
   ) {
-    if (
-      (changerEmail !== userEmail &&
-        (await this.findUserByEmail(changerEmail)).permission !== 'SUPER') ||
-      !this.findUserByEmail(userEmail)
-    ) {
-      throw new BadRequestException();
+    try {
+      const changer = await this.findUserByEmail(changerEmail);
+      if (
+        (changerEmail !== userEmail && changer?.permission !== 'SUPER') ||
+        !(await this.findUserByEmail(userEmail))
+      ) {
+        throw new ForbiddenException();
+      }
+
+      const encryptedPassword = await bcrypt.hash(
+        newPassword,
+        await bcrypt.genSalt(+this.configService.get('SALT_ROUND')),
+      );
+      await this.userRepository.changePassword(userEmail, encryptedPassword);
+      await this.authService.signOut(userEmail);
+      return true;
+    } catch (e) {
+      throw new InternalServerErrorException();
     }
-    const salt = await bcrypt.genSalt(
-      this.configService.get<number>('SALT_ROUND'),
-    );
-    const encryptedPassword = await bcrypt.hash(newPassword, salt);
-    const result = await this.userRepository
-      .changePassword(userEmail, encryptedPassword)
-      .then(async () => {
-        await this.authService.signOut(userEmail);
-      });
-    return result;
   }
 
   async changePermission(email: string, newPermission: PermissionEnum) {
-    await this.userRepository
-      .changePermission(email, newPermission)
-      .then(async () => {
-        await this.authService.signOut(email);
-      })
-      .catch((e) => {
-        throw new Error(e);
-      });
+    return await this.userRepository.changePermission(email, newPermission);
   }
 
   async deleteAccount(email: string) {
