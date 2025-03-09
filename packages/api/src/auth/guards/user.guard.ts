@@ -5,11 +5,10 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { UserService } from '@/user/user.service';
 
 @Injectable()
 export class UserGuard extends AuthGuard('jwt') {
-  constructor(private readonly userService: UserService) {
+  constructor() {
     super();
   }
 

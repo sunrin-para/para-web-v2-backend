@@ -8,14 +8,10 @@ import {
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { Permission } from '../../common/enums/Permission.enum';
-import { UserService } from '@/user/user.service';
 
 @Injectable()
 export class AdminGuard extends AuthGuard('jwt') {
-  constructor(
-    private reflector: Reflector,
-    private readonly userService: UserService,
-  ) {
+  constructor(private reflector: Reflector) {
     super();
   }
 

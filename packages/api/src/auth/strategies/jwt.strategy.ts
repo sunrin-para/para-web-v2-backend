@@ -15,11 +15,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_SECRET'),
-      passReqToCallback: true,
     });
   }
 
-  async validate(req: Request, payload: any) {
+  async validate(payload: any) {
     if (!payload) {
       throw new UnauthorizedException('JWT Payload가 없습니다.');
     }
