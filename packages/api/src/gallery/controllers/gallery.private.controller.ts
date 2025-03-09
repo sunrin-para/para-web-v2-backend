@@ -16,7 +16,6 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
-  ApiResponseProperty,
 } from '@nestjs/swagger';
 import { AlbumDto } from '../dto/album.dto';
 

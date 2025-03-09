@@ -5,7 +5,7 @@ model Member {
   department    String
   speciality     String
   introduction  String
-  profile_image String   @default("/default.png")
+  profile_image String
   discord       String?
   github        String?
   instagram     String?

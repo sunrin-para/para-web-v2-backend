@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, isNumber, IsNumber } from 'class-validator';
 
 export class CreateMemberDto {
   @ApiProperty({
     description: '기수',
-    example: 25,
+    example: 119,
   })
-  @IsString()
+  @IsNumber()
   generation: number;
 
   @ApiProperty({
@@ -38,9 +38,15 @@ export class CreateMemberDto {
   introduction: string;
 
   @ApiProperty({
+    description: '프로필 사진',
+    example: 'https://example.com/image.jpg',
+  })
+  @IsString()
+  profile_image: string;
+
+  @ApiProperty({
     description: '디스코드 아이디',
     example: 'example#1234',
-    required: false,
   })
   @IsOptional()
   @IsString()
@@ -49,7 +55,6 @@ export class CreateMemberDto {
   @ApiProperty({
     description: '깃허브 아이디',
     example: 'github-example',
-    required: false,
   })
   @IsOptional()
   @IsString()
@@ -58,7 +63,6 @@ export class CreateMemberDto {
   @ApiProperty({
     description: '인스타그램 아이디',
     example: 'instagram-example',
-    required: false,
   })
   @IsOptional()
   @IsString()
@@ -67,7 +71,6 @@ export class CreateMemberDto {
   @ApiProperty({
     description: 'solved.ac 아이디',
     example: 'solvedac-example',
-    required: false,
   })
   @IsOptional()
   @IsString()
@@ -76,7 +79,6 @@ export class CreateMemberDto {
   @ApiProperty({
     description: '이메일',
     example: 'example@example.com',
-    required: false,
   })
   @IsOptional()
   @IsString()

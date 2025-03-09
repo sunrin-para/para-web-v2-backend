@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '@/common/prisma/prisma.service';
 import { MemberDto } from '../dto/member.dto';
 import { UpdateMemberDto } from '../dto/update-member.dto';
@@ -6,84 +6,60 @@ import { UpdateMemberDto } from '../dto/update-member.dto';
 @Injectable()
 export class MembersRepository {
   constructor(private readonly prismaService: PrismaService) {}
-  async registerMember(createMemberDto: MemberDto, fileUrl: string) {
-    await this.prismaService.member
-      .create({
-        data: { ...createMemberDto, profile_image: fileUrl },
-      })
-      .catch((e) => {
-        throw new Error(e);
-      });
-    return true;
+  async registerMember(data: MemberDto) {
+    try {
+      return await this.prismaService.member.create({ data });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
   async getAllMembers(): Promise<MemberDto[]> {
-    const members = await this.prismaService.member.findMany().catch((e) => {
-      throw new Error(e);
-    });
-    return members;
+    try {
+      return await this.prismaService.member.findMany();
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
   async getMembersByGeneration(generation: number): Promise<MemberDto[]> {
-    const members = await this.prismaService.member
-      .findMany({
-        where: { generation: generation },
-      })
-      .catch((e) => {
-        throw new Error(e);
+    try {
+      return await this.prismaService.member.findMany({
+        where: { generation },
       });
-    return members;
-  }
-
-  async getMemberDetail(memberId: number): Promise<MemberDto> {
-    const memberDetail = await this.prismaService.member
-      .findFirst({
-        where: { id: memberId },
-      })
-      .catch((e) => {
-        throw new Error(e);
-      });
-
-    return memberDetail;
-  }
-
-  async deleteMember(memberId: number) {
-    await this.prismaService.member
-      .delete({
-        where: { id: memberId },
-      })
-      .catch((e) => {
-        throw new Error(e);
-      });
-    return true;
-  }
-
-  async updateMemberDetail(
-    memberId: number,
-    updateMemberDto?: UpdateMemberDto,
-    fileUrl?: string,
-  ) {
-    const updateData: Partial<UpdateMemberDto> = {};
-
-    Object.keys(updateMemberDto).forEach((key) => {
-      if (updateMemberDto[key] !== undefined) {
-        updateData[key] = updateMemberDto[key];
-      }
-    });
-
-    if (fileUrl) {
-      updateData.profile_image = fileUrl;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
     }
+  }
 
-    const updatedMember = await this.prismaService.member
-      .update({
-        where: { id: memberId },
-        data: updateData,
-      })
-      .catch((e) => {
-        throw new Error(e);
+  async getMemberDetail(id: number) {
+    try {
+      return await this.prismaService.member.findUnique({
+        where: { id },
       });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
 
-    return updatedMember;
+  async updateMemberDetail(id: number, data?: UpdateMemberDto) {
+    try {
+      return await this.prismaService.member.update({
+        where: { id },
+        data,
+      });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  async deleteMember(id: number) {
+    try {
+      return await this.prismaService.member.delete({
+        where: { id },
+      });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 }
