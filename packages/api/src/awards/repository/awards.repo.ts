@@ -1,67 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateAwardsDto } from '../dto/createAwards.dto';
 import { PrismaService } from '@/common/prisma/prisma.service';
 
 @Injectable()
 export class AwardsRepository {
   constructor(private readonly prismaService: PrismaService) {}
-  async createAwardsHistory(createAwardsDto: CreateAwardsDto) {
-    const newHistory = await this.prismaService.award
-      .create({
-        data: createAwardsDto,
-      })
-      .catch((e) => {
-        throw new Error(e);
-      });
-    return newHistory;
+  async createAwardsHistory(data: CreateAwardsDto) {
+    try {
+      return await this.prismaService.award.create({ data });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
   async getAwardsHistoryByYear(year: number) {
-    const awards = await this.prismaService.award
-      .findMany({
-        where: { year: parseInt(`${year}`) },
-      })
-      .catch((e) => {
-        throw new Error(e);
+    try {
+      return await this.prismaService.award.findMany({
+        where: { year },
       });
-    return awards;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
-  async updateAwardHistory(id: number, updateAwardDto: CreateAwardsDto) {
-    const award = await this.prismaService.award
-      .update({
-        where: { id: parseInt(`${id}`) },
-        data: {
-          name: updateAwardDto.name,
-          member: updateAwardDto.member,
-          year: updateAwardDto.year,
-        },
-      })
-      .catch((e) => {
-        throw new Error(e);
+  async updateAwardHistory(id: number, data: CreateAwardsDto) {
+    try {
+      return await this.prismaService.award.update({
+        where: { id },
+        data,
       });
-    return award;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
   async deleteAwardById(id: number) {
-    await this.prismaService.award
-      .delete({
-        where: { id: parseInt(`${id}`) },
-      })
-      .catch((e) => {
-        throw new Error(e);
+    try {
+      return await this.prismaService.award.delete({
+        where: { id },
       });
-    return true;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
   async deleteManyAwardsByYear(year: number) {
-    await this.prismaService.award
-      .deleteMany({
-        where: { year: parseInt(`${year}`) },
-      })
-      .catch((e) => {
-        throw new Error(e);
+    try {
+      return await this.prismaService.award.deleteMany({
+        where: { year },
       });
-    return true;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 }
