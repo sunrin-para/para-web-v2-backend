@@ -19,8 +19,9 @@ export class UpdatePortfolioDto {
 
   @ApiProperty({
     description: '포트폴리오 태그 목록',
-    type: [String],
-    required: false,
+    example: ['React', 'NestJs'],
+    type: 'array',
+    items: { type: 'string' },
   })
   @IsArray()
   @IsString({ each: true })
@@ -29,8 +30,9 @@ export class UpdatePortfolioDto {
 
   @ApiProperty({
     description: 'PARA 멤버 목록',
-    type: [String],
-    required: false,
+    example: ['홍길동', '김철수'],
+    type: 'array',
+    items: { type: 'string' },
   })
   @IsArray()
   @IsString({ each: true })
@@ -39,7 +41,9 @@ export class UpdatePortfolioDto {
 
   @ApiProperty({
     description: '외부 멤버 목록',
-    type: [String],
+    example: ['이영희', '박민수'],
+    type: 'array',
+    items: { type: 'string' },
     required: false,
   })
   @IsArray()
@@ -49,7 +53,9 @@ export class UpdatePortfolioDto {
 
   @ApiProperty({
     description: '포트폴리오 날짜 목록',
-    type: [Date],
+    example: ['2024-01-01T00:00:00.000Z', '2024-12-31T00:00:00.000Z'],
+    type: 'array',
+    items: { type: 'string', format: 'date' },
     required: false,
   })
   @IsArray()

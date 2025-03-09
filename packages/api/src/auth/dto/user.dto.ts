@@ -46,6 +46,7 @@ export class UserDataDto {
     description: '사용자 권한',
     example: 'USER',
     enum: ['SUPER', 'MODERATOR', 'MANAGER', 'USER'],
+    items: { type: 'string' },
   })
   permission: string;
 

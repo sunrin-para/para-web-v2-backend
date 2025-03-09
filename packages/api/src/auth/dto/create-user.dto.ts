@@ -32,6 +32,7 @@ export class CreateUserDto {
     description: '사용자 권한 (선택)',
     example: 'USER',
     enum: ['SUPER', 'MODERATOR', 'MANAGER', 'USER'],
+    items: { type: 'string' },
     required: false,
   })
   permission?: string;

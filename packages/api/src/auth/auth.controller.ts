@@ -81,13 +81,7 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'PARA INTERNAL 계정 생성' })
-  @ApiBody({ type: CreateUserDto })
-  @ApiResponse({
-    status: 201,
-    description: '계정 생성 성공',
-    type: UserDataDto,
-  })
-  @ApiResponse({ status: 400, description: '필수 데이터 누락' })
+  @ApiResponse({ type: UserDataDto })
   @ApiBearerAuth()
   @Post('/register')
   @UseGuards(AdminGuard)
@@ -120,12 +114,8 @@ export class AuthController {
     return await this.authService.refreshAccessToken(refreshToken);
   }
 
-  @ApiOperation({
-    summary: '로그아웃',
-    description: '현재 로그인된 사용자를 로그아웃 처리합니다.',
-  })
-  @ApiResponse({ status: 200, description: '로그아웃 성공' })
-  @ApiResponse({ status: 401, description: '인증되지 않은 사용자' })
+  @ApiOperation({ summary: '로그아웃' })
+  @ApiResponse({ type: Boolean })
   @ApiBearerAuth()
   @Get('/logout')
   @UseGuards(UserGuard)

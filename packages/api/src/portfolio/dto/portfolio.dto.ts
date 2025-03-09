@@ -40,7 +40,8 @@ export class PortfolioDto {
   @ApiProperty({
     description: '포트폴리오 태그',
     example: ['React', 'NestJS', 'TypeScript'],
-    isArray: true,
+    type: 'array',
+    items: { type: 'string' },
   })
   @IsArray()
   @IsString({ each: true })
@@ -49,7 +50,8 @@ export class PortfolioDto {
   @ApiProperty({
     description: '참여한 파라 멤버',
     example: ['홍길동', '김철수'],
-    isArray: true,
+    type: 'array',
+    items: { type: 'string' },
   })
   @IsArray()
   @IsString({ each: true })
@@ -58,7 +60,8 @@ export class PortfolioDto {
   @ApiProperty({
     description: '참여한 외부 멤버',
     example: ['이영희', '박민수'],
-    isArray: true,
+    type: 'array',
+    items: { type: 'string' },
   })
   @IsArray()
   @IsString({ each: true })
@@ -67,7 +70,8 @@ export class PortfolioDto {
   @ApiProperty({
     description: '프로젝트 기간',
     example: ['2024-01-01T00:00:00.000Z', '2024-12-31T00:00:00.000Z'],
-    isArray: true,
+    type: 'array',
+    items: { type: 'string', format: 'date' },
   })
   @IsArray()
   @IsDate({ each: true })
