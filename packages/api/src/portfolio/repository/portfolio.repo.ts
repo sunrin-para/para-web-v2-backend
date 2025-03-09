@@ -1,164 +1,102 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '@/common/prisma/prisma.service';
 import { CreatePortfolioDto } from '../dto/create-portfolio.dto';
 import { UpdatePortfolioDto } from '../dto/update-portfolio.dto';
-import { PortfolioDto } from '../dto/portfolio.dto';
-import { MonoPortfolioList } from '../dto/portfolio-list.dto';
 
 @Injectable()
 export class PortfolioRepository {
   constructor(private readonly prismaService: PrismaService) {}
-  async createPortfolio(createPortfolioDto: CreatePortfolioDto) {
-    await this.prismaService.portfolio
-      .create({
-        data: {
-          thumbnail: createPortfolioDto.thumbnail,
-          filePath: createPortfolioDto.filePath,
-          date:
-            createPortfolioDto.date.length > 0
-              ? createPortfolioDto.date.map((date) => new Date(date))
-              : [],
-          ...createPortfolioDto,
-        },
-      })
-      .catch((e) => {
-        throw new Error(e);
-      });
-    return true;
+  async createPortfolio(data: CreatePortfolioDto) {
+    try {
+      return await this.prismaService.portfolio.create({ data });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
-  async searchPortfolioByName(keyword: string): Promise<MonoPortfolioList[]> {
-    const portfolios = await this.prismaService.portfolio
-      .findMany({
+  async searchPortfolioByName(keyword: string) {
+    try {
+      return await this.prismaService.portfolio.findMany({
         where: {
           title: {
             contains: keyword,
             mode: 'insensitive',
           },
         },
-      })
-      .catch((e) => {
-        throw new Error(e);
       });
-
-    const miniPortfolios: Partial<MonoPortfolioList[]> = portfolios.map(
-      (portfolio) => ({
-        id: portfolio.id,
-        title: portfolio.title,
-        summary: portfolio.summary,
-        tags: portfolio.tags,
-        para_member: portfolio.para_member,
-        thumbnail: portfolio.thumbnail,
-      }),
-    );
-
-    return miniPortfolios;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
-  async getPortfolioDetail(portfolioId: number): Promise<PortfolioDto> {
-    const portfolio: PortfolioDto = await this.prismaService.portfolio
-      .findFirst({
-        where: { id: portfolioId },
-      })
-      .catch((e) => {
-        throw new Error(e);
+  async getPortfolioDetail(id: number) {
+    try {
+      return await this.prismaService.portfolio.findUnique({
+        where: { id },
       });
-    return portfolio;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
-  async getPortfoliosByCategory(
-    category: string,
-  ): Promise<MonoPortfolioList[]> {
-    const portfolios = await this.prismaService.portfolio
-      .findMany({
+  async getPortfoliosByCategory(category: string) {
+    try {
+      return await this.prismaService.portfolio.findMany({
         where: {
           tags: {
             has: category,
           },
         },
-      })
-      .catch((e) => {
-        throw new Error(e);
       });
-
-    const miniPortfolios: Partial<MonoPortfolioList[]> = portfolios.map(
-      (portfolio) => ({
-        id: portfolio.id,
-        title: portfolio.title,
-        summary: portfolio.summary,
-        tags: portfolio.tags,
-        para_member: portfolio.para_member,
-        thumbnail: portfolio.thumbnail,
-      }),
-    );
-
-    return miniPortfolios;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
-  async getAllCategories(): Promise<string[]> {
-    const portfolios = await this.prismaService.portfolio
-      .findMany({
-        select: {
-          tags: true,
-        },
-      })
-      .catch((e) => {
-        throw new Error(e);
-      });
-
-    const allTags = [
-      ...new Set(portfolios.flatMap((portfolio) => portfolio.tags)),
-    ];
-
-    return allTags;
+  async getAllCategories() {
+    try {
+      return await this.prismaService.portfolio
+        .findMany({
+          select: {
+            tags: true,
+          },
+        })
+        .then((data) => {
+          return [...new Set(data.flatMap((portfolio) => portfolio.tags))];
+        });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
   async getPortfolioList(count: number) {
-    const portfolios = await this.prismaService.portfolio
-      .findMany({
+    try {
+      return await this.prismaService.portfolio.findMany({
         take: count,
-      })
-      .catch((e) => {
-        throw new Error(e);
       });
-
-    const miniPortfolios: Partial<MonoPortfolioList[]> = portfolios.map(
-      (portfolio) => ({
-        id: portfolio.id,
-        title: portfolio.title,
-        summary: portfolio.summary,
-        tags: portfolio.tags,
-        para_member: portfolio.para_member,
-        thumbnail: portfolio.thumbnail,
-      }),
-    );
-
-    return miniPortfolios;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
-  async updatePortfolio(
-    portfolioId: number,
-    updatePortfolioDto: UpdatePortfolioDto,
-  ) {
-    await this.prismaService.portfolio
-      .update({
-        where: { id: portfolioId },
-        data: updatePortfolioDto,
-      })
-      .catch((e) => {
-        throw new Error(e);
+  async updatePortfolio(id: number, data: UpdatePortfolioDto) {
+    try {
+      return await this.prismaService.portfolio.update({
+        where: { id },
+        data,
       });
-    return true;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
-  async deletePortfolio(portfolioId: number) {
-    await this.prismaService.portfolio
-      .delete({
-        where: { id: portfolioId },
-      })
-      .catch((e) => {
-        throw new Error(e);
+  async deletePortfolio(id: number) {
+    try {
+      return await this.prismaService.portfolio.delete({
+        where: { id },
       });
-    return true;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 }
