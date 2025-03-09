@@ -1,4 +1,4 @@
-model Gallary {
+model Gallery {
   id          Int       @id @default(autoincrement())
   title       String
   description String
