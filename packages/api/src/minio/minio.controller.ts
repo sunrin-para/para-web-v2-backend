@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Delete,
   Get,
@@ -12,6 +13,8 @@ import {
 import { MinioService } from './minio.service';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -27,6 +30,21 @@ export class MinioController {
   constructor(private readonly minioService: MinioService) {}
 
   @ApiOperation({ summary: '파일 복수 업로드' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        files: {
+          type: 'array',
+          items: {
+            type: 'string',
+            format: 'binary',
+          },
+        },
+      },
+    },
+  })
   @ApiResponse({
     status: 200,
     description: '파일 업로드 성공',
@@ -42,15 +60,19 @@ export class MinioController {
   @SetMetadata('permission', 'MANAGER')
   @UseInterceptors(FilesInterceptor('files'))
   async uploadFile(
-    @Param('type') type: string,
+    @Param('type') type: FileType,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
+    if (!files || !(type in FileType)) {
+      throw new BadRequestException();
+    }
+
     const filesUrlList: string[] = [];
     for (const file of files) {
       const fileUrl = await this.minioService.uploadFile(
         new File([file.buffer], file.originalname),
         this.minioService.generateFilename(file.originalname),
-        FileType[type.toUpperCase()],
+        type,
       );
       filesUrlList.push(fileUrl);
     }
