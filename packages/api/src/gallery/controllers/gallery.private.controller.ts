@@ -15,8 +15,10 @@ import { UpdateAlbumDto } from '@/gallery/dto/update-album.dto';
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiResponse,
   ApiResponseProperty,
 } from '@nestjs/swagger';
+import { AlbumDto } from '../dto/album.dto';
 
 @ApiBearerAuth()
 @UseGuards(AdminGuard)
@@ -26,12 +28,14 @@ export class GalleryPrivateController {
   constructor(private readonly galleryService: GalleryService) {}
 
   @ApiOperation({ summary: '앨범 생성' })
+  @ApiResponse({ type: AlbumDto })
   @Post()
   async createAlbum(@Body() createAlbumDto: CreateAlbumDto) {
     return await this.galleryService.createAlbum(createAlbumDto);
   }
 
   @ApiOperation({ summary: '앨범 수정' })
+  @ApiResponse({ type: AlbumDto })
   @Patch('/:albumId')
   async updateAlbum(
     @Param('albumId') albumId: number,
@@ -41,6 +45,7 @@ export class GalleryPrivateController {
   }
 
   @ApiOperation({ summary: '앨범 삭제' })
+  @ApiResponse({ type: Boolean })
   @Delete('/:albumId')
   async deleteAlbum(@Param('albumId') albumId: number) {
     return await this.galleryService.deleteAlbum(albumId);

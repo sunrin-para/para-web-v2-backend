@@ -75,9 +75,10 @@ export class GalleryRepository {
 
   async deleteAlbum(id: number) {
     try {
-      return await this.prismaService.gallery.delete({
+      await this.prismaService.gallery.delete({
         where: { id },
       });
+      return true;
     } catch (e) {
       throw new InternalServerErrorException(e);
     }

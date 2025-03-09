@@ -1,8 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsString } from 'class-validator';
+import { IsDate, IsNumber, IsString } from 'class-validator';
 
 export class MonoAlbumDto {
+  @IsNumber()
+  @ApiProperty({
+    description: '앨범 ID',
+    example: 1,
+  })
+  id: number;
+
   @IsString()
   @ApiProperty({
     description: '앨범 제목',
