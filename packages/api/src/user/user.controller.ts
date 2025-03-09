@@ -6,6 +6,8 @@ import {
   SetMetadata,
   UseGuards,
   Body,
+  Get,
+  Param,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -19,6 +21,7 @@ import {
   ChangePermissionDto,
 } from './dto/changeInformations.dto';
 import { AdminGuard } from '@/auth/guards/admin.guard';
+import { UserDataDto } from '@/auth/dto/user.dto';
 
 interface IRequest extends Request {
   user?: any;
@@ -30,6 +33,13 @@ interface IRequest extends Request {
 @ApiBearerAuth()
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @ApiOperation({ summary: '계정 리스트 (admin, user)' })
+  @ApiResponse({ type: UserDataDto, isArray: true })
+  @Get('/account/all/:type')
+  async getAccountList(@Param('type') type: string) {
+    return await this.userService.getAccountList(type);
+  }
 
   @ApiOperation({ summary: '비밀번호 변경' })
   @ApiResponse({ type: Boolean })

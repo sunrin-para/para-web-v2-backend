@@ -60,6 +60,10 @@ export class UserService {
         );
   }
 
+  async getAccountList(type: string) {
+    return await this.userRepository.getAccountList(type);
+  }
+
   async changePassword(
     changerEmail: string,
     userEmail: string,

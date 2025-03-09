@@ -55,6 +55,9 @@ async function bootstrap() {
     explorer: true,
     yamlDocumentUrl: 'api-docs/yaml',
     customCss: new SwaggerTheme().getBuffer(SwaggerThemeNameEnum.DARK),
+    customfavIcon:
+      'https://raw.githubusercontent.com/sunrin-para/.github/refs/heads/main/profile/favicon.ico',
+    customSiteTitle: 'PARA API Swagger',
   });
 
   await app.listen(process.env.PORT ?? 3000);
