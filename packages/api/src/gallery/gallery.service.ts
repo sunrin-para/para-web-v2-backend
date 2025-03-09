@@ -29,7 +29,13 @@ export class GalleryService {
     if (year < 2000) {
       throw new BadRequestException('2000년 이전의 앨범은 조회할 수 없습니다.');
     }
-    return await this.galleryRepository.getAlbumsByYear(year);
+    const albums = await this.galleryRepository.getAlbumsByYear(year);
+    return albums.map((album) => ({
+      id: album.id,
+      title: album.title,
+      date: album.date,
+      thumbnailUrl: album.photos[0],
+    }));
   }
 
   async getAllAlbums() {
@@ -43,6 +49,7 @@ export class GalleryService {
       }
 
       albumsByYear.get(year).push({
+        id: album.id,
         title: album.title,
         date: album.date,
         thumbnailUrl: album.photos[0],
