@@ -1,53 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateFAQDto } from '../dto/register.dto';
 import { PrismaService } from '@/common/prisma/prisma.service';
-import { FAQDto } from '../dto/get.dto';
 
 @Injectable()
 export class QuestionsRepository {
   constructor(private readonly prismaService: PrismaService) {}
-  async addFaq(createFAQDto: CreateFAQDto) {
-    const newFaq = await this.prismaService.faq
-      .create({
-        data: {
-          question: createFAQDto.question,
-          answer: createFAQDto.answer,
-        },
-      })
-      .catch((e) => {
-        throw new Error(e);
-      });
-
-    return newFaq;
+  async addFaq(data: CreateFAQDto) {
+    try {
+      return await this.prismaService.faq.create({ data });
+    } catch (e) {
+      throw new InternalServerErrorException();
+    }
   }
 
-  async getAllFaq(): Promise<FAQDto[]> {
-    const Faqs: FAQDto[] = await this.prismaService.faq.findMany();
-    return Faqs;
+  async getAllFaq() {
+    try {
+      return await this.prismaService.faq.findMany();
+    } catch (e) {
+      throw new InternalServerErrorException();
+    }
   }
 
-  async updateFaq(faqId: number, editFAQDto: CreateFAQDto) {
-    const updatedFaq = await this.prismaService.faq
-      .update({
-        where: { id: parseInt(`${faqId}`) },
-        // 수정한 데이터만 잘 반영되는지 확인.
-        data: { question: editFAQDto.question, answer: editFAQDto.answer },
-      })
-      .catch((e) => {
-        throw new Error(e);
+  async updateFaq(id: number, data: CreateFAQDto) {
+    try {
+      return await this.prismaService.faq.update({
+        where: { id },
+        data,
       });
-
-    return updatedFaq;
+    } catch (e) {
+      throw new InternalServerErrorException();
+    }
   }
 
-  async deleteFaq(faqId: number) {
-    await this.prismaService.faq
-      .delete({
-        where: { id: parseInt(`${faqId}`) },
-      })
-      .catch((e) => {
-        throw new Error(e);
+  async deleteFaq(id: number) {
+    try {
+      return await this.prismaService.faq.delete({
+        where: { id },
       });
-    return true;
+    } catch (e) {
+      throw new InternalServerErrorException();
+    }
   }
 }
