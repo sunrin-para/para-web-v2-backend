@@ -6,6 +6,7 @@ import { PrismaService } from '@/common/prisma/prisma.service';
 import { UnauthorizedExceptionFilter } from '@/common/filters/unauthorized.filter';
 import { PrismaExceptionFilter } from '@/common/filters/prisma-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
+import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -52,6 +53,7 @@ async function bootstrap() {
     jsonDocumentUrl: 'api-docs/json',
     explorer: true,
     yamlDocumentUrl: 'api-docs/yaml',
+    customCss: new SwaggerTheme().getBuffer(SwaggerThemeNameEnum.DARK),
   });
 
   await app.listen(process.env.PORT ?? 3000);

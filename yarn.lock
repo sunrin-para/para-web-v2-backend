@@ -1517,6 +1517,7 @@ __metadata:
     rxjs: "npm:^7.8.1"
     source-map-support: "npm:^0.5.21"
     supertest: "npm:^7.0.0"
+    swagger-themes: "npm:^1.4.3"
     ts-jest: "npm:^29.1.0"
     ts-loader: "npm:^9.4.3"
     ts-node: "npm:^10.9.1"
@@ -7605,6 +7606,13 @@ __metadata:
   version: 1.0.0
   resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
   checksum: 10c0/6c4032340701a9950865f7ae8ef38578d8d7053f5e10518076e6554a9381fa91bd9c6850193695c141f32b21f979c985db07265a758867bac95de05f7d8aeb39
+  languageName: node
+  linkType: hard
+
+"swagger-themes@npm:^1.4.3":
+  version: 1.4.3
+  resolution: "swagger-themes@npm:1.4.3"
+  checksum: 10c0/faaa63b1aca249c892ca3398a88deacb13ff0a5a8898048993506d389cce31f058a049d80e6632a08f82ff2b5ee48ded0516e4bd8856b02dde3ef6f66b74ee13
   languageName: node
   linkType: hard
 
