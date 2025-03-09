@@ -3,14 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { GallaryRepository } from './repository/gallary.repo';
+import { GalleryRepository } from './repository/gallery.repo';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { MonoAlbumDto } from './dto/mini-album.dto';
 
 @Injectable()
-export class GallaryService {
-  constructor(private readonly gallaryRepository: GallaryRepository) {}
+export class GalleryService {
+  constructor(private readonly galleryRepository: GalleryRepository) {}
 
   async createAlbum(
     createAlbumDto: CreateAlbumDto,
@@ -21,25 +21,25 @@ export class GallaryService {
         '등록할 앨범에 사진이 포함되지 않았습니다.',
       );
     }
-    return await this.gallaryRepository.createAlbum(createAlbumDto, fileUrls);
+    return await this.galleryRepository.createAlbum(createAlbumDto, fileUrls);
   }
 
   async getAlbumDetail(albumId: number) {
     if (albumId < 0) {
       throw new BadRequestException('albumId 값은 0보다 커야 합니다.');
     }
-    return await this.gallaryRepository.getAlbumDetail(albumId);
+    return await this.galleryRepository.getAlbumDetail(albumId);
   }
 
   async getAlbumsByYear(year: number) {
     if (year < 2000) {
       throw new BadRequestException('2000년 이전의 앨범은 조회할 수 없습니다.');
     }
-    return await this.gallaryRepository.getAlbumsByYear(year);
+    return await this.galleryRepository.getAlbumsByYear(year);
   }
 
   async getAllAlbums() {
-    const albums = await this.gallaryRepository.getAllAlbums();
+    const albums = await this.galleryRepository.getAllAlbums();
     const albumsByYear = new Map<number, MonoAlbumDto[]>();
 
     albums.forEach((album) => {
@@ -71,7 +71,7 @@ export class GallaryService {
     if (albumId < 0) {
       throw new BadRequestException('albumId 값은 0보다 커야 합니다.');
     }
-    const album = await this.gallaryRepository.findById(albumId);
+    const album = await this.galleryRepository.findById(albumId);
     if (!album) {
       throw new NotFoundException('Album not found');
     }
@@ -89,7 +89,7 @@ export class GallaryService {
     }
 
     updatedPhotos = [...updatedPhotos, ...newPhotos];
-    return await this.gallaryRepository.updateAlbum(
+    return await this.galleryRepository.updateAlbum(
       albumId,
       updateAlbumDto,
       updatedPhotos,
@@ -100,6 +100,6 @@ export class GallaryService {
     if (albumId < 0) {
       throw new BadRequestException('albumId 값은 0보다 커야 합니다.');
     }
-    return await this.gallaryRepository.deleteAlbum(albumId);
+    return await this.galleryRepository.deleteAlbum(albumId);
   }
 }

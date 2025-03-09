@@ -4,11 +4,11 @@ import { CreateAlbumDto } from '../dto/create-album.dto';
 import { UpdateAlbumDto } from '../dto/update-album.dto';
 
 @Injectable()
-export class GallaryRepository {
+export class GalleryRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findById(albumId: number) {
-    const album = await this.prismaService.gallary
+    const album = await this.prismaService.gallery
       .findFirst({
         where: { id: albumId },
       })
@@ -19,7 +19,7 @@ export class GallaryRepository {
   }
 
   async createAlbum(createAlbumDto: CreateAlbumDto, fileUrls: Array<string>) {
-    const album = await this.prismaService.gallary
+    const album = await this.prismaService.gallery
       .create({
         data: { photos: fileUrls, ...createAlbumDto },
       })
@@ -30,7 +30,7 @@ export class GallaryRepository {
   }
 
   async getAlbumDetail(albumId: number) {
-    const album = await this.prismaService.gallary
+    const album = await this.prismaService.gallery
       .findUnique({
         where: { id: albumId },
       })
@@ -41,7 +41,7 @@ export class GallaryRepository {
   }
 
   async getAlbumsByYear(year: number) {
-    const albums = await this.prismaService.gallary
+    const albums = await this.prismaService.gallery
       .findMany({
         where: {
           AND: [
@@ -57,7 +57,7 @@ export class GallaryRepository {
   }
 
   async getAllAlbums() {
-    const albums = await this.prismaService.gallary
+    const albums = await this.prismaService.gallery
       .findMany({
         orderBy: {
           date: 'desc',
@@ -74,7 +74,7 @@ export class GallaryRepository {
     updateAlbumDto: UpdateAlbumDto,
     photosArray: Array<string>,
   ) {
-    const album = await this.prismaService.gallary
+    const album = await this.prismaService.gallery
       .update({
         where: { id: albumId },
         data: { photos: photosArray, ...updateAlbumDto },
@@ -86,7 +86,7 @@ export class GallaryRepository {
   }
 
   async deleteAlbum(albumId: number) {
-    await this.prismaService.gallary
+    await this.prismaService.gallery
       .delete({
         where: { id: albumId },
       })

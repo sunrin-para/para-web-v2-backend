@@ -9,7 +9,7 @@ import { AwardsModule } from './awards/awards.module';
 import { MembersModule } from './members/members.module';
 import { MinioModule } from './minio/minio.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
-import { GallaryModule } from './gallary/gallary.module';
+import { GalleryModule } from './gallery/gallery.module';
 import { ApplyModule } from './apply/apply.module';
 import { ConfigModule } from '@nestjs/config';
 
@@ -27,7 +27,7 @@ import { ConfigModule } from '@nestjs/config';
     MembersModule,
     MinioModule,
     PortfolioModule,
-    GallaryModule,
+    GalleryModule,
     ApplyModule,
   ],
   providers: [PrismaService, UserService],

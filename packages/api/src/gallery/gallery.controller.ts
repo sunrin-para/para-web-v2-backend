@@ -11,22 +11,27 @@ import {
   UseInterceptors,
   UploadedFiles,
 } from '@nestjs/common';
-import { GallaryService } from './gallary.service';
+import { GalleryService } from './gallery.service';
 import { AdminGuard } from '@/auth/guards/admin.guard';
 import { MinioService } from '@/minio/minio.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { FileType } from '@/common/enums/FileType.enum';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-@Controller('gallary')
-export class GallaryController {
+@Controller('gallery')
+export class GalleryController {
   constructor(
-    private readonly gallaryService: GallaryService,
+    private readonly galleryService: GalleryService,
     private readonly minioService: MinioService,
   ) {}
 
+  @ApiOperation({ summary: '앨범 생성' })
+  @ApiResponse({
+    status: 200,
+    description: '앨범 생성 성공',
+  })
   @ApiBearerAuth()
   @Post()
   @UseGuards(AdminGuard)
@@ -41,26 +46,26 @@ export class GallaryController {
       const fileUrl = await this.minioService.uploadFile(
         new File([file.buffer], file.originalname),
         this.minioService.generateFilename(file.originalname),
-        FileType.GALLARY,
+        FileType.GALLERY,
       );
       filesUrlList.push(fileUrl);
     }
-    return await this.gallaryService.createAlbum(createAlbumDto, filesUrlList);
+    return await this.galleryService.createAlbum(createAlbumDto, filesUrlList);
   }
 
   @Get('/detail/:albumId')
   async getAlbumDetail(@Param('albumId') albumId: number) {
-    return await this.gallaryService.getAlbumDetail(albumId);
+    return await this.galleryService.getAlbumDetail(albumId);
   }
 
   @Get()
   async getAllAlbums() {
-    return await this.gallaryService.getAllAlbums();
+    return await this.galleryService.getAllAlbums();
   }
 
   @Get('/year/:year')
   async getAlbumsByYear(@Param('year') year: number) {
-    const albums = await this.gallaryService.getAlbumsByYear(year);
+    const albums = await this.galleryService.getAlbumsByYear(year);
     return {
       year,
       albums: albums.map((album) => ({
@@ -88,13 +93,13 @@ export class GallaryController {
         const fileUrl = await this.minioService.uploadFile(
           new File([file.buffer], file.originalname),
           this.minioService.generateFilename(file.originalname),
-          FileType.GALLARY,
+          FileType.GALLERY,
         );
         newPhotosUrls.push(fileUrl);
       }
     }
 
-    return await this.gallaryService.updateAlbum(
+    return await this.galleryService.updateAlbum(
       albumId,
       updateAlbumDto,
       newPhotosUrls,
@@ -106,6 +111,6 @@ export class GallaryController {
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
   async deleteAlbum(@Param('albumId') albumId: number) {
-    return await this.gallaryService.deleteAlbum(albumId);
+    return await this.galleryService.deleteAlbum(albumId);
   }
 }
