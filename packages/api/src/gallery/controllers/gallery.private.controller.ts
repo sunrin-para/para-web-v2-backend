@@ -12,7 +12,11 @@ import { GalleryService } from '@/gallery/gallery.service';
 import { AdminGuard } from '@/auth/guards/admin.guard';
 import { CreateAlbumDto } from '@/gallery/dto/create-album.dto';
 import { UpdateAlbumDto } from '@/gallery/dto/update-album.dto';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponseProperty,
+} from '@nestjs/swagger';
 
 @ApiBearerAuth()
 @UseGuards(AdminGuard)
