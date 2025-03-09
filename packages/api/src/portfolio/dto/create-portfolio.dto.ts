@@ -64,7 +64,6 @@ export class CreatePortfolioDto {
   @ApiProperty({
     description: '프로젝트 링크',
     example: 'https://para.sunrint.hs.kr',
-    required: false,
   })
   @IsOptional()
   @IsString()
@@ -73,7 +72,6 @@ export class CreatePortfolioDto {
   @ApiProperty({
     description: '깃허브 링크',
     example: 'https://github.com/para/website',
-    required: false,
   })
   @IsOptional()
   @IsString()
@@ -82,18 +80,14 @@ export class CreatePortfolioDto {
   @ApiProperty({
     description: '썸네일 이미지 URL',
     example: 'https://example.com/thumbnail.jpg',
-    required: false,
   })
-  @IsOptional()
   @IsString()
-  thumbnail?: string;
+  thumbnail: string;
 
   @ApiProperty({
     description: '파일 경로',
     example: '/uploads/portfolio/123.pdf',
-    required: false,
   })
-  @IsOptional()
   @IsString()
-  filePath?: string;
+  filePath: string;
 }
