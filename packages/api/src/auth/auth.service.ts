@@ -150,9 +150,7 @@ export class AuthService {
       throw new InternalServerErrorException();
     }
 
-    return {
-      result: true,
-    };
+    return true;
   }
 
   /* 여기서부터 토큰 관리 함수들입니다. */

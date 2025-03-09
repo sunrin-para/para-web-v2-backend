@@ -9,7 +9,7 @@ export class GalleryRepository {
 
   async findById(id: number) {
     try {
-      return await this.prismaService.gallery.findFirst({
+      return await this.prismaService.gallery.findUnique({
         where: { id },
       });
     } catch (e) {

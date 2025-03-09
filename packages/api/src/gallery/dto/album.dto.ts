@@ -32,6 +32,7 @@ export class AlbumDto {
       'https://example.com/photo1.jpg',
       'https://example.com/photo2.jpg',
     ],
+    items: { type: 'string' },
   })
   photos: string[];
 

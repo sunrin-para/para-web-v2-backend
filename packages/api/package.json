@@ -1,7 +1,7 @@
 {
   "name": "@sunrin-para/api",
-  "version": "0.0.1",
-  "description": "",
+  "version": "1.0.1",
+  "description": "PARA API for PARA Web v2",
   "author": {
     "name": "Juan Lee",
     "email": "iam@juany.dev",

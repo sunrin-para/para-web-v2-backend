@@ -8,9 +8,11 @@ import { PrismaExceptionFilter } from '@/common/filters/prisma-exception.filter'
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 import { NegativeNumberPipe } from './common/pipes/negative-number.pipe';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const configService = new ConfigService();
 
   app.useGlobalFilters(
     new UnauthorizedExceptionFilter(),
@@ -43,9 +45,9 @@ async function bootstrap() {
   await prismaService.enableShutdownHooks(app);
 
   const config = new DocumentBuilder()
-    .setTitle(process.env.NAME)
-    .setDescription(process.env.DESCRIPTION)
-    .setVersion(process.env.VERSION)
+    .setTitle(configService.get<string>('NAME'))
+    .setDescription(configService.get<string>('DESCRIPTION'))
+    .setVersion(configService.get<string>('VERSION'))
     .addBearerAuth()
     .build();
 
@@ -60,7 +62,7 @@ async function bootstrap() {
     customSiteTitle: 'PARA API Swagger',
   });
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(configService.get<number>('PORT') ?? 3000);
 }
 
 bootstrap()
