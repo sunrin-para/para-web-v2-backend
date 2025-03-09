@@ -7,6 +7,7 @@ import { UnauthorizedExceptionFilter } from '@/common/filters/unauthorized.filte
 import { PrismaExceptionFilter } from '@/common/filters/prisma-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
+import { NegativeNumberPipe } from './common/pipes/negative-number.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -21,6 +22,7 @@ async function bootstrap() {
       transform: true,
       forbidNonWhitelisted: true,
     }),
+    new NegativeNumberPipe(),
   );
 
   app.enableCors({
