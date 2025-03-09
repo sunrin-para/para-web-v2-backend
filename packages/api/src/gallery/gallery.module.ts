@@ -6,6 +6,6 @@ import { MinioService } from '@/minio/minio.service';
 
 @Module({
   controllers: [GalleryController],
-  providers: [GalleryRepository, GalleryService, MinioService],
+  providers: [GalleryRepository, GalleryService],
 })
 export class GalleryModule {}

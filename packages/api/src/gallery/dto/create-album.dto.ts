@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsString } from 'class-validator';
+import { IsArray, IsDate, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateAlbumDto {
@@ -16,6 +16,17 @@ export class CreateAlbumDto {
     example: '2024년도 선린인터넷고등학교 축제 사진 모음',
   })
   description: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @ApiProperty({
+    description: '앨범 사진 URL 목록',
+    example: [
+      'https://example.com/photo1.jpg',
+      'https://example.com/photo2.jpg',
+    ],
+  })
+  photos: string[];
 
   @IsDate()
   @Type(() => Date)
