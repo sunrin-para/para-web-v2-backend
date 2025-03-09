@@ -12,16 +12,13 @@ import { MonoAlbumDto } from './dto/mini-album.dto';
 export class GalleryService {
   constructor(private readonly galleryRepository: GalleryRepository) {}
 
-  async createAlbum(
-    createAlbumDto: CreateAlbumDto,
-    fileUrls: Array<string> = [],
-  ) {
-    if (fileUrls.length < 1) {
+  async createAlbum(createAlbumDto: CreateAlbumDto) {
+    if (createAlbumDto.photos.length < 1) {
       throw new BadRequestException(
         '등록할 앨범에 사진이 포함되지 않았습니다.',
       );
     }
-    return await this.galleryRepository.createAlbum(createAlbumDto, fileUrls);
+    return await this.galleryRepository.createAlbum(createAlbumDto);
   }
 
   async getAlbumDetail(albumId: number) {
@@ -63,37 +60,17 @@ export class GalleryService {
       .sort((a, b) => b.year - a.year);
   }
 
-  async updateAlbum(
-    albumId: number,
-    updateAlbumDto: UpdateAlbumDto,
-    newPhotos: string[] = [],
-  ) {
+  async updateAlbum(albumId: number, updateAlbumDto: UpdateAlbumDto) {
     if (albumId < 0) {
       throw new BadRequestException('albumId 값은 0보다 커야 합니다.');
     }
+
     const album = await this.galleryRepository.findById(albumId);
     if (!album) {
       throw new NotFoundException('Album not found');
     }
 
-    let updatedPhotos = [...album.photos];
-    if (updateAlbumDto.deletedPhotoIndexes) {
-      const sortedIndexes = [...updateAlbumDto.deletedPhotoIndexes].sort(
-        (a, b) => b - a,
-      );
-      for (const index of sortedIndexes) {
-        if (index >= 0 && index < updatedPhotos.length) {
-          updatedPhotos.splice(index, 1);
-        }
-      }
-    }
-
-    updatedPhotos = [...updatedPhotos, ...newPhotos];
-    return await this.galleryRepository.updateAlbum(
-      albumId,
-      updateAlbumDto,
-      updatedPhotos,
-    );
+    return await this.galleryRepository.updateAlbum(albumId, updateAlbumDto);
   }
 
   async deleteAlbum(albumId: number) {

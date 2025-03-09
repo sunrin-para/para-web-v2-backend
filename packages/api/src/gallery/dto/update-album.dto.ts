@@ -21,6 +21,17 @@ export class UpdateAlbumDto {
   })
   description?: string;
 
+  @IsArray()
+  @IsString({ each: true })
+  @ApiProperty({
+    description: '앨범 사진 URL 목록',
+    example: [
+      'https://example.com/photo1.jpg',
+      'https://example.com/photo2.jpg',
+    ],
+  })
+  photos: string[];
+
   @IsDate()
   @IsOptional()
   @Type(() => Date)
@@ -30,19 +41,4 @@ export class UpdateAlbumDto {
     required: false,
   })
   date?: Date;
-
-  @IsArray()
-  @IsOptional()
-  @Type(() => Array)
-  @ApiProperty({
-    description: '삭제할 사진 인덱스 배열',
-    example: [0, 1, 2],
-    required: false,
-    type: [Number],
-    items: {
-      type: 'number',
-      example: 0,
-    },
-  })
-  deletedPhotoIndexes?: number[];
 }

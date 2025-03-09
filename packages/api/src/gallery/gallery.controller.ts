@@ -13,25 +13,26 @@ import {
 } from '@nestjs/common';
 import { GalleryService } from './gallery.service';
 import { AdminGuard } from '@/auth/guards/admin.guard';
-import { MinioService } from '@/minio/minio.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { FileType } from '@/common/enums/FileType.enum';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 
 @Controller('gallery')
 export class GalleryController {
-  constructor(
-    private readonly galleryService: GalleryService,
-    private readonly minioService: MinioService,
-  ) {}
+  constructor(private readonly galleryService: GalleryService) {}
 
   @ApiOperation({ summary: '앨범 생성' })
   @ApiResponse({
     status: 200,
     description: '앨범 생성 성공',
   })
+  @ApiBody({ type: CreateAlbumDto })
   @ApiBearerAuth()
   @Post()
   @UseGuards(AdminGuard)
@@ -41,16 +42,7 @@ export class GalleryController {
     @Body() createAlbumDto: CreateAlbumDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    const filesUrlList: string[] = [];
-    for (const file of files) {
-      const fileUrl = await this.minioService.uploadFile(
-        new File([file.buffer], file.originalname),
-        this.minioService.generateFilename(file.originalname),
-        FileType.GALLERY,
-      );
-      filesUrlList.push(fileUrl);
-    }
-    return await this.galleryService.createAlbum(createAlbumDto, filesUrlList);
+    return await this.galleryService.createAlbum(createAlbumDto);
   }
 
   @Get('/detail/:albumId')
@@ -58,11 +50,22 @@ export class GalleryController {
     return await this.galleryService.getAlbumDetail(albumId);
   }
 
+  @ApiOperation({ summary: '모든 앨범 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '모든 앨범 조회 성공',
+    
+  })
   @Get()
   async getAllAlbums() {
     return await this.galleryService.getAllAlbums();
   }
 
+  @ApiOperation({ summary: '연도별 앨범 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '연도별 앨범 조회 성공',
+  })
   @Get('/year/:year')
   async getAlbumsByYear(@Param('year') year: number) {
     const albums = await this.galleryService.getAlbumsByYear(year);
@@ -76,6 +79,12 @@ export class GalleryController {
     };
   }
 
+  @ApiOperation({ summary: '앨범 수정' })
+  @ApiResponse({
+    status: 200,
+    description: '앨범 수정 성공',
+  })
+  @ApiBody({ type: UpdateAlbumDto })
   @ApiBearerAuth()
   @Patch('/:albumId')
   @UseGuards(AdminGuard)
@@ -84,28 +93,15 @@ export class GalleryController {
   async updateAlbum(
     @Param('albumId') albumId: number,
     @Body() updateAlbumDto: UpdateAlbumDto,
-    @UploadedFiles() files?: Array<Express.Multer.File>,
   ) {
-    const newPhotosUrls: string[] = [];
-
-    if (files && files.length > 0) {
-      for (const file of files) {
-        const fileUrl = await this.minioService.uploadFile(
-          new File([file.buffer], file.originalname),
-          this.minioService.generateFilename(file.originalname),
-          FileType.GALLERY,
-        );
-        newPhotosUrls.push(fileUrl);
-      }
-    }
-
-    return await this.galleryService.updateAlbum(
-      albumId,
-      updateAlbumDto,
-      newPhotosUrls,
-    );
+    return await this.galleryService.updateAlbum(albumId, updateAlbumDto);
   }
 
+  @ApiOperation({ summary: '앨범 삭제' })
+  @ApiResponse({
+    status: 200,
+    description: '앨범 삭제 성공',
+  })
   @ApiBearerAuth()
   @Delete('/:albumId')
   @UseGuards(AdminGuard)

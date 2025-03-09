@@ -21,6 +21,28 @@ export class MinioService {
     return `https://${env.MINIO_URL}/${env.BUCKET_NAME}/${path}`;
   }
 
+  async getFile(type: FileType, filename: string) {
+    const minioClient = new Minio.Client({
+      endPoint: env.MINIO_URL,
+      useSSL: true,
+      accessKey: env.MINIO_ACCESS_KEY,
+      secretKey: env.MINIO_SECRET_KEY,
+    });
+    const path = type ? `${type}/${filename}` : filename;
+    return await minioClient.presignedGetObject(env.BUCKET_NAME, path);
+  }
+
+  async deleteFile(type: FileType, filename: string) {
+    const minioClient = new Minio.Client({
+      endPoint: env.MINIO_URL,
+      useSSL: true,
+      accessKey: env.MINIO_ACCESS_KEY,
+      secretKey: env.MINIO_SECRET_KEY,
+    });
+    const path = type ? `${type}/${filename}` : filename;
+    await minioClient.removeObject(env.BUCKET_NAME, path);
+  }
+
   generateFilename(originalname): string {
     const extension = originalname.split('.').pop();
     return `${uuidv4()}.${extension}`;
