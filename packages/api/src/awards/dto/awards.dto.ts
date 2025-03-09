@@ -1,7 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsDate, IsNumber, IsString } from 'class-validator';
 
-export class CreateAwardsDto {
+export class AwardsDto {
+  @ApiProperty({
+    description: '실적 Id',
+    example: 1,
+  })
+  @IsNumber()
+  id: number;
+
   @ApiProperty({
     description: '수상 이름',
     example: '전국 정보올림피아드 대상',
@@ -28,4 +35,18 @@ export class CreateAwardsDto {
   })
   @IsNumber()
   year: number;
+
+  @ApiProperty({
+    description: '수상 기록 생성일',
+    example: '2023-01-01T00:00:00.000Z',
+  })
+  @IsDate()
+  createdAt: Date;
+
+  @ApiProperty({
+    description: '수상 기록 수정일',
+    example: '2023-01-01T00:00:00.000Z',
+  })
+  @IsDate()
+  updatedAt: Date;
 }
