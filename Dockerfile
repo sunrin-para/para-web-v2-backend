@@ -15,7 +15,7 @@ ENV DATABASE_URL=${DATABASE_URL}
 
 RUN yarn db generate
 RUN echo "DATABASE_URL: ${DATABASE_URL}"
-RUN DATABASE_URL=${DATABASE_URL} yarn prisma migrate deploy || true
+RUN DATABASE_URL=${DATABASE_URL} yarn db prisma migrate deploy || true
 
 EXPOSE 3000
 
