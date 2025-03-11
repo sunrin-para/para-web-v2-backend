@@ -23,10 +23,7 @@ import { SignInDto } from './dto/sign-in.dto';
 import { UserDataDto } from './dto/user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GoogleUserDto } from './dto/google-user.dto';
-
-interface IRequest extends Request {
-  user?: any;
-}
+import { TokenResponseDto } from './dto/token-response.dto';
 
 @ApiTags('Authorization')
 @Controller('auth')
@@ -39,17 +36,7 @@ export class AuthController {
   async googleSignIn() {}
 
   @ApiOperation({ summary: '구글 로그인 리다이렉트' })
-  @ApiResponse({
-    status: 200,
-    description: '토큰 발급 성공',
-    schema: {
-      type: 'object',
-      properties: {
-        accessToken: { type: 'string' },
-        refreshToken: { type: 'string' },
-      },
-    },
-  })
+  @ApiResponse({ type: TokenResponseDto })
   @Get('/google/redirect')
   @UseGuards(AuthGuard('google'))
   async googleRedirection(
@@ -58,25 +45,19 @@ export class AuthController {
       user: GoogleUserDto;
     },
   ) {
-    return await this.authService.handleGoogleSignIn(req.user, req);
+    return await this.authService.handleGoogleSignIn(req.user);
   }
 
   @ApiOperation({ summary: '일반 로그인' })
-  @ApiBody({ type: SignInDto })
-  @ApiResponse({
-    status: 200,
-    description: '로그인 성공',
-    schema: {
-      type: 'object',
-      properties: {
-        accessToken: { type: 'string' },
-        refreshToken: { type: 'string' },
-      },
-    },
-  })
-  @ApiResponse({ status: 400, description: '이메일 또는 비밀번호가 누락됨' })
+  @ApiResponse({ type: TokenResponseDto })
   @Post('/signin')
-  async signIn(@Body() signInDto: SignInDto, @Req() req: IRequest) {
+  async signIn(
+    @Body() signInDto: SignInDto,
+    @Req()
+    req: Request & {
+      user: UserDataDto;
+    },
+  ) {
     return await this.authService.handleSignIn(signInDto, req);
   }
 
@@ -119,7 +100,12 @@ export class AuthController {
   @ApiBearerAuth()
   @Get('/logout')
   @UseGuards(UserGuard)
-  async logout(@Req() req: IRequest) {
+  async logout(
+    @Req()
+    req: Request & {
+      user: UserDataDto;
+    },
+  ) {
     return await this.authService.signOut(req.user?.email);
   }
 }

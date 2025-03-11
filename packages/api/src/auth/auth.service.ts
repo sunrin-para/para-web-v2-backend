@@ -34,7 +34,7 @@ export class AuthService {
     private readonly tokenRepository: TokenRepository,
     private readonly httpService: HttpService,
   ) {}
-  async handleGoogleSignIn(googleUser: GoogleUserDto, req: IRequest) {
+  async handleGoogleSignIn(googleUser: GoogleUserDto) {
     const existingUser = await this.userService.findUserByEmail(
       googleUser.email,
     );
@@ -102,7 +102,12 @@ export class AuthService {
     );
   }
 
-  async handleSignIn(signInDto: SignInDto, req: IRequest) {
+  async handleSignIn(
+    signInDto: SignInDto,
+    req: Request & {
+      user: UserDataDto;
+    },
+  ) {
     if (!signInDto.email || !signInDto.password) {
       throw new BadRequestException('Email or Password is null.');
     }

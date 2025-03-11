@@ -1,41 +1,25 @@
-# Base image
 FROM node:latest
 
-# Create app directory
+COPY . /app
 WORKDIR /app
 
-# Install PM2 globally
-RUN npm install -g pm2
-
-# Install yarn
+ENV TZ=Asia/Seoul
 RUN corepack enable && corepack prepare yarn@stable --activate
-
-# Copy package files
-COPY package*.json yarn.lock ./
-
-# Install dependencies
 RUN yarn install
 
-# ✅ 환경 변수를 Docker 컨테이너에서 인식하도록 설정
+WORKDIR /app/package/database
+
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
 
-# ✅ Prisma 관련 파일 복사
-COPY prisma ./prisma
 
-# ✅ Prisma Client 설치 및 생성
-RUN yarn add @prisma/client && yarn prisma generate
-
+RUN yarn db generate
 RUN echo "DATABASE_URL: ${DATABASE_URL}"
-
-# ✅ Prisma 마이그레이션 실행 (환경 변수 직접 전달)
 RUN DATABASE_URL=${DATABASE_URL} yarn prisma migrate deploy || true
 
-# Copy app source
-COPY . .
+EXPOSE 3000
 
-# Build the application
-RUN yarn run build
+WORKDIR /app
+RUN yarn api build
 
-# Start the server using PM2
-CMD ["pm2-runtime", "start", "ecosystem.config.js"]
+CMD [ "yarn", "api", "start" ]

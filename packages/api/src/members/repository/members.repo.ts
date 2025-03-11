@@ -2,11 +2,12 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '@/common/prisma/prisma.service';
 import { MemberDto } from '../dto/member.dto';
 import { UpdateMemberDto } from '../dto/update-member.dto';
+import { CreateMemberDto } from '../dto/create-member.dto';
 
 @Injectable()
 export class MembersRepository {
   constructor(private readonly prismaService: PrismaService) {}
-  async registerMember(data: MemberDto) {
+  async registerMember(data: CreateMemberDto) {
     try {
       return await this.prismaService.member.create({ data });
     } catch (e) {
@@ -14,7 +15,7 @@ export class MembersRepository {
     }
   }
 
-  async getAllMembers(): Promise<MemberDto[]> {
+  async getAllMembers() {
     try {
       return await this.prismaService.member.findMany();
     } catch (e) {
@@ -22,7 +23,7 @@ export class MembersRepository {
     }
   }
 
-  async getMembersByGeneration(generation: number): Promise<MemberDto[]> {
+  async getMembersByGeneration(generation: number) {
     try {
       return await this.prismaService.member.findMany({
         where: { generation },

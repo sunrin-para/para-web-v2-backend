@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { MemberDto } from './dto/member.dto';
 import { MembersRepository } from './repository/members.repo';
 import { UpdateMemberDto } from './dto/update-member.dto';
+import { CreateMemberDto } from './dto/create-member.dto';
 
 @Injectable()
 export class MembersService {
   constructor(private readonly memberRepository: MembersRepository) {}
-  async createMember(createMemberDto: MemberDto) {
+  async createMember(createMemberDto: CreateMemberDto) {
     return await this.memberRepository.registerMember(createMemberDto);
   }
 
