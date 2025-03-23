@@ -33,7 +33,7 @@ export class MembersRepository {
     }
   }
 
-  async getMemberDetail(id: number) {
+  async getMemberDetail(id: string) {
     try {
       return await this.prismaService.member.findUnique({
         where: { id },
@@ -43,7 +43,7 @@ export class MembersRepository {
     }
   }
 
-  async updateMemberDetail(id: number, data?: UpdateMemberDto) {
+  async updateMemberDetail(id: string, data?: UpdateMemberDto) {
     try {
       return await this.prismaService.member.update({
         where: { id },
@@ -54,7 +54,7 @@ export class MembersRepository {
     }
   }
 
-  async deleteMember(id: number) {
+  async deleteMember(id: string) {
     try {
       return await this.prismaService.member.delete({
         where: { id },

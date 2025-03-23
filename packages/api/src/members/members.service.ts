@@ -18,24 +18,24 @@ export class MembersService {
     return await this.memberRepository.getMembersByGeneration(generation);
   }
 
-  async getMemberDetail(memberId: number) {
-    return await this.memberRepository.getMemberDetail(memberId);
+  async getMemberDetail(memberUUID: string) {
+    return await this.memberRepository.getMemberDetail(memberUUID);
   }
 
   async updateMemberDetail(
-    memberId: number,
+    memberUUID: string,
     updateMemberDto?: UpdateMemberDto,
   ) {
     if (!updateMemberDto) {
       throw new BadRequestException('수정할 값을 전송해주세요!');
     }
     return await this.memberRepository.updateMemberDetail(
-      memberId,
+      memberUUID,
       updateMemberDto,
     );
   }
 
-  async deleteMember(memberId: number) {
-    return await this.memberRepository.deleteMember(memberId);
+  async deleteMember(memberUUID: string) {
+    return await this.memberRepository.deleteMember(memberUUID);
   }
 }
