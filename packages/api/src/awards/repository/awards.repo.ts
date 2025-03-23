@@ -13,10 +13,33 @@ export class AwardsRepository {
     }
   }
 
+  async getAllAwards() {
+    try {
+      return await this.prismaService.award.findMany();
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
   async getAwardsHistoryByYear(year: number) {
     try {
       return await this.prismaService.award.findMany({
         where: { year },
+      });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  async searchAwardsByKeyword(keyword: string) {
+    try {
+      return this.prismaService.award.findMany({
+        where: {
+          name: {
+            contains: keyword,
+            mode: 'insensitive',
+          },
+        },
       });
     } catch (e) {
       throw new InternalServerErrorException(e);

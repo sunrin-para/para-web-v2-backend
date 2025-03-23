@@ -1,8 +1,12 @@
 model Gallery {
   id          Int       @id @default(autoincrement())
+
   title       String
   description String
   photos      String[]
+
+  participatedMembers   Member[]
+
   date        DateTime
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

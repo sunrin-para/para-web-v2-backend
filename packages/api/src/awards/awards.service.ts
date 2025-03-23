@@ -10,9 +10,13 @@ export class AwardsService {
     return await this.awardsRepository.createAwardsHistory(createAwardsDto);
   }
 
+  async getAllAwards() {}
+
   async getAwardsHistoryByYear(year: number) {
     return await this.awardsRepository.getAwardsHistoryByYear(year);
   }
+
+  async searchAwardsByKeyword(keyword: string) {}
 
   async updateAwardsHistory(awardId: number, updateAwardDto: CreateAwardsDto) {
     return await this.awardsRepository.updateAwardHistory(
