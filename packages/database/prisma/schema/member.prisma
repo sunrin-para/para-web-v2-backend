@@ -21,7 +21,7 @@ model Member {
 model GalleryParticipation {
   id        String   @id @default(uuid())
   gallery   Gallery  @relation(fields: [galleryId], references: [id])
-  galleryId Int
+  galleryId String
   member    Member   @relation(fields: [memberId], references: [id])
   memberId  String
 
