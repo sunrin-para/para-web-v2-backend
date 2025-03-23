@@ -15,8 +15,8 @@ export class PortfolioService {
     return await this.portfolioRepository.searchPortfolioByName(keyword);
   }
 
-  async getPortfolioDetail(portfolioId: number) {
-    return await this.portfolioRepository.getPortfolioDetail(portfolioId);
+  async getPortfolioDetail(portfolioUUID: string) {
+    return await this.portfolioRepository.getPortfolioDetail(portfolioUUID);
   }
 
   async getPortfoliosByCategory(category: string) {
@@ -32,19 +32,19 @@ export class PortfolioService {
   }
 
   async updatePortfolio(
-    portfolioId: number,
+    portfolioUUID: string,
     updatePortfolioDto?: Partial<UpdatePortfolioDto>,
   ) {
     if (!updatePortfolioDto) {
       throw new BadRequestException('수정할 정보가 제공되지 않았습니다.');
     }
     return await this.portfolioRepository.updatePortfolio(
-      portfolioId,
+      portfolioUUID,
       updatePortfolioDto,
     );
   }
 
-  async deletePortfolio(portfolioId: number) {
-    return await this.portfolioRepository.deletePortfolio(portfolioId);
+  async deletePortfolio(portfolioUUID: string) {
+    return await this.portfolioRepository.deletePortfolio(portfolioUUID);
   }
 }

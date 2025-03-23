@@ -17,8 +17,8 @@ export class PortfolioPublicController {
   @ApiOperation({ summary: '포트폴리오 상세 조회' })
   @ApiResponse({ type: PortfolioDto })
   @Get('/id/:id')
-  async getPortfolioDetail(@Param('id') portfolioId: number) {
-    return await this.portfolioService.getPortfolioDetail(portfolioId);
+  async getPortfolioDetail(@Param('id') portfolioUUID: string) {
+    return await this.portfolioService.getPortfolioDetail(portfolioUUID);
   }
 
   @ApiOperation({ summary: '카테고리별 포트폴리오 조회' })

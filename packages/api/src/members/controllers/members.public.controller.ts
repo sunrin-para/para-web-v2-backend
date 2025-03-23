@@ -23,8 +23,8 @@ export class MembersPublicController {
 
   @ApiOperation({ summary: '부원 상세 정보 조회' })
   @ApiResponse({ type: MemberDto })
-  @Get('/id/:memberId')
-  async getMemberDetail(@Param('memberId') memberId: number) {
-    return await this.membersService.getMemberDetail(memberId);
+  @Get('/id/:memberUUID')
+  async getMemberDetail(@Param('memberUUID') memberUUID: string) {
+    return await this.membersService.getMemberDetail(memberUUID);
   }
 }

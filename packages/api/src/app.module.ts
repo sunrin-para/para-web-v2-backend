@@ -10,7 +10,6 @@ import { MembersModule } from './members/members.module';
 import { MinioModule } from './minio/minio.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { GalleryModule } from './gallery/gallery.module';
-import { ApplyModule } from './apply/apply.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
@@ -28,7 +27,6 @@ import { ConfigModule } from '@nestjs/config';
     MinioModule,
     PortfolioModule,
     GalleryModule,
-    ApplyModule,
   ],
   providers: [PrismaService, UserService],
 })

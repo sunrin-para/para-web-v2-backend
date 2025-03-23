@@ -31,21 +31,21 @@ export class MembersPrivateController {
 
   @ApiOperation({ summary: '부원 정보 수정' })
   @ApiResponse({ type: MemberDto })
-  @Patch('/:memberId')
+  @Patch('/:memberUUID')
   async updateMemberDetail(
-    @Param('memberId') memberId: number,
+    @Param('memberUUID') memberUUID: string,
     @Body() updateMemberDto?: UpdateMemberDto,
   ) {
     return await this.membersService.updateMemberDetail(
-      memberId,
+      memberUUID,
       updateMemberDto,
     );
   }
 
   @ApiOperation({ summary: '부원 정보 삭제' })
   @ApiResponse({ type: Boolean })
-  @Delete('/:memberId')
-  async deleteMember(@Param('memberId') memberId: number) {
-    return await this.membersService.deleteMember(memberId);
+  @Delete('/:memberUUID')
+  async deleteMember(@Param('memberUUID') memberUUID: string) {
+    return await this.membersService.deleteMember(memberUUID);
   }
 }

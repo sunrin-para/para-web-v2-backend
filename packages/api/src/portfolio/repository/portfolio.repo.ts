@@ -29,7 +29,7 @@ export class PortfolioRepository {
     }
   }
 
-  async getPortfolioDetail(id: number) {
+  async getPortfolioDetail(id: string) {
     try {
       return await this.prismaService.portfolio.findUnique({
         where: { id },
@@ -79,7 +79,7 @@ export class PortfolioRepository {
     }
   }
 
-  async updatePortfolio(id: number, data: UpdatePortfolioDto) {
+  async updatePortfolio(id: string, data: UpdatePortfolioDto) {
     try {
       return await this.prismaService.portfolio.update({
         where: { id },
@@ -90,7 +90,7 @@ export class PortfolioRepository {
     }
   }
 
-  async deletePortfolio(id: number) {
+  async deletePortfolio(id: string) {
     try {
       return await this.prismaService.portfolio.delete({
         where: { id },
