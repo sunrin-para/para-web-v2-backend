@@ -1,16 +1,3 @@
-enum SNSType {
-  discord
-  github
-  instagram
-  solvedac
-  email
-}
-
-model SNS {
-  id        String    @id @default(uuid())
-  type      String    
-}
-
 model Member {
   id            String      @id @default(uuid())
   generation    Int
@@ -24,6 +11,19 @@ model Member {
   instagram     String?
   solvedac      String?
   email         String?
+  
+  participations GalleryParticipation[]
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+model GalleryParticipation {
+  id        String   @id @default(uuid())
+  gallery   Gallery  @relation(fields: [galleryId], references: [id])
+  galleryId Int
+  member    Member   @relation(fields: [memberId], references: [id])
+  memberId  String
+
+  @@unique([galleryId, memberId])
 }
