@@ -5,7 +5,7 @@ model Gallery {
   description String
   photos      String[]
 
-  // participatedMembers   Member[]
+  participations GalleryParticipation[]
 
   date        DateTime
   createdAt   DateTime  @default(now())
