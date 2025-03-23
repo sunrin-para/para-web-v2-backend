@@ -28,26 +28,21 @@ export class AwardsPrivateController {
     return await this.awardsService.createAwardsHistory(createAwardsDto);
   }
 
-  @ApiOperation({ summary: "포트폴리오와 연동" })
-  @ApiResponse({ type: AwardsDto })
-  @Post('/:awardId/connect')
-
-
   @ApiOperation({ summary: '수상 실적 수정' })
   @ApiResponse({ type: AwardsDto })
-  @Put('/:id')
+  @Put('/edit/:AwardUUID')
   async updateAwardsHistory(
-    @Param('id') id: number,
+    @Param('AwardUUID') uuid: string,
     @Body() updateAwardDto: CreateAwardsDto,
   ) {
-    return await this.awardsService.updateAwardsHistory(id, updateAwardDto);
+    return await this.awardsService.updateAwardsHistory(uuid, updateAwardDto);
   }
 
   @ApiOperation({ summary: '수상 실적 삭제' })
   @ApiResponse({ type: Boolean })
-  @Delete('/id/:id')
-  async deleteAwardsHistoryById(@Param('id') id: number) {
-    return await this.awardsService.deleteAwardById(id);
+  @Delete('/id/:AwardUUID')
+  async deleteAwardsHistoryById(@Param('AwardUUID') uuid: string) {
+    return await this.awardsService.deleteAwardById(uuid);
   }
 
   @ApiOperation({ summary: '연도 단위 수상 실적 삭제' })

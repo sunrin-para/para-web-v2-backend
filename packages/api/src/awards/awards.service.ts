@@ -10,23 +10,30 @@ export class AwardsService {
     return await this.awardsRepository.createAwardsHistory(createAwardsDto);
   }
 
-  async getAllAwards() {}
+  async getAllAwards() {
+    return await this.awardsRepository.getAllAwards();
+  }
 
   async getAwardsHistoryByYear(year: number) {
     return await this.awardsRepository.getAwardsHistoryByYear(year);
   }
 
-  async searchAwardsByKeyword(keyword: string) {}
+  async searchAwardsByKeyword(keyword: string) {
+    return await this.awardsRepository.searchAwardsByKeyword(keyword);
+  }
 
-  async updateAwardsHistory(awardId: number, updateAwardDto: CreateAwardsDto) {
+  async updateAwardsHistory(
+    awardUUID: string,
+    updateAwardDto: CreateAwardsDto,
+  ) {
     return await this.awardsRepository.updateAwardHistory(
-      awardId,
+      awardUUID,
       updateAwardDto,
     );
   }
 
-  async deleteAwardById(id: number) {
-    return await this.awardsRepository.deleteAwardById(id);
+  async deleteAwardById(uuid: string) {
+    return await this.awardsRepository.deleteAwardById(uuid);
   }
 
   async deleteManyAwardsByYear(year: number) {
