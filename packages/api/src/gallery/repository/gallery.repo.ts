@@ -7,7 +7,7 @@ import { UpdateAlbumDto } from '../dto/update-album.dto';
 export class GalleryRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findById(id: number) {
+  async findById(id: string) {
     try {
       return await this.prismaService.gallery.findUnique({
         where: { id },
@@ -25,7 +25,7 @@ export class GalleryRepository {
     }
   }
 
-  async getAlbumDetail(id: number) {
+  async getAlbumDetail(id: string) {
     try {
       return await this.prismaService.gallery.findUnique({
         where: { id },
@@ -62,7 +62,31 @@ export class GalleryRepository {
     }
   }
 
-  async updateAlbum(id: number, data: UpdateAlbumDto) {
+  async addMemberToAlbum(albumId: string, memberId: string) {
+    try {
+      return await this.prismaService.gallery.update({
+        where: { id: albumId },
+        data: {
+          participations: {
+            create: {
+              memberId: memberId,
+            },
+          },
+        },
+        include: {
+          participations: {
+            include: {
+              member: true,
+            },
+          },
+        },
+      });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  async updateAlbum(id: string, data: UpdateAlbumDto) {
     try {
       return await this.prismaService.gallery.update({
         where: { id },
@@ -73,12 +97,39 @@ export class GalleryRepository {
     }
   }
 
-  async deleteAlbum(id: number) {
+  async deleteAlbum(id: string) {
     try {
       await this.prismaService.gallery.delete({
         where: { id },
       });
       return true;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  async deleteMemberFromAlbum(albumId: string, memberId: string) {
+    try {
+      return await this.prismaService.gallery.update({
+        where: { id: albumId },
+        data: {
+          participations: {
+            delete: {
+              galleryId_memberId: {
+                galleryId: albumId,
+                memberId: memberId,
+              },
+            },
+          },
+        },
+        include: {
+          participations: {
+            include: {
+              member: true,
+            },
+          },
+        },
+      });
     } catch (e) {
       throw new InternalServerErrorException(e);
     }

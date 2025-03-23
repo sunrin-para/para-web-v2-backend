@@ -21,7 +21,7 @@ export class GalleryService {
     return await this.galleryRepository.createAlbum(createAlbumDto);
   }
 
-  async getAlbumDetail(albumId: number) {
+  async getAlbumDetail(albumId: string) {
     return await this.galleryRepository.getAlbumDetail(albumId);
   }
 
@@ -64,7 +64,11 @@ export class GalleryService {
       .sort((a, b) => b.year - a.year);
   }
 
-  async updateAlbum(albumId: number, updateAlbumDto: UpdateAlbumDto) {
+  async addMemberToAlbum(albumUUID: string, memberUUID: string) {
+    return await this.galleryRepository.addMemberToAlbum(albumUUID, memberUUID);
+  }
+
+  async updateAlbum(albumId: string, updateAlbumDto: UpdateAlbumDto) {
     const album = await this.galleryRepository.findById(albumId);
     if (!album) {
       throw new NotFoundException('Album not found');
@@ -73,7 +77,14 @@ export class GalleryService {
     return await this.galleryRepository.updateAlbum(albumId, updateAlbumDto);
   }
 
-  async deleteAlbum(albumId: number) {
+  async deleteMemberFromAlbum(albumId: string, memberId: string) {
+    return await this.galleryRepository.deleteMemberFromAlbum(
+      albumId,
+      memberId,
+    );
+  }
+
+  async deleteAlbum(albumId: string) {
     return await this.galleryRepository.deleteAlbum(albumId);
   }
 }

@@ -8,7 +8,7 @@ export class AlbumDto {
     description: '앨범 Id',
     example: 1,
   })
-  id: number;
+  id: string;
 
   @IsString()
   @ApiProperty({

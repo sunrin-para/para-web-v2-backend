@@ -12,11 +12,7 @@ import { GalleryService } from '@/gallery/gallery.service';
 import { AdminGuard } from '@/auth/guards/admin.guard';
 import { CreateAlbumDto } from '@/gallery/dto/create-album.dto';
 import { UpdateAlbumDto } from '@/gallery/dto/update-album.dto';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AlbumDto } from '../dto/album.dto';
 
 @ApiBearerAuth()
@@ -33,20 +29,43 @@ export class GalleryPrivateController {
     return await this.galleryService.createAlbum(createAlbumDto);
   }
 
+  @ApiOperation({ summary: '앨범에 멤버 추가' })
+  @ApiResponse({ type: AlbumDto })
+  @Patch('/members/:albumUUID/:memberUUID')
+  async addMemberToAlbum(
+    @Param('albumUUID') albumUUID: string,
+    @Param('memberUUID') memberUUID: string,
+  ) {
+    return await this.galleryService.addMemberToAlbum(albumUUID, memberUUID);
+  }
+
   @ApiOperation({ summary: '앨범 수정' })
   @ApiResponse({ type: AlbumDto })
-  @Patch('/:albumId')
+  @Patch('/edit/:albumUUID')
   async updateAlbum(
-    @Param('albumId') albumId: number,
+    @Param('albumUUID') albumUUID: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-    return await this.galleryService.updateAlbum(albumId, updateAlbumDto);
+    return await this.galleryService.updateAlbum(albumUUID, updateAlbumDto);
+  }
+
+  @ApiOperation({ summary: '앨범에서 사용자 삭제' })
+  @ApiResponse({ type: AlbumDto })
+  @Delete('/members/:albumUUID/:memberUUID')
+  async deleteMemberFromAlbum(
+    @Param('albumUUID') albumUUID: string,
+    @Param('memberUUID') memberUUID: string,
+  ) {
+    return await this.galleryService.deleteMemberFromAlbum(
+      albumUUID,
+      memberUUID,
+    );
   }
 
   @ApiOperation({ summary: '앨범 삭제' })
   @ApiResponse({ type: Boolean })
   @Delete('/:albumId')
-  async deleteAlbum(@Param('albumId') albumId: number) {
-    return await this.galleryService.deleteAlbum(albumId);
+  async deleteAlbum(@Param('albumId') albumUUID: string) {
+    return await this.galleryService.deleteAlbum(albumUUID);
   }
 }
