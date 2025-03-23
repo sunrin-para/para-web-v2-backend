@@ -1,5 +1,5 @@
 model Portfolio {
-  id                Int        @id @default(autoincrement())
+  id                String    @id @default(uuid())
   tags              String[]
   title             String
   summary           String
@@ -11,6 +11,7 @@ model Portfolio {
   date              DateTime[]
   link              String?
   github            String?
+  awards            Award[]
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt
 }

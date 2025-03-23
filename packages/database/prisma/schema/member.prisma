@@ -1,5 +1,18 @@
+enum SNSType {
+  discord
+  github
+  instagram
+  solvedac
+  email
+}
+
+model SNS {
+  id        String    @id @default(uuid())
+  type      String    
+}
+
 model Member {
-  id            Int      @id @default(autoincrement())
+  id            String      @id @default(uuid())
   generation    Int
   name          String
   department    String

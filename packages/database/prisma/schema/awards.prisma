@@ -1,8 +1,12 @@
 model Award {
-  id        Int      @id @default(autoincrement())
-  name      String // ex 2024 경기창고 준우승(2등상)
-  member    String[] // ex ['이정훈', '이주안']
-  year      Int // ex 2024
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String       @id @default(uuid())
+  name        String
+  member      String[]
+  year        Int
+
+  portfolioId String?
+  portfolio   Portfolio?   @relation(fields: [portfolioId], references: [id])
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
