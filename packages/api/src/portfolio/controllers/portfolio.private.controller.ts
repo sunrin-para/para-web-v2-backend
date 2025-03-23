@@ -31,21 +31,21 @@ export class PortfolioPrivateController {
 
   @ApiOperation({ summary: '포트폴리오 수정' })
   @ApiResponse({ type: PortfolioDto })
-  @Patch('/:id')
+  @Patch('/:portfolioUUID')
   async updatePortfolio(
-    @Param('id') portfolioId: number,
+    @Param('portfolioUUID') portfolioUUID: string,
     @Body() updatePortfolioDto?: UpdatePortfolioDto,
   ) {
     return await this.portfolioService.updatePortfolio(
-      portfolioId,
+      portfolioUUID,
       updatePortfolioDto,
     );
   }
 
   @ApiOperation({ summary: '포트폴리오 삭제' })
   @ApiResponse({ type: Boolean })
-  @Delete('/:id')
-  async deletePortfolio(@Param('id') portfolioId: number) {
-    return await this.portfolioService.deletePortfolio(portfolioId);
+  @Delete('/:portfolioUUID')
+  async deletePortfolio(@Param('portfolioUUID') portfolioUUID: string) {
+    return await this.portfolioService.deletePortfolio(portfolioUUID);
   }
 }

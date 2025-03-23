@@ -10,9 +10,9 @@ export class GalleryPublicController {
 
   @ApiOperation({ summary: '앨범 상세 조회' })
   @ApiResponse({ type: AlbumDto })
-  @Get('/detail/:albumId')
-  async getAlbumDetail(@Param('albumId') albumId: number) {
-    return await this.galleryService.getAlbumDetail(albumId);
+  @Get('/detail/:albumUUID')
+  async getAlbumDetail(@Param('albumId') albumUUID: string) {
+    return await this.galleryService.getAlbumDetail(albumUUID);
   }
 
   @ApiOperation({ summary: '모든 앨범 조회' })

@@ -64,8 +64,8 @@ export class GalleryPrivateController {
 
   @ApiOperation({ summary: '앨범 삭제' })
   @ApiResponse({ type: Boolean })
-  @Delete('/:albumId')
-  async deleteAlbum(@Param('albumId') albumUUID: string) {
+  @Delete('/:albumUUID')
+  async deleteAlbum(@Param('albumUUID') albumUUID: string) {
     return await this.galleryService.deleteAlbum(albumUUID);
   }
 }
