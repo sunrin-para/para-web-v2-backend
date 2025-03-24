@@ -1,29 +1,49 @@
-model Member {
-  id            String      @id @default(uuid())
-  generation    Int
-  name          String
-  department    String
-  speciality     String
-  introduction  String
-  profile_image String
-  discord       String?
-  github        String?
-  instagram     String?
-  solvedac      String?
-  email         String?
-  
-  participations GalleryParticipation[]
-
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+enum Department {
+  INFOSEC       @map("정보보호과")
+  SOFTWARE      @map("소프트웨어과")
+  ITMANAGE      @map("IT경영과")
+  CONTENTDESIGN @map("콘텐츠디자인과")
 }
 
-model GalleryParticipation {
-  id        String   @id @default(uuid())
-  gallery   Gallery  @relation(fields: [galleryId], references: [id])
-  galleryId String
-  member    Member   @relation(fields: [memberId], references: [id])
-  memberId  String
+model SNS {
+  id      String @id @default(uuid())
+  tagName String @unique
+  tagIcon String
 
-  @@unique([galleryId, memberId])
+  Member   Member? @relation(fields: [memberId], references: [id])
+  memberId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Speciality {
+  id       String   @id @default(uuid())
+  techName String   @unique
+  members  Member[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Member {
+  id String @id @default(uuid())
+
+  generation    Int
+  name          String
+  introduction  String
+  profile_image String
+  department    Department
+
+  specialityId String
+  speciality   Speciality @relation(fields: [specialityId], references: [id])
+
+  snsLinks SNS[]
+
+  awardParticipations     AwardParticipations[]
+  galleryParticipations   GalleryParticipation[]
+  portfolioParticipations PortfolioParticipation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

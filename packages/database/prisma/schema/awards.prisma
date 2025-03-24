@@ -1,12 +1,23 @@
 model Award {
-  id          String       @id @default(uuid())
-  name        String
-  member      String[]
-  year        Int
+  id   String @id @default(uuid())
+  name String
+  year Int
+
+  participations AwardParticipations[]
 
   portfolioId String?
-  portfolio   Portfolio?   @relation(fields: [portfolioId], references: [id])
+  portfolio   Portfolio? @relation(fields: [portfolioId], references: [id])
 
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AwardParticipations {
+  id       String @id @default(uuid())
+  awardId  String
+  award    Award  @relation(fields: [awardId], references: [id])
+  memberId String
+  member   Member @relation(fields: [memberId], references: [id])
+
+  @@unique([awardId, memberId])
 }
