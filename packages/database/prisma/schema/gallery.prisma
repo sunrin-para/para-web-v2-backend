@@ -1,5 +1,5 @@
 model Gallery {
-  id          String       @id @default(uuid())
+  id String @id @default(uuid())
 
   title       String
   description String
@@ -7,7 +7,17 @@ model Gallery {
 
   participations GalleryParticipation[]
 
-  date        DateTime
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GalleryParticipation {
+  id        String  @id @default(uuid())
+  gallery   Gallery @relation(fields: [galleryId], references: [id])
+  galleryId String
+  member    Member  @relation(fields: [memberId], references: [id])
+  memberId  String
+
+  @@unique([galleryId, memberId])
 }

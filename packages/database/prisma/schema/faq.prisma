@@ -1,8 +1,8 @@
 model Faq {
-  id        Int      @id @default(autoincrement())
-  
-  question  String
-  answer    String
+  id Int @id @default(autoincrement())
+
+  question String
+  answer   String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
