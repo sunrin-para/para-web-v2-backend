@@ -4,6 +4,7 @@ node_modules
 build
 .yarn
 packages/database/client/
+packages/database/output/*
 
 # Logs
 logs
