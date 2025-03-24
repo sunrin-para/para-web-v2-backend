@@ -6,10 +6,10 @@ export class JwtPayload {
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty({
-    description: '사용자 고유 ID',
-    example: 1,
+    description: '사용자 고유 UUID',
+    example: 'user-uuid',
   })
-  uid: number;
+  id: string;
 
   @IsEmail()
   @IsNotEmpty()
