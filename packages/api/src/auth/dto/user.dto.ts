@@ -13,10 +13,10 @@ import { Type } from 'class-transformer';
 export class UserDataDto {
   @IsNumber()
   @ApiProperty({
-    description: '사용자 고유 ID',
-    example: 1,
+    description: '사용자 고유 UUID',
+    example: 'user-uuid',
   })
-  uid: number;
+  id: string;
 
   @IsEmail()
   @ApiProperty({

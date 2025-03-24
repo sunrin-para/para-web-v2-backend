@@ -21,10 +21,6 @@ import { GoogleUserDto } from './dto/google-user.dto';
 import { map } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 
-interface IRequest extends Request {
-  user?: any;
-}
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -171,7 +167,7 @@ export class AuthService {
     const user = await this.userService.findUserByEmail(email);
 
     const payload: JwtPayload = {
-      uid: user.uid,
+      id: user.id,
       email: user.email,
       permission: user.permission,
       validationKey: validationKey,
