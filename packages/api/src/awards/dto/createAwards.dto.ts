@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNumber, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger'
+import { IsArray, IsNumber, IsString } from 'class-validator'
 
 export class CreateAwardsDto {
   @ApiProperty({
@@ -7,7 +7,7 @@ export class CreateAwardsDto {
     example: '전국 정보올림피아드 대상',
   })
   @IsString()
-  name: string;
+  name: string
 
   @ApiProperty({
     description: '수상 멤버',
@@ -19,12 +19,12 @@ export class CreateAwardsDto {
   })
   @IsArray()
   @IsString({ each: true })
-  member: string[];
+  member: string[]
 
   @ApiProperty({
     description: '수상 연도',
     example: 2024,
   })
   @IsNumber()
-  year: number;
+  year: number
 }

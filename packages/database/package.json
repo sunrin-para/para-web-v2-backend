@@ -18,8 +18,7 @@
     "prisma": "^6.1.0"
   },
   "dependencies": {
-    "@prisma/client": "^6.1.0",
-    "puppeteer": "^24.4.0"
+    "@prisma/client": "^6.1.0"
   },
   "devDependencies": {
     "@mermaid-js/mermaid-cli": "^11.4.2",

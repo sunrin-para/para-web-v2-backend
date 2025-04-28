@@ -1,16 +1,17 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { PrismaService } from '@/common/prisma/prisma.service';
-import { CreatePortfolioDto } from '../dto/create-portfolio.dto';
-import { UpdatePortfolioDto } from '../dto/update-portfolio.dto';
+import { Injectable, InternalServerErrorException } from '@nestjs/common'
+import { PrismaService } from '@/common/prisma/prisma.service'
+import { CreatePortfolioDto } from '../dto/create-portfolio.dto'
+import { UpdatePortfolioDto } from '../dto/update-portfolio.dto'
 
 @Injectable()
 export class PortfolioRepository {
   constructor(private readonly prismaService: PrismaService) {}
   async createPortfolio(data: CreatePortfolioDto) {
     try {
-      return await this.prismaService.portfolio.create({ data });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      return await this.prismaService.portfolio.create({ data })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -23,9 +24,10 @@ export class PortfolioRepository {
             mode: 'insensitive',
           },
         },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -33,9 +35,10 @@ export class PortfolioRepository {
     try {
       return await this.prismaService.portfolio.findUnique({
         where: { id },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -47,9 +50,10 @@ export class PortfolioRepository {
             has: category,
           },
         },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -62,10 +66,11 @@ export class PortfolioRepository {
           },
         })
         .then((data) => {
-          return [...new Set(data.flatMap((portfolio) => portfolio.tags))];
-        });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+          return [...new Set(data.flatMap(portfolio => portfolio.tags))]
+        })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -73,9 +78,10 @@ export class PortfolioRepository {
     try {
       return await this.prismaService.portfolio.findMany({
         take: count,
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -84,9 +90,10 @@ export class PortfolioRepository {
       return await this.prismaService.portfolio.update({
         where: { id },
         data,
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -94,9 +101,10 @@ export class PortfolioRepository {
     try {
       return await this.prismaService.portfolio.delete({
         where: { id },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 }

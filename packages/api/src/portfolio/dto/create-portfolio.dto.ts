@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsArray, IsOptional, IsDate } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger'
+import { IsString, IsArray, IsOptional, IsDate } from 'class-validator'
 
 export class CreatePortfolioDto {
   @ApiProperty({
@@ -7,14 +7,14 @@ export class CreatePortfolioDto {
     example: '파라 웹사이트',
   })
   @IsString()
-  title: string;
+  title: string
 
   @ApiProperty({
     description: '포트폴리오 요약',
     example: '파라 동아리 웹사이트 제작 프로젝트',
   })
   @IsString()
-  summary: string;
+  summary: string
 
   @ApiProperty({
     description: '포트폴리오 상세 설명',
@@ -23,17 +23,19 @@ export class CreatePortfolioDto {
   })
   @IsOptional()
   @IsString()
-  description?: string;
+  description?: string
 
   @ApiProperty({
     description: '포트폴리오 태그',
-    example: ['React', 'NestJS', 'TypeScript'],
+    example: [
+      'React', 'NestJS', 'TypeScript',
+    ],
     type: 'array',
     items: { type: 'string' },
   })
   @IsArray()
   @IsString({ each: true })
-  tags: string[];
+  tags: string[]
 
   @ApiProperty({
     description: '참여한 파라 멤버',
@@ -43,7 +45,7 @@ export class CreatePortfolioDto {
   })
   @IsArray()
   @IsString({ each: true })
-  para_member: string[];
+  para_member: string[]
 
   @ApiProperty({
     description: '참여한 외부 멤버',
@@ -53,7 +55,7 @@ export class CreatePortfolioDto {
   })
   @IsArray()
   @IsString({ each: true })
-  outside_member: string[];
+  outside_member: string[]
 
   @ApiProperty({
     description: '프로젝트 기간',
@@ -63,7 +65,7 @@ export class CreatePortfolioDto {
   })
   @IsArray()
   @IsDate({ each: true })
-  date: Date[];
+  date: Date[]
 
   @ApiProperty({
     description: '프로젝트 링크',
@@ -71,7 +73,7 @@ export class CreatePortfolioDto {
   })
   @IsOptional()
   @IsString()
-  link?: string;
+  link?: string
 
   @ApiProperty({
     description: '깃허브 링크',
@@ -79,19 +81,19 @@ export class CreatePortfolioDto {
   })
   @IsOptional()
   @IsString()
-  github?: string;
+  github?: string
 
   @ApiProperty({
     description: '썸네일 이미지 URL',
     example: 'https://example.com/thumbnail.jpg',
   })
   @IsString()
-  thumbnail: string;
+  thumbnail: string
 
   @ApiProperty({
     description: '파일 경로',
     example: '/uploads/portfolio/123.pdf',
   })
   @IsString()
-  filePath: string;
+  filePath: string
 }

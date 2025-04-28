@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { GoogleUserDto } from '../dto/google-user.dto';
+import { GoogleProfile } from '@/common/interface/GoogleProfile.interface';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
@@ -16,18 +17,18 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     });
   }
 
-  private async validateEmailAddr(email) {
+  private async validateEmailAddr(email: string) {
     return new RegExp(
-      '^[a-zA-Z0-9._%+-]+@(sunrint\.hs\.kr|sunrin-para\.dev)$',
+      '^[a-zA-Z0-9._%+-]+@(sunrint.hs.kr|sunrin-para.dev)$',
     ).test(email);
   }
 
   async validate(
     accessToken: string,
     _: string,
-    profile: any,
+    profile: GoogleProfile,
     done: VerifyCallback,
-  ): Promise<any> {
+  ): Promise<unknown> {
     const isValidEmail = await this.validateEmailAddr(profile._json.email);
     if (!isValidEmail) {
       throw new ForbiddenException(
@@ -35,7 +36,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       );
     }
 
-    const user = new GoogleUserDto();
+    const user: Partial<GoogleUserDto> = new GoogleUserDto();
     user.email = profile._json.email;
     user.accessToken = accessToken;
 

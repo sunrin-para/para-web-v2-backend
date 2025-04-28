@@ -7,12 +7,12 @@ import {
   UseGuards,
   Body,
   Param,
-} from '@nestjs/common';
-import { AwardsService } from '@/awards/awards.service';
-import { AdminGuard } from '@/auth/guards/admin.guard';
-import { CreateAwardsDto } from '@/awards/dto/createAwards.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { AwardsDto } from '@/awards/dto/awards.dto';
+} from '@nestjs/common'
+import { AwardsService } from '@/awards/awards.service'
+import { AdminGuard } from '@/auth/guards/admin.guard'
+import { CreateAwardsDto } from '@/awards/dto/createAwards.dto'
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger'
+import { AwardsDto } from '@/awards/dto/awards.dto'
 
 @ApiBearerAuth()
 @SetMetadata('permission', 'MANAGER')
@@ -25,7 +25,7 @@ export class AwardsPrivateController {
   @ApiResponse({ type: AwardsDto })
   @Post()
   async createAwardsHistory(@Body() createAwardsDto: CreateAwardsDto) {
-    return await this.awardsService.createAwardsHistory(createAwardsDto);
+    return await this.awardsService.createAwardsHistory(createAwardsDto)
   }
 
   @ApiOperation({ summary: '수상 실적 수정' })
@@ -35,20 +35,20 @@ export class AwardsPrivateController {
     @Param('AwardUUID') uuid: string,
     @Body() updateAwardDto: CreateAwardsDto,
   ) {
-    return await this.awardsService.updateAwardsHistory(uuid, updateAwardDto);
+    return await this.awardsService.updateAwardsHistory(uuid, updateAwardDto)
   }
 
   @ApiOperation({ summary: '수상 실적 삭제' })
   @ApiResponse({ type: Boolean })
   @Delete('/id/:AwardUUID')
   async deleteAwardsHistoryById(@Param('AwardUUID') uuid: string) {
-    return await this.awardsService.deleteAwardById(uuid);
+    return await this.awardsService.deleteAwardById(uuid)
   }
 
   @ApiOperation({ summary: '연도 단위 수상 실적 삭제' })
   @ApiResponse({ type: Boolean })
   @Delete('/year/:year')
   async deleteManyAwardsHistoryByYear(@Param('year') year: number) {
-    return await this.awardsService.deleteManyAwardsByYear(year);
+    return await this.awardsService.deleteManyAwardsByYear(year)
   }
 }

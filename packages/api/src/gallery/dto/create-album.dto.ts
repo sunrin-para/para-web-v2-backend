@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDate, IsString } from 'class-validator';
-import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger'
+import { IsArray, IsDate, IsString } from 'class-validator'
+import { Type } from 'class-transformer'
 
 export class CreateAlbumDto {
   @IsString()
@@ -8,14 +8,14 @@ export class CreateAlbumDto {
     description: '앨범 제목',
     example: '2024 선린 축제',
   })
-  title: string;
+  title: string
 
   @IsString()
   @ApiProperty({
     description: '앨범 설명',
     example: '2024년도 선린인터넷고등학교 축제 사진 모음',
   })
-  description: string;
+  description: string
 
   @IsArray()
   @IsString({ each: true })
@@ -27,7 +27,7 @@ export class CreateAlbumDto {
     ],
     items: { type: 'string' },
   })
-  photos: string[];
+  photos: string[]
 
   @IsDate()
   @Type(() => Date)
@@ -35,5 +35,5 @@ export class CreateAlbumDto {
     description: '앨범 날짜',
     example: '2024-05-20T00:00:00.000Z',
   })
-  date: Date;
+  date: Date
 }

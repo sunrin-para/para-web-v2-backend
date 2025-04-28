@@ -36,8 +36,7 @@ export class AdminGuard extends AuthGuard('jwt') {
     const user = request.user;
 
     if (
-      !user ||
-      !user.permission ||
+      !user?.permission ||
       !(Permission[user.permission] <= Permission[requiredPermission])
     ) {
       throw new ForbiddenException('해당 페이지에 접근할 권한이 없습니다.');

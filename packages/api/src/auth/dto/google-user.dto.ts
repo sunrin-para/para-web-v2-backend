@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger'
+import { IsEmail, IsString } from 'class-validator'
 
 export class GoogleUserDto {
   @IsEmail()
@@ -7,12 +7,12 @@ export class GoogleUserDto {
     description: '사용자 이메일',
     example: 'dev.juany@gmail.com',
   })
-  email: string;
+  email: string
 
   @IsString()
   @ApiProperty({
     description: '액세스 토큰',
     example: 'ya29.a0AfH6SMB',
   })
-  accessToken: string;
+  accessToken: string
 }
