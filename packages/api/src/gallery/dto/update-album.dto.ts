@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsArray, IsDate, IsOptional, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger'
+import { Type } from 'class-transformer'
+import { IsArray, IsDate, IsOptional, IsString } from 'class-validator'
 
 export class UpdateAlbumDto {
   @IsString()
@@ -10,7 +10,7 @@ export class UpdateAlbumDto {
     example: '2024 선린 축제',
     required: false,
   })
-  title?: string;
+  title?: string
 
   @IsString()
   @IsOptional()
@@ -19,7 +19,7 @@ export class UpdateAlbumDto {
     example: '2024년도 선린인터넷고등학교 축제 사진 모음',
     required: false,
   })
-  description?: string;
+  description?: string
 
   @IsArray()
   @IsString({ each: true })
@@ -31,7 +31,7 @@ export class UpdateAlbumDto {
     ],
     items: { type: 'string' },
   })
-  photos: string[];
+  photos: string[]
 
   @IsDate()
   @IsOptional()
@@ -41,5 +41,5 @@ export class UpdateAlbumDto {
     example: '2024-05-20T00:00:00.000Z',
     required: false,
   })
-  date?: Date;
+  date?: Date
 }

@@ -1,10 +1,7 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { PrismaService } from '@/common/prisma/prisma.service';
-import {
-  Permission,
-  Permission as PrismaPermission,
-} from '@sunrin-para/database';
-import { Permission as PermissionEnum } from '@/common/enums/Permission.enum';
+import { Injectable, InternalServerErrorException } from '@nestjs/common'
+import { PrismaService } from '@/common/prisma/prisma.service'
+import { Permission as PrismaPermission } from '@sunrin-para/database'
+import { Permission as PermissionEnum } from '@/common/enums/Permission.enum'
 
 @Injectable()
 export class UserRepository {
@@ -14,9 +11,10 @@ export class UserRepository {
     try {
       return await this.prismaService.user.findUnique({
         where: { email },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException();
+      })
+    }
+    catch {
+      throw new InternalServerErrorException()
     }
   }
 
@@ -29,33 +27,36 @@ export class UserRepository {
     try {
       return await this.prismaService.user.create({
         data: { email, name, password, permission },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException();
+      })
+    }
+    catch {
+      throw new InternalServerErrorException()
     }
   }
 
   async getAccountList(type: string) {
     try {
-      let perm: PrismaPermission[];
+      let perm: PrismaPermission[]
 
       if (type === 'admin') {
         perm = [
           PrismaPermission.SUPER,
           PrismaPermission.MODERATOR,
           PrismaPermission.MANAGER,
-        ];
-      } else {
-        perm = [PrismaPermission.USER];
+        ]
+      }
+      else {
+        perm = [PrismaPermission.USER]
       }
 
       return await this.prismaService.user.findMany({
         where: {
           permission: { in: perm },
         },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException();
+      })
+    }
+    catch {
+      throw new InternalServerErrorException()
     }
   }
 
@@ -64,10 +65,11 @@ export class UserRepository {
       await this.prismaService.user.update({
         where: { email },
         data: { password },
-      });
-      return true;
-    } catch (e) {
-      throw new InternalServerErrorException();
+      })
+      return true
+    }
+    catch {
+      throw new InternalServerErrorException()
     }
   }
 
@@ -76,10 +78,11 @@ export class UserRepository {
       await this.prismaService.user.update({
         where: { email },
         data: { permission: PrismaPermission[permission] },
-      });
-      return true;
-    } catch (e) {
-      throw new InternalServerErrorException();
+      })
+      return true
+    }
+    catch {
+      throw new InternalServerErrorException()
     }
   }
 
@@ -87,9 +90,10 @@ export class UserRepository {
     try {
       await this.prismaService.user.delete({
         where: { email: email },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException();
+      })
+    }
+    catch {
+      throw new InternalServerErrorException()
     }
   }
 }

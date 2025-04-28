@@ -1,23 +1,25 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CreateAwardsDto } from '../dto/createAwards.dto';
-import { PrismaService } from '@/common/prisma/prisma.service';
+import { Injectable, InternalServerErrorException } from '@nestjs/common'
+import { CreateAwardsDto } from '../dto/createAwards.dto'
+import { PrismaService } from '@/common/prisma/prisma.service'
 
 @Injectable()
 export class AwardsRepository {
   constructor(private readonly prismaService: PrismaService) {}
   async createAwardsHistory(data: CreateAwardsDto) {
     try {
-      return await this.prismaService.award.create({ data });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      return await this.prismaService.award.create({ data })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
   async getAllAwards() {
     try {
-      return await this.prismaService.award.findMany();
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      return await this.prismaService.award.findMany()
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -25,9 +27,10 @@ export class AwardsRepository {
     try {
       return await this.prismaService.award.findMany({
         where: { year },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -40,9 +43,10 @@ export class AwardsRepository {
             mode: 'insensitive',
           },
         },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -51,9 +55,10 @@ export class AwardsRepository {
       return await this.prismaService.award.update({
         where: { id },
         data,
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -61,9 +66,10 @@ export class AwardsRepository {
     try {
       return await this.prismaService.award.delete({
         where: { id },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -71,9 +77,10 @@ export class AwardsRepository {
     try {
       return await this.prismaService.award.deleteMany({
         where: { year },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 }

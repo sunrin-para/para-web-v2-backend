@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional, IsNumber } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger'
+import { IsString, IsOptional, IsNumber } from 'class-validator'
 
 export class UpdateMemberDto {
   @ApiProperty({
@@ -8,7 +8,7 @@ export class UpdateMemberDto {
   })
   @IsOptional()
   @IsNumber()
-  generation?: number;
+  generation?: number
 
   @ApiProperty({
     description: '이름',
@@ -16,7 +16,7 @@ export class UpdateMemberDto {
   })
   @IsOptional()
   @IsString()
-  name?: string;
+  name?: string
 
   @ApiProperty({
     description: '학과',
@@ -24,7 +24,7 @@ export class UpdateMemberDto {
   })
   @IsOptional()
   @IsString()
-  department?: string;
+  department?: string
 
   @ApiProperty({
     description: '전문 분야',
@@ -32,7 +32,7 @@ export class UpdateMemberDto {
   })
   @IsOptional()
   @IsString()
-  speciality?: string;
+  speciality?: string
 
   @ApiProperty({
     description: '자기소개',
@@ -40,7 +40,7 @@ export class UpdateMemberDto {
   })
   @IsOptional()
   @IsString()
-  introduction?: string;
+  introduction?: string
 
   @ApiProperty({
     description: '프로필 이미지 URL',
@@ -48,7 +48,7 @@ export class UpdateMemberDto {
   })
   @IsOptional()
   @IsString()
-  profile_image?: string;
+  profile_image?: string
 
   @ApiProperty({
     description: '디스코드 아이디',
@@ -56,7 +56,7 @@ export class UpdateMemberDto {
   })
   @IsOptional()
   @IsString()
-  discord?: string;
+  discord?: string
 
   @ApiProperty({
     description: '깃허브 아이디',
@@ -64,7 +64,7 @@ export class UpdateMemberDto {
   })
   @IsOptional()
   @IsString()
-  github?: string;
+  github?: string
 
   @ApiProperty({
     description: '인스타그램 아이디',
@@ -72,7 +72,7 @@ export class UpdateMemberDto {
   })
   @IsOptional()
   @IsString()
-  instagram?: string;
+  instagram?: string
 
   @ApiProperty({
     description: 'solved.ac 아이디',
@@ -80,7 +80,7 @@ export class UpdateMemberDto {
   })
   @IsOptional()
   @IsString()
-  solvedac?: string;
+  solvedac?: string
 
   @ApiProperty({
     description: '이메일',
@@ -88,5 +88,5 @@ export class UpdateMemberDto {
   })
   @IsOptional()
   @IsString()
-  email?: string;
+  email?: string
 }

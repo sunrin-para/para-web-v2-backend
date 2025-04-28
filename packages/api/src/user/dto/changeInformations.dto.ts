@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Permission } from '@/common/enums/Permission.enum';
-import { IsEnum, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger'
+import { Permission } from '@/common/enums/Permission.enum'
+import { IsEnum, IsString } from 'class-validator'
 
 export class ChangePasswordDto {
   @ApiProperty({
@@ -8,14 +8,14 @@ export class ChangePasswordDto {
     example: 'user@example.com',
   })
   @IsString()
-  email: string;
+  email: string
 
   @ApiProperty({
     description: '새로운 비밀번호',
     example: 'newPassword123',
   })
   @IsString()
-  newPassword: string;
+  newPassword: string
 }
 
 export class ChangePermissionDto {
@@ -24,7 +24,7 @@ export class ChangePermissionDto {
     example: 'user@example.com',
   })
   @IsString()
-  email: string;
+  email: string
 
   @ApiProperty({
     description: '새로운 권한',
@@ -32,5 +32,5 @@ export class ChangePermissionDto {
     enum: Permission,
   })
   @IsEnum(Permission)
-  newPermission: Permission;
+  newPermission: Permission
 }

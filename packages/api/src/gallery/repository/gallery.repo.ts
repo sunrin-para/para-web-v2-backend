@@ -1,7 +1,7 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { PrismaService } from '@/common/prisma/prisma.service';
-import { CreateAlbumDto } from '../dto/create-album.dto';
-import { UpdateAlbumDto } from '../dto/update-album.dto';
+import { Injectable, InternalServerErrorException } from '@nestjs/common'
+import { PrismaService } from '@/common/prisma/prisma.service'
+import { CreateAlbumDto } from '../dto/create-album.dto'
+import { UpdateAlbumDto } from '../dto/update-album.dto'
 
 @Injectable()
 export class GalleryRepository {
@@ -11,17 +11,19 @@ export class GalleryRepository {
     try {
       return await this.prismaService.gallery.findUnique({
         where: { id },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
   async createAlbum(data: CreateAlbumDto) {
     try {
-      return await this.prismaService.gallery.create({ data });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      return await this.prismaService.gallery.create({ data })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -29,9 +31,10 @@ export class GalleryRepository {
     try {
       return await this.prismaService.gallery.findUnique({
         where: { id },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -44,9 +47,10 @@ export class GalleryRepository {
             { date: { lt: new Date(year + 1, 0, 1) } },
           ],
         },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -56,9 +60,10 @@ export class GalleryRepository {
         orderBy: {
           date: 'desc',
         },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -80,9 +85,10 @@ export class GalleryRepository {
             },
           },
         },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -91,9 +97,10 @@ export class GalleryRepository {
       return await this.prismaService.gallery.update({
         where: { id },
         data,
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -101,10 +108,11 @@ export class GalleryRepository {
     try {
       await this.prismaService.gallery.delete({
         where: { id },
-      });
-      return true;
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+      return true
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 
@@ -129,9 +137,10 @@ export class GalleryRepository {
             },
           },
         },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
     }
   }
 }

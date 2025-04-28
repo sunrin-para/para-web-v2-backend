@@ -8,23 +8,23 @@ import {
   Body,
   Get,
   Param,
-} from '@nestjs/common';
+} from '@nestjs/common'
 import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
   ApiResponse,
-} from '@nestjs/swagger';
-import { UserService } from './user.service';
+} from '@nestjs/swagger'
+import { UserService } from './user.service'
 import {
   ChangePasswordDto,
   ChangePermissionDto,
-} from './dto/changeInformations.dto';
-import { AdminGuard } from '@/auth/guards/admin.guard';
-import { UserDataDto } from '@/auth/dto/user.dto';
+} from './dto/changeInformations.dto'
+import { AdminGuard } from '@/auth/guards/admin.guard'
+import { UserDataDto } from '@/auth/dto/user.dto'
 
 interface IRequest extends Request {
-  user?: any;
+  user?: UserDataDto
 }
 
 @Controller('user')
@@ -38,7 +38,7 @@ export class UserController {
   @ApiResponse({ type: UserDataDto, isArray: true })
   @Get('/account/all/:type')
   async getAccountList(@Param('type') type: string) {
-    return await this.userService.getAccountList(type);
+    return await this.userService.getAccountList(type)
   }
 
   @ApiOperation({ summary: '비밀번호 변경' })
@@ -53,7 +53,7 @@ export class UserController {
       req.user.email,
       changePasswordDto.email,
       changePasswordDto.newPassword,
-    );
+    )
   }
 
   @ApiOperation({ summary: '권한 변경' })
@@ -63,7 +63,7 @@ export class UserController {
     return await this.userService.changePermission(
       changePermissionDto.email,
       changePermissionDto.newPermission,
-    );
+    )
   }
 
   @ApiOperation({ summary: '계정 삭제' })
@@ -76,6 +76,6 @@ export class UserController {
   @ApiResponse({ type: Boolean })
   @Delete('/account')
   async deleteAccount(@Body('email') email: string) {
-    return await this.userService.deleteAccount(email);
+    return await this.userService.deleteAccount(email)
   }
 }

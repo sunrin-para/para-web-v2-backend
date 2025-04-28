@@ -7,13 +7,13 @@ import {
   Delete,
   SetMetadata,
   UseGuards,
-} from '@nestjs/common';
-import { GalleryService } from '@/gallery/gallery.service';
-import { AdminGuard } from '@/auth/guards/admin.guard';
-import { CreateAlbumDto } from '@/gallery/dto/create-album.dto';
-import { UpdateAlbumDto } from '@/gallery/dto/update-album.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { AlbumDto } from '../dto/album.dto';
+} from '@nestjs/common'
+import { GalleryService } from '@/gallery/gallery.service'
+import { AdminGuard } from '@/auth/guards/admin.guard'
+import { CreateAlbumDto } from '@/gallery/dto/create-album.dto'
+import { UpdateAlbumDto } from '@/gallery/dto/update-album.dto'
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger'
+import { AlbumDto } from '../dto/album.dto'
 
 @ApiBearerAuth()
 @UseGuards(AdminGuard)
@@ -26,7 +26,7 @@ export class GalleryPrivateController {
   @ApiResponse({ type: AlbumDto })
   @Post()
   async createAlbum(@Body() createAlbumDto: CreateAlbumDto) {
-    return await this.galleryService.createAlbum(createAlbumDto);
+    return await this.galleryService.createAlbum(createAlbumDto)
   }
 
   @ApiOperation({ summary: '앨범에 멤버 추가' })
@@ -36,7 +36,7 @@ export class GalleryPrivateController {
     @Param('albumUUID') albumUUID: string,
     @Param('memberUUID') memberUUID: string,
   ) {
-    return await this.galleryService.addMemberToAlbum(albumUUID, memberUUID);
+    return await this.galleryService.addMemberToAlbum(albumUUID, memberUUID)
   }
 
   @ApiOperation({ summary: '앨범 수정' })
@@ -46,7 +46,7 @@ export class GalleryPrivateController {
     @Param('albumUUID') albumUUID: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-    return await this.galleryService.updateAlbum(albumUUID, updateAlbumDto);
+    return await this.galleryService.updateAlbum(albumUUID, updateAlbumDto)
   }
 
   @ApiOperation({ summary: '앨범에서 사용자 삭제' })
@@ -59,13 +59,13 @@ export class GalleryPrivateController {
     return await this.galleryService.deleteMemberFromAlbum(
       albumUUID,
       memberUUID,
-    );
+    )
   }
 
   @ApiOperation({ summary: '앨범 삭제' })
   @ApiResponse({ type: Boolean })
   @Delete('/:albumUUID')
   async deleteAlbum(@Param('albumUUID') albumUUID: string) {
-    return await this.galleryService.deleteAlbum(albumUUID);
+    return await this.galleryService.deleteAlbum(albumUUID)
   }
 }

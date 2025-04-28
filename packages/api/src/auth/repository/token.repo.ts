@@ -1,5 +1,5 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { PrismaService } from '@/common/prisma/prisma.service';
+import { Injectable, InternalServerErrorException } from '@nestjs/common'
+import { PrismaService } from '@/common/prisma/prisma.service'
 
 @Injectable()
 export class TokenRepository {
@@ -10,9 +10,10 @@ export class TokenRepository {
       return await this.prismaService.user.update({
         where: { email },
         data: { validationKey },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch {
+      throw new InternalServerErrorException()
     }
   }
 
@@ -21,9 +22,10 @@ export class TokenRepository {
       return await this.prismaService.user.update({
         where: { email },
         data: { validationKey: null },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch {
+      throw new InternalServerErrorException()
     }
   }
 
@@ -32,9 +34,10 @@ export class TokenRepository {
       return await this.prismaService.user.update({
         where: { email },
         data: { refreshToken },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch {
+      throw new InternalServerErrorException()
     }
   }
 
@@ -43,9 +46,10 @@ export class TokenRepository {
       return await this.prismaService.user.update({
         where: { email },
         data: { refreshToken: null },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+      })
+    }
+    catch {
+      throw new InternalServerErrorException()
     }
   }
 }

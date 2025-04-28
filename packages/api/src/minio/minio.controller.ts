@@ -9,8 +9,8 @@ import {
   UploadedFiles,
   UseGuards,
   UseInterceptors,
-} from '@nestjs/common';
-import { MinioService } from './minio.service';
+} from '@nestjs/common'
+import { MinioService } from './minio.service'
 import {
   ApiBearerAuth,
   ApiBody,
@@ -18,10 +18,10 @@ import {
   ApiOperation,
   ApiResponse,
   ApiTags,
-} from '@nestjs/swagger';
-import { FilesInterceptor } from '@nestjs/platform-express';
-import { AdminGuard } from '@/auth/guards/admin.guard';
-import { FileType } from '@/common/enums/FileType.enum';
+} from '@nestjs/swagger'
+import { FilesInterceptor } from '@nestjs/platform-express'
+import { AdminGuard } from '@/auth/guards/admin.guard'
+import { FileType } from '@/common/enums/FileType.enum'
 
 @ApiBearerAuth()
 @ApiTags('Minio')
@@ -64,19 +64,19 @@ export class MinioController {
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
     if (!files || !(type in FileType)) {
-      throw new BadRequestException();
+      throw new BadRequestException()
     }
 
-    const filesUrlList: string[] = [];
+    const filesUrlList: string[] = []
     for (const file of files) {
       const fileUrl = await this.minioService.uploadFile(
         new File([file.buffer], file.originalname),
         this.minioService.generateFilename(file.originalname),
         type,
-      );
-      filesUrlList.push(fileUrl);
+      )
+      filesUrlList.push(fileUrl)
     }
-    return filesUrlList;
+    return filesUrlList
   }
 
   @Get('/:type/:filename')
@@ -87,7 +87,7 @@ export class MinioController {
     return await this.minioService.getFile(
       FileType[type.toUpperCase()],
       filename,
-    );
+    )
   }
 
   @Delete('/:type/:filename')
@@ -100,6 +100,6 @@ export class MinioController {
     return await this.minioService.deleteFile(
       FileType[type.toUpperCase()],
       filename,
-    );
+    )
   }
 }

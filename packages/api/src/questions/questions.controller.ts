@@ -8,12 +8,12 @@ import {
   Put,
   SetMetadata,
   UseGuards,
-} from '@nestjs/common';
-import { QuestionsService } from './questions.service';
-import { AdminGuard } from '@/auth/guards/admin.guard';
-import { CreateFAQDto } from './dto/register.dto';
-import { FAQDto } from './dto/get.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+} from '@nestjs/common'
+import { QuestionsService } from './questions.service'
+import { AdminGuard } from '@/auth/guards/admin.guard'
+import { CreateFAQDto } from './dto/register.dto'
+import { FAQDto } from './dto/get.dto'
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger'
 
 @Controller('questions')
 export class QuestionsController {
@@ -26,14 +26,14 @@ export class QuestionsController {
   @ApiResponse({ type: FAQDto })
   @Post()
   async createFAQ(@Body() createFAQDto: CreateFAQDto) {
-    return await this.questionsService.createFaq(createFAQDto);
+    return await this.questionsService.createFaq(createFAQDto)
   }
 
   @ApiOperation({ summary: 'FAQ 목록 조회' })
   @ApiResponse({ type: FAQDto, isArray: true })
   @Get()
   async getAllFAQ() {
-    return await this.questionsService.getAllFaq();
+    return await this.questionsService.getAllFaq()
   }
 
   @ApiBearerAuth()
@@ -43,7 +43,7 @@ export class QuestionsController {
   @ApiResponse({ type: FAQDto })
   @Put('/:id')
   async editFAQ(@Param('id') faqId: number, @Body() editFAQDto: CreateFAQDto) {
-    return await this.questionsService.updateFaq(faqId, editFAQDto);
+    return await this.questionsService.updateFaq(faqId, editFAQDto)
   }
 
   @ApiBearerAuth()
@@ -53,6 +53,6 @@ export class QuestionsController {
   @ApiResponse({ type: Boolean })
   @Delete('/:id')
   async deleteFAQDto(@Param('id') faqId: number) {
-    return await this.questionsService.deleteFaq(faqId);
+    return await this.questionsService.deleteFaq(faqId)
   }
 }

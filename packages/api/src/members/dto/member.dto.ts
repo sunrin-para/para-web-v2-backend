@@ -1,59 +1,59 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger'
+import { IsString, IsOptional } from 'class-validator'
 
 export class MemberDto {
   @ApiProperty({
     description: '멤버 고유 ID',
     example: 1,
   })
-  id?: number;
+  id?: number
 
   @ApiProperty({
     description: '생성일',
     example: '2024-01-01T00:00:00.000Z',
   })
-  createdAt?: Date;
+  createdAt?: Date
 
   @ApiProperty({
     description: '수정일',
     example: '2024-01-01T00:00:00.000Z',
   })
-  updatedAt?: Date;
+  updatedAt?: Date
 
   @ApiProperty({
     description: '기수',
     example: 25,
   })
   @IsString()
-  generation: number;
+  generation: number
 
   @ApiProperty({
     description: '이름',
     example: '홍길동',
   })
   @IsString()
-  name: string;
+  name: string
 
   @ApiProperty({
     description: '학과',
     example: '소프트웨어과',
   })
   @IsString()
-  department: string;
+  department: string
 
   @ApiProperty({
     description: '전문 분야',
     example: '백엔드 개발',
   })
   @IsString()
-  speciality: string;
+  speciality: string
 
   @ApiProperty({
     description: '자기소개',
     example: '안녕하세요. 백엔드 개발자 홍길동입니다.',
   })
   @IsString()
-  introduction: string;
+  introduction: string
 
   @ApiProperty({
     description: '프로필 이미지 URL',
@@ -61,7 +61,7 @@ export class MemberDto {
   })
   @IsOptional()
   @IsString()
-  profile_image?: string;
+  profile_image?: string
 
   @ApiProperty({
     description: '디스코드 아이디',
@@ -69,7 +69,7 @@ export class MemberDto {
   })
   @IsOptional()
   @IsString()
-  discord?: string;
+  discord?: string
 
   @ApiProperty({
     description: '깃허브 아이디',
@@ -77,7 +77,7 @@ export class MemberDto {
   })
   @IsOptional()
   @IsString()
-  github?: string;
+  github?: string
 
   @ApiProperty({
     description: '인스타그램 아이디',
@@ -85,7 +85,7 @@ export class MemberDto {
   })
   @IsOptional()
   @IsString()
-  instagram?: string;
+  instagram?: string
 
   @ApiProperty({
     description: 'solved.ac 아이디',
@@ -93,7 +93,7 @@ export class MemberDto {
   })
   @IsOptional()
   @IsString()
-  solvedac?: string;
+  solvedac?: string
 
   @ApiProperty({
     description: '이메일',
@@ -101,5 +101,5 @@ export class MemberDto {
   })
   @IsOptional()
   @IsString()
-  email?: string;
+  email?: string
 }

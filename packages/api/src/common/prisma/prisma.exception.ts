@@ -1,4 +1,4 @@
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
 class BaseError extends PrismaClientKnownRequestError {
   constructor(error: PrismaClientKnownRequestError) {
@@ -7,364 +7,364 @@ class BaseError extends PrismaClientKnownRequestError {
       clientVersion: error.clientVersion,
       meta: error.meta,
       batchRequestIdx: error.batchRequestIdx,
-    });
+    })
   }
 }
 
 export class PrismaAuthenticationFailedError extends BaseError {
-  code = 'P1000';
+  code = 'P1000'
 }
 
 export class PrismaDatabaseUnreachableError extends BaseError {
-  code = 'P1001';
+  code = 'P1001'
 }
 
 export class PrismaDatabaseTimeoutError extends BaseError {
-  code = 'P1002';
+  code = 'P1002'
 }
 
 export class PrismaDatabaseDoesNotExistError extends BaseError {
-  code = 'P1003';
+  code = 'P1003'
 }
 
 export class PrismaOperationTimeoutError extends BaseError {
-  code = 'P1008';
+  code = 'P1008'
 }
 
 export class PrismaDatabaseAlreadyExistsError extends BaseError {
-  code = 'P1009';
+  code = 'P1009'
 }
 
 export class PrismaUserAccessDeniedError extends BaseError {
-  code = 'P1010';
+  code = 'P1010'
 }
 
 export class PrismaTlsConnectionError extends BaseError {
-  code = 'P1011';
+  code = 'P1011'
 }
 
 export class PrismaSchemaValidationError extends BaseError {
-  code = 'P1012';
+  code = 'P1012'
 }
 
 export class PrismaInvalidDatabaseStringError extends BaseError {
-  code = 'P1013';
+  code = 'P1013'
 }
 
 export class PrismaUnderlyingModelError extends BaseError {
-  code = 'P1014';
+  code = 'P1014'
 }
 
 export class PrismaUnsupportedDatabaseVersionError extends BaseError {
-  code = 'P1015';
+  code = 'P1015'
 }
 
 export class PrismaIncorrectParametersError extends BaseError {
-  code = 'P1016';
+  code = 'P1016'
 }
 
 export class PrismaServerClosedConnectionError extends BaseError {
-  code = 'P1017';
+  code = 'P1017'
 }
 
 export class PrismaValueTooLongError extends BaseError {
-  code = 'P2000';
+  code = 'P2000'
 }
 
 export class PrismaRecordDoesNotExistError extends BaseError {
-  code = 'P2001';
+  code = 'P2001'
 }
 
 export class PrismaUniqueConstraintError extends BaseError {
-  code = 'P2002';
+  code = 'P2002'
 }
 
 export class PrismaForeignKeyConstraintError extends BaseError {
-  code = 'P2003';
+  code = 'P2003'
 }
 
 export class PrismaDatabaseConstraintError extends BaseError {
-  code = 'P2004';
+  code = 'P2004'
 }
 
 export class PrismaInvalidFieldValueError extends BaseError {
-  code = 'P2005';
+  code = 'P2005'
 }
 
 export class PrismaInvalidValueError extends BaseError {
-  code = 'P2006';
+  code = 'P2006'
 }
 
 export class PrismaDataValidationError extends BaseError {
-  code = 'P2007';
+  code = 'P2007'
 }
 
 export class PrismaQueryParsingError extends BaseError {
-  code = 'P2008';
+  code = 'P2008'
 }
 
 export class PrismaQueryValidationError extends BaseError {
-  code = 'P2009';
+  code = 'P2009'
 }
 
 export class PrismaRawQueryFailedError extends BaseError {
-  code = 'P2010';
+  code = 'P2010'
 }
 
 export class PrismaNullConstraintViolationError extends BaseError {
-  code = 'P2011';
+  code = 'P2011'
 }
 
 export class PrismaMissingRequiredValueError extends BaseError {
-  code = 'P2012';
+  code = 'P2012'
 }
 
 export class PrismaMissingRequiredArgumentError extends BaseError {
-  code = 'P2013';
+  code = 'P2013'
 }
 
 export class PrismaRelationViolationError extends BaseError {
-  code = 'P2014';
+  code = 'P2014'
 }
 
 export class PrismaRelatedRecordNotFoundError extends BaseError {
-  code = 'P2015';
+  code = 'P2015'
 }
 
 export class PrismaQueryInterpretationError extends BaseError {
-  code = 'P2016';
+  code = 'P2016'
 }
 
 export class PrismaRecordsNotConnectedError extends BaseError {
-  code = 'P2017';
+  code = 'P2017'
 }
 
 export class PrismaConnectedRecordsNotFoundError extends BaseError {
-  code = 'P2018';
+  code = 'P2018'
 }
 
 export class PrismaInputError extends BaseError {
-  code = 'P2019';
+  code = 'P2019'
 }
 
 export class PrismaValueOutOfRangeError extends BaseError {
-  code = 'P2020';
+  code = 'P2020'
 }
 
 export class PrismaTableDoesNotExistError extends BaseError {
-  code = 'P2021';
+  code = 'P2021'
 }
 
 export class PrismaColumnDoesNotExistError extends BaseError {
-  code = 'P2022';
+  code = 'P2022'
 }
 
 export class PrismaInconsistentColumnDataError extends BaseError {
-  code = 'P2023';
+  code = 'P2023'
 }
 
 export class PrismaConnectionPoolTimeoutError extends BaseError {
-  code = 'P2024';
+  code = 'P2024'
 }
 
 export class PrismaOperationFailedError extends BaseError {
-  code = 'P2025';
+  code = 'P2025'
 }
 
 export class PrismaUnsupportedFeatureError extends BaseError {
-  code = 'P2026';
+  code = 'P2026'
 }
 
 export class PrismaDatabaseQueryExecutionErrors extends BaseError {
-  code = 'P2027';
+  code = 'P2027'
 }
 
 export class PrismaTransactionApiError extends BaseError {
-  code = 'P2028';
+  code = 'P2028'
 }
 
 export class PrismaFulltextIndexNotFoundError extends BaseError {
-  code = 'P2030';
+  code = 'P2030'
 }
 
 export class PrismaMongoDBReplicaSetError extends BaseError {
-  code = 'P2031';
+  code = 'P2031'
 }
 
 export class PrismaNumberOutOfRangeError extends BaseError {
-  code = 'P2033';
+  code = 'P2033'
 }
 
 export class PrismaTransactionConflictError extends BaseError {
-  code = 'P2034';
+  code = 'P2034'
 }
 
 export class PrismaDatabaseCreationFailedError extends BaseError {
-  code = 'P3000';
+  code = 'P3000'
 }
 
 export class PrismaMigrationDestructiveChangesError extends BaseError {
-  code = 'P3001';
+  code = 'P3001'
 }
 
 export class PrismaMigrationRollbackError extends BaseError {
-  code = 'P3002';
+  code = 'P3002'
 }
 
 export class PrismaMigrationFormatChangedError extends BaseError {
-  code = 'P3003';
+  code = 'P3003'
 }
 
 export class PrismaSystemDatabaseAlterationError extends BaseError {
-  code = 'P3004';
+  code = 'P3004'
 }
 
 export class PrismaNonEmptySchemaError extends BaseError {
-  code = 'P3005';
+  code = 'P3005'
 }
 
 export class PrismaFailedMigrationError extends BaseError {
-  code = 'P3006';
+  code = 'P3006'
 }
 
 export class PrismaPreviewFeaturesBlockedError extends BaseError {
-  code = 'P3007';
+  code = 'P3007'
 }
 
 export class PrismaMigrationAlreadyAppliedError extends BaseError {
-  code = 'P3008';
+  code = 'P3008'
 }
 
 export class PrismaFailedMigrationsError extends BaseError {
-  code = 'P3009';
+  code = 'P3009'
 }
 
 export class PrismaMigrationNameTooLongError extends BaseError {
-  code = 'P3010';
+  code = 'P3010'
 }
 
 export class PrismaMigrationNotFoundForRollbackError extends BaseError {
-  code = 'P3011';
+  code = 'P3011'
 }
 
 export class PrismaMigrationNotInFailedStateError extends BaseError {
-  code = 'P3012';
+  code = 'P3012'
 }
 
 export class PrismaProviderArraysNotSupportedError extends BaseError {
-  code = 'P3013';
+  code = 'P3013'
 }
 
 export class PrismaShadowDatabaseCreationError extends BaseError {
-  code = 'P3014';
+  code = 'P3014'
 }
 
 export class PrismaMigrationFileNotFoundError extends BaseError {
-  code = 'P3015';
+  code = 'P3015'
 }
 
 export class PrismaDatabaseResetFallbackFailedError extends BaseError {
-  code = 'P3016';
+  code = 'P3016'
 }
 
 export class PrismaMigrationNotFoundError extends BaseError {
-  code = 'P3017';
+  code = 'P3017'
 }
 
 export class PrismaMigrationFailedToApplyError extends BaseError {
-  code = 'P3018';
+  code = 'P3018'
 }
 
 export class PrismaProviderMismatchError extends BaseError {
-  code = 'P3019';
+  code = 'P3019'
 }
 
 export class PrismaShadowDatabaseDisabledError extends BaseError {
-  code = 'P3020';
+  code = 'P3020'
 }
 
 export class PrismaNoForeignKeysError extends BaseError {
-  code = 'P3021';
+  code = 'P3021'
 }
 
 export class PrismaNoDirectDdlError extends BaseError {
-  code = 'P3022';
+  code = 'P3022'
 }
 
 export class PrismaIntrospectionFailedError extends BaseError {
-  code = 'P4000';
+  code = 'P4000'
 }
 
 export class PrismaEmptyIntrospectedDatabaseError extends BaseError {
-  code = 'P4001';
+  code = 'P4001'
 }
 
 export class PrismaInconsistentIntrospectedSchemaError extends BaseError {
-  code = 'P4002';
+  code = 'P4002'
 }
 
 export class PrismaDataProxyRequestError extends BaseError {
-  code = 'P5000';
+  code = 'P5000'
 }
 
 export class PrismaDataProxyRetryRequestError extends BaseError {
-  code = 'P5001';
+  code = 'P5001'
 }
 
 export class PrismaDataProxyInvalidDatasourceError extends BaseError {
-  code = 'P5002';
+  code = 'P5002'
 }
 
 export class PrismaDataProxyResourceNotFoundError extends BaseError {
-  code = 'P5003';
+  code = 'P5003'
 }
 
 export class PrismaDataProxyFeatureNotImplementedError extends BaseError {
-  code = 'P5004';
+  code = 'P5004'
 }
 
 export class PrismaDataProxySchemaUploadError extends BaseError {
-  code = 'P5005';
+  code = 'P5005'
 }
 
 export class PrismaDataProxyUnknownServerError extends BaseError {
-  code = 'P5006';
+  code = 'P5006'
 }
 
 export class PrismaDataProxyUnauthorizedError extends BaseError {
-  code = 'P5007';
+  code = 'P5007'
 }
 
 export class PrismaDataProxyUsageExceededError extends BaseError {
-  code = 'P5008';
+  code = 'P5008'
 }
 
 export class PrismaDataProxyRequestTimeoutError extends BaseError {
-  code = 'P5009';
+  code = 'P5009'
 }
 
 export class PrismaDataProxyFetchError extends BaseError {
-  code = 'P5010';
+  code = 'P5010'
 }
 
 export class PrismaDataProxyInvalidRequestParametersError extends BaseError {
-  code = 'P5011';
+  code = 'P5011'
 }
 
 export class PrismaDataProxyUnsupportedEngineVersionError extends BaseError {
-  code = 'P5012';
+  code = 'P5012'
 }
 
 export class PrismaDataProxyEngineStartupError extends BaseError {
-  code = 'P5013';
+  code = 'P5013'
 }
 
 export class PrismaDataProxyUnknownEngineStartupError extends BaseError {
-  code = 'P5014';
+  code = 'P5014'
 }
 
 export class PrismaDataProxyInteractiveTransactionError extends BaseError {
-  code = 'P5015';
+  code = 'P5015'
 }
 
 const errorCodeToClass = {
@@ -457,21 +457,21 @@ const errorCodeToClass = {
   P5013: PrismaDataProxyEngineStartupError,
   P5014: PrismaDataProxyUnknownEngineStartupError,
   P5015: PrismaDataProxyInteractiveTransactionError,
-} as const;
+} as const
 
-type ErrorCode = keyof typeof errorCodeToClass;
+type ErrorCode = keyof typeof errorCodeToClass
 
 export function toTypedPrismaError(error: BaseError) {
   if (!(error instanceof PrismaClientKnownRequestError)) {
-    return null;
+    return null
   }
 
-  const code: ErrorCode = error.code as ErrorCode;
-  const ErrorClass = errorCodeToClass[code];
+  const code: ErrorCode = error.code as ErrorCode
+  const ErrorClass = errorCodeToClass[code]
 
   if (!ErrorClass) {
-    return null;
+    return null
   }
 
-  return new ErrorClass(error);
+  return new ErrorClass(error)
 }
