@@ -45,4 +45,15 @@ export class QuestionsRepository {
       throw new InternalServerErrorException()
     }
   }
+
+  async deleteManyFaqByIds(ids: number[]) {
+    try {
+      return await this.prismaService.faq.deleteMany({
+        where: { id: { in: ids } },
+      })
+    }
+    catch {
+      throw new InternalServerErrorException()
+    }
+  }
 }

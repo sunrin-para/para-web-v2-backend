@@ -68,4 +68,15 @@ export class MembersRepository {
       throw new InternalServerErrorException(e)
     }
   }
+
+  async deleteManyMembersByIds(ids: string[]) {
+    try {
+      return await this.prismaService.member.deleteMany({
+        where: { id: { in: ids } },
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
+    }
+  }
 }

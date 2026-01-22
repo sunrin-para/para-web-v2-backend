@@ -12,6 +12,8 @@ import { PortfolioService } from '@/portfolio/portfolio.service'
 import { AdminGuard } from '@/auth/guards/admin.guard'
 import { CreatePortfolioDto } from '@/portfolio/dto/create-portfolio.dto'
 import { UpdatePortfolioDto } from '@/portfolio/dto/update-portfolio.dto'
+import { BatchUpsertPortfolioDto } from '@/portfolio/dto/batch-upsert-portfolio.dto'
+import { BatchDeletePortfolioDto } from '@/portfolio/dto/batch-delete-portfolio.dto'
 import { ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger'
 import { PortfolioDto } from '../dto/portfolio.dto'
 
@@ -29,6 +31,16 @@ export class PortfolioPrivateController {
     return await this.portfolioService.createPortfolio(createPortfolioDto)
   }
 
+  @ApiOperation({ summary: '포트폴리오 일괄 생성/수정' })
+  @ApiResponse({ type: Object })
+  @Post('/batch')
+  async batchUpsertPortfolio(@Body() batchDto: BatchUpsertPortfolioDto) {
+    return await this.portfolioService.batchUpsertPortfolios(
+      batchDto.createItems,
+      batchDto.updateItems,
+    )
+  }
+
   @ApiOperation({ summary: '포트폴리오 수정' })
   @ApiResponse({ type: PortfolioDto })
   @Patch('/:portfolioUUID')
@@ -40,6 +52,13 @@ export class PortfolioPrivateController {
       portfolioUUID,
       updatePortfolioDto,
     )
+  }
+
+  @ApiOperation({ summary: '포트폴리오 일괄 삭제' })
+  @ApiResponse({ type: Object })
+  @Delete('/batch')
+  async deletePortfolios(@Body() deleteDto: BatchDeletePortfolioDto) {
+    return await this.portfolioService.deleteManyPortfoliosByIds(deleteDto.ids)
   }
 
   @ApiOperation({ summary: '포트폴리오 삭제' })

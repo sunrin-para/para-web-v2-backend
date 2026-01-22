@@ -95,6 +95,15 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1"
+    },
+    "globals": {
+      "ts-jest": {
+        "isolatedModules": true,
+        "diagnostics": false
+      }
+    },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],

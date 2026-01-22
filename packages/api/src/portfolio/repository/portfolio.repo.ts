@@ -107,4 +107,15 @@ export class PortfolioRepository {
       throw new InternalServerErrorException(e)
     }
   }
+
+  async deleteManyPortfoliosByIds(ids: string[]) {
+    try {
+      return await this.prismaService.portfolio.deleteMany({
+        where: { id: { in: ids } },
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
+    }
+  }
 }

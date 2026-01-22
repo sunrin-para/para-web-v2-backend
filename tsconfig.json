@@ -21,8 +21,8 @@
     "paths": {
       "@/*": ["packages/api/src/*"],
       "@sunrin-para/database/*": ["../database/*"]
-    },
-    "include": ["packages/api/src/**/*.ts"],
-    "exclude": ["node_modules", "packages/api/dist", "scripts/**/*.ts"]
-  }
+    }
+  },
+  "include": ["packages/api/src/**/*.ts"],
+  "exclude": ["node_modules", "packages/api/dist", "scripts/**/*.ts"]
 }

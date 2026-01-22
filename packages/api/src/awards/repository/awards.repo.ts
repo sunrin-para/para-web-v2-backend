@@ -83,4 +83,15 @@ export class AwardsRepository {
       throw new InternalServerErrorException(e)
     }
   }
+
+  async deleteManyAwardsByIds(ids: string[]) {
+    try {
+      return await this.prismaService.award.deleteMany({
+        where: { id: { in: ids } },
+      })
+    }
+    catch (e) {
+      throw new InternalServerErrorException(e)
+    }
+  }
 }

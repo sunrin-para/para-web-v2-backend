@@ -13,6 +13,8 @@ import { AdminGuard } from '@/auth/guards/admin.guard'
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { UpdateMemberDto } from '@/members/dto/update-member.dto'
 import { CreateMemberDto } from '@/members/dto/create-member.dto'
+import { BatchUpsertMembersDto } from '@/members/dto/batch-upsert-members.dto'
+import { BatchDeleteMembersDto } from '@/members/dto/batch-delete-members.dto'
 import { MemberDto } from '../dto/member.dto'
 
 @Controller('members')
@@ -29,6 +31,16 @@ export class MembersPrivateController {
     return await this.membersService.createMember(createMemberDto)
   }
 
+  @ApiOperation({ summary: '부원 정보 일괄 등록/수정' })
+  @ApiResponse({ type: Object })
+  @Post('/batch')
+  async batchUpsertMembers(@Body() batchDto: BatchUpsertMembersDto) {
+    return await this.membersService.batchUpsertMembers(
+      batchDto.createItems,
+      batchDto.updateItems,
+    )
+  }
+
   @ApiOperation({ summary: '부원 정보 수정' })
   @ApiResponse({ type: MemberDto })
   @Patch('/:memberUUID')
@@ -40,6 +52,13 @@ export class MembersPrivateController {
       memberUUID,
       updateMemberDto,
     )
+  }
+
+  @ApiOperation({ summary: '부원 정보 일괄 삭제' })
+  @ApiResponse({ type: Object })
+  @Delete('/batch')
+  async deleteMembers(@Body() deleteDto: BatchDeleteMembersDto) {
+    return await this.membersService.deleteManyMembersByIds(deleteDto.ids)
   }
 
   @ApiOperation({ summary: '부원 정보 삭제' })
