@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common'
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common'
 import { PrismaService } from '@/common/prisma/prisma.service'
 import { CreatePortfolioDto } from '../dto/create-portfolio.dto'
 import { UpdatePortfolioDto } from '../dto/update-portfolio.dto'
@@ -6,11 +6,73 @@ import { UpdatePortfolioDto } from '../dto/update-portfolio.dto'
 @Injectable()
 export class PortfolioRepository {
   constructor(private readonly prismaService: PrismaService) {}
+
+  private buildTagRelation(tags?: string[]) {
+    if (!tags || tags.length === 0) return undefined
+    const uniqueTags = [...new Set(tags)]
+    return {
+      connectOrCreate: uniqueTags.map((tag) => ({
+        where: { tagName: tag },
+        create: { tagName: tag },
+      })),
+    }
+  }
+
+  private buildParticipantCreates(
+    paraMembers?: string[],
+    outsideMembers?: string[],
+  ) {
+    const participants: { memberName: string; isExternal: boolean }[] = []
+    if (paraMembers) {
+      paraMembers
+        .filter((name) => name.trim().length > 0)
+        .forEach((name) =>
+          participants.push({ memberName: name.trim(), isExternal: false }),
+        )
+    }
+    if (outsideMembers) {
+      outsideMembers
+        .filter((name) => name.trim().length > 0)
+        .forEach((name) =>
+          participants.push({ memberName: name.trim(), isExternal: true }),
+        )
+    }
+    return participants
+  }
+
   async createPortfolio(data: CreatePortfolioDto) {
     try {
-      return await this.prismaService.portfolio.create({ data })
+      if (!data.date || data.date.length === 0) {
+        throw new BadRequestException('시작 날짜가 필요합니다.')
+      }
+      const [startDate, endDate] = data.date
+      const participants = this.buildParticipantCreates(
+        data.para_member,
+        data.outside_member,
+      )
+
+      return await this.prismaService.portfolio.create({
+        data: {
+          title: data.title,
+          summary: data.summary,
+          description: data.description,
+          thumbnail: data.thumbnail,
+          filePath: data.filePath,
+          startDate,
+          endDate,
+          link: data.link,
+          github: data.github,
+          tags: this.buildTagRelation(data.tags),
+          participants: participants.length
+            ? { create: participants }
+            : undefined,
+        },
+      })
     }
     catch (e) {
+      if (e instanceof BadRequestException) {
+        throw e
+      }
       throw new InternalServerErrorException(e)
     }
   }
@@ -27,6 +89,9 @@ export class PortfolioRepository {
       })
     }
     catch (e) {
+      if (e instanceof BadRequestException) {
+        throw e
+      }
       throw new InternalServerErrorException(e)
     }
   }
@@ -47,7 +112,9 @@ export class PortfolioRepository {
       return await this.prismaService.portfolio.findMany({
         where: {
           tags: {
-            has: category,
+            some: {
+              tagName: category,
+            },
           },
         },
       })
@@ -87,9 +154,43 @@ export class PortfolioRepository {
 
   async updatePortfolio(id: string, data: UpdatePortfolioDto) {
     try {
+      const updateData: Record<string, unknown> = {
+        title: data.title,
+        summary: data.summary,
+        description: data.description,
+        thumbnail: data.thumbnail,
+        filePath: data.filePath,
+        link: data.link,
+        github: data.github,
+      }
+
+      if (data.date && data.date.length > 0) {
+        const [startDate, endDate] = data.date
+        updateData.startDate = startDate
+        updateData.endDate = endDate
+      }
+
+      if (data.tags) {
+        updateData.tags = {
+          set: [],
+          ...this.buildTagRelation(data.tags),
+        }
+      }
+
+      if (data.para_member || data.outside_member) {
+        const participants = this.buildParticipantCreates(
+          data.para_member,
+          data.outside_member,
+        )
+        updateData.participants = {
+          deleteMany: {},
+          create: participants,
+        }
+      }
+
       return await this.prismaService.portfolio.update({
         where: { id },
-        data,
+        data: updateData,
       })
     }
     catch (e) {

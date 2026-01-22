@@ -1,24 +1,17 @@
-FROM node:latest
+FROM node:20.16.0-alpine
 
-COPY . /app
 WORKDIR /app
 
 ENV TZ=Asia/Seoul
-RUN corepack enable && corepack prepare yarn@stable --activate
+RUN corepack enable
+
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY packages ./packages
+COPY tsconfig.json ./
+
 RUN yarn install
-
-WORKDIR /app/package/database
-
-ARG DATABASE_URL
-ENV DATABASE_URL=${DATABASE_URL}
-
-RUN yarn db generate
-RUN echo "DATABASE_URL: ${DATABASE_URL}"
-RUN DATABASE_URL=${DATABASE_URL} yarn db prisma migrate deploy
+RUN yarn workspace @sunrin-para/api build
 
 EXPOSE 3000
 
-WORKDIR /app
-RUN yarn api build
-
-CMD [ "yarn", "api", "start" ]
+CMD [ "yarn", "workspace", "@sunrin-para/api", "start" ]
