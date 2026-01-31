@@ -10,6 +10,7 @@ COPY packages ./packages
 COPY tsconfig.json ./
 
 RUN yarn install
+RUN yarn workspace @sunrin-para/database generate
 RUN yarn workspace @sunrin-para/api build
 
 EXPOSE 3000
