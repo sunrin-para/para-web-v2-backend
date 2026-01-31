@@ -1,13 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
-import { IsArray, IsString, ValidateNested } from 'class-validator'
+import { IsArray, IsInt, ValidateNested } from 'class-validator'
 import { CreateMemberDto } from './create-member.dto'
 import { UpdateMemberDto } from './update-member.dto'
 
 export class MembersBatchUpdateItemDto {
   @ApiProperty({ description: '멤버 ID' })
-  @IsString()
-  id: string
+  @Type(() => Number)
+  @IsInt()
+  id: number
 
   @ApiProperty({ description: '수정할 멤버 데이터', type: UpdateMemberDto })
   @ValidateNested()

@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
-import { IsArray, IsString, ValidateNested } from 'class-validator'
+import { IsArray, IsInt, ValidateNested } from 'class-validator'
 import { CreateAwardsDto } from './createAwards.dto'
 
 export class AwardsBatchUpdateItemDto {
   @ApiProperty({ description: '수상 실적 ID' })
-  @IsString()
-  id: string
+  @Type(() => Number)
+  @IsInt()
+  id: number
 
   @ApiProperty({ description: '수상 실적 데이터', type: CreateAwardsDto })
   @ValidateNested()

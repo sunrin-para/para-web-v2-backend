@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common'
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common'
 import { GalleryService } from '@/gallery/gallery.service'
 import { ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { AlbumDto } from '@/gallery/dto/album.dto'
@@ -11,7 +11,9 @@ export class GalleryPublicController {
   @ApiOperation({ summary: '앨범 상세 조회' })
   @ApiResponse({ type: AlbumDto })
   @Get('/detail/:albumUUID')
-  async getAlbumDetail(@Param('albumId') albumUUID: string) {
+  async getAlbumDetail(
+    @Param('albumUUID', ParseIntPipe) albumUUID: number,
+  ) {
     return await this.galleryService.getAlbumDetail(albumUUID)
   }
 
@@ -25,7 +27,7 @@ export class GalleryPublicController {
   @ApiOperation({ summary: '연도별 앨범 조회' })
   @ApiResponse({ type: MonoAlbumDto, isArray: true })
   @Get('/year/:year')
-  async getAlbumsByYear(@Param('year') year: number) {
+  async getAlbumsByYear(@Param('year', ParseIntPipe) year: number) {
     return await this.galleryService.getAlbumsByYear(year)
   }
 }

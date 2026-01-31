@@ -1,13 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
-import { IsArray, IsString, ValidateNested } from 'class-validator'
+import { IsArray, IsInt, ValidateNested } from 'class-validator'
 import { CreatePortfolioDto } from './create-portfolio.dto'
 import { UpdatePortfolioDto } from './update-portfolio.dto'
 
 export class PortfolioBatchUpdateItemDto {
   @ApiProperty({ description: '포트폴리오 ID' })
-  @IsString()
-  id: string
+  @Type(() => Number)
+  @IsInt()
+  id: number
 
   @ApiProperty({ description: '수정할 포트폴리오 데이터', type: UpdatePortfolioDto })
   @ValidateNested()

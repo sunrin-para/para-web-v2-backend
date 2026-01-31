@@ -26,8 +26,8 @@ describe('AwardsService batch', () => {
         { name: 'B', member: ['b'], year: 2025 },
       ],
       [
-        { id: '1', data: { name: 'C', member: ['c'], year: 2022 } },
-        { id: '2', data: { name: 'D', member: ['d'], year: 2023 } },
+        { id: 1, data: { name: 'C', member: ['c'], year: 2022 } },
+        { id: 2, data: { name: 'D', member: ['d'], year: 2023 } },
       ],
     )
 
@@ -39,7 +39,7 @@ describe('AwardsService batch', () => {
 
   it('returns deleted count from repository', async () => {
     repository.deleteManyAwardsByIds.mockResolvedValueOnce({ count: 3 })
-    const result = await service.deleteManyAwardsByIds(['1', '2', '3'])
+    const result = await service.deleteManyAwardsByIds([1, 2, 3])
     expect(result).toEqual({ deletedCount: 3 })
   })
 })

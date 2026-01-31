@@ -7,6 +7,7 @@ import {
   Delete,
   UseGuards,
   SetMetadata,
+  ParseIntPipe,
 } from '@nestjs/common'
 import { MembersService } from '@/members/members.service'
 import { AdminGuard } from '@/auth/guards/admin.guard'
@@ -45,7 +46,7 @@ export class MembersPrivateController {
   @ApiResponse({ type: MemberDto })
   @Patch('/:memberUUID')
   async updateMemberDetail(
-    @Param('memberUUID') memberUUID: string,
+    @Param('memberUUID', ParseIntPipe) memberUUID: number,
     @Body() updateMemberDto?: UpdateMemberDto,
   ) {
     return await this.membersService.updateMemberDetail(
@@ -64,7 +65,9 @@ export class MembersPrivateController {
   @ApiOperation({ summary: '부원 정보 삭제' })
   @ApiResponse({ type: Boolean })
   @Delete('/:memberUUID')
-  async deleteMember(@Param('memberUUID') memberUUID: string) {
+  async deleteMember(
+    @Param('memberUUID', ParseIntPipe) memberUUID: number,
+  ) {
     return await this.membersService.deleteMember(memberUUID)
   }
 }

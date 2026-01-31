@@ -7,6 +7,7 @@ import {
   Delete,
   SetMetadata,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common'
 import { GalleryService } from '@/gallery/gallery.service'
 import { AdminGuard } from '@/auth/guards/admin.guard'
@@ -29,43 +30,20 @@ export class GalleryPrivateController {
     return await this.galleryService.createAlbum(createAlbumDto)
   }
 
-  @ApiOperation({ summary: '앨범에 멤버 추가' })
-  @ApiResponse({ type: AlbumDto })
-  @Patch('/members/:albumUUID/:memberUUID')
-  async addMemberToAlbum(
-    @Param('albumUUID') albumUUID: string,
-    @Param('memberUUID') memberUUID: string,
-  ) {
-    return await this.galleryService.addMemberToAlbum(albumUUID, memberUUID)
-  }
-
   @ApiOperation({ summary: '앨범 수정' })
   @ApiResponse({ type: AlbumDto })
   @Patch('/edit/:albumUUID')
   async updateAlbum(
-    @Param('albumUUID') albumUUID: string,
+    @Param('albumUUID', ParseIntPipe) albumUUID: number,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
     return await this.galleryService.updateAlbum(albumUUID, updateAlbumDto)
   }
 
-  @ApiOperation({ summary: '앨범에서 사용자 삭제' })
-  @ApiResponse({ type: AlbumDto })
-  @Delete('/members/:albumUUID/:memberUUID')
-  async deleteMemberFromAlbum(
-    @Param('albumUUID') albumUUID: string,
-    @Param('memberUUID') memberUUID: string,
-  ) {
-    return await this.galleryService.deleteMemberFromAlbum(
-      albumUUID,
-      memberUUID,
-    )
-  }
-
   @ApiOperation({ summary: '앨범 삭제' })
   @ApiResponse({ type: Boolean })
   @Delete('/:albumUUID')
-  async deleteAlbum(@Param('albumUUID') albumUUID: string) {
+  async deleteAlbum(@Param('albumUUID', ParseIntPipe) albumUUID: number) {
     return await this.galleryService.deleteAlbum(albumUUID)
   }
 }

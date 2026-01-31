@@ -23,7 +23,7 @@ export class AwardsService {
   }
 
   async updateAwardsHistory(
-    awardUUID: string,
+    awardUUID: number,
     updateAwardDto: CreateAwardsDto,
   ) {
     return await this.awardsRepository.updateAwardHistory(
@@ -32,7 +32,7 @@ export class AwardsService {
     )
   }
 
-  async deleteAwardById(uuid: string) {
+  async deleteAwardById(uuid: number) {
     return await this.awardsRepository.deleteAwardById(uuid)
   }
 
@@ -42,7 +42,7 @@ export class AwardsService {
 
   async batchUpsertAwards(
     createItems: CreateAwardsDto[],
-    updateItems: { id: string; data: CreateAwardsDto }[],
+    updateItems: { id: number; data: CreateAwardsDto }[],
   ) {
     const failures: { index: number; action: 'create' | 'update'; reason: string }[] = []
     let createdCount = 0
@@ -78,7 +78,7 @@ export class AwardsService {
     }
   }
 
-  async deleteManyAwardsByIds(ids: string[]) {
+  async deleteManyAwardsByIds(ids: number[]) {
     if (ids.length === 0) {
       return { deletedCount: 0 }
     }

@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common'
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common'
 import { MembersService } from '@/members/members.service'
 import { ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { MemberDto } from '../dto/member.dto'
@@ -17,14 +17,18 @@ export class MembersPublicController {
   @ApiOperation({ summary: '기수별 부원 정보 조회' })
   @ApiResponse({ type: MemberDto, isArray: true })
   @Get('/generation/:generation')
-  async getMembersByGeneration(@Param('generation') generation: number) {
+  async getMembersByGeneration(
+    @Param('generation', ParseIntPipe) generation: number,
+  ) {
     return await this.membersService.getMembersByGeneration(generation)
   }
 
   @ApiOperation({ summary: '부원 상세 정보 조회' })
   @ApiResponse({ type: MemberDto })
   @Get('/id/:memberUUID')
-  async getMemberDetail(@Param('memberUUID') memberUUID: string) {
+  async getMemberDetail(
+    @Param('memberUUID', ParseIntPipe) memberUUID: number,
+  ) {
     return await this.membersService.getMemberDetail(memberUUID)
   }
 }

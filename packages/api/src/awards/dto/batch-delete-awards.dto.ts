@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsArray, IsString } from 'class-validator'
+import { Type } from 'class-transformer'
+import { IsArray, IsInt } from 'class-validator'
 
 export class BatchDeleteAwardsDto {
-  @ApiProperty({ description: '삭제할 수상 실적 ID 목록', type: [String] })
+  @ApiProperty({ description: '삭제할 수상 실적 ID 목록', type: [Number] })
   @IsArray()
-  @IsString({ each: true })
-  ids: string[]
+  @Type(() => Number)
+  @IsInt({ each: true })
+  ids: number[]
 }

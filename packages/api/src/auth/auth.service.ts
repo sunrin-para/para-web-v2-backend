@@ -171,7 +171,7 @@ export class AuthService {
     const user = await this.userService.findUserByEmail(email)
 
     const payload: JwtPayload = {
-      id: user.id,
+      uid: user.uid,
       email: user.email,
       permission: user.permission,
       validationKey: validationKey,

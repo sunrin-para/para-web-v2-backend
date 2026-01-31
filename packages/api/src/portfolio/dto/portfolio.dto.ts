@@ -11,9 +11,9 @@ export class PortfolioDto {
   @IsNumber()
   @ApiProperty({
     description: '포트폴리오 ID',
-    example: 'uuid-type',
+    example: 1,
   })
-  id: string
+  id: number
 
   @ApiProperty({
     description: '포트폴리오 제목',

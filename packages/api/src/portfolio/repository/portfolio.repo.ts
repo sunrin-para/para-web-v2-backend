@@ -7,50 +7,11 @@ import { UpdatePortfolioDto } from '../dto/update-portfolio.dto'
 export class PortfolioRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  private buildTagRelation(tags?: string[]) {
-    if (!tags || tags.length === 0) return undefined
-    const uniqueTags = [...new Set(tags)]
-    return {
-      connectOrCreate: uniqueTags.map((tag) => ({
-        where: { tagName: tag },
-        create: { tagName: tag },
-      })),
-    }
-  }
-
-  private buildParticipantCreates(
-    paraMembers?: string[],
-    outsideMembers?: string[],
-  ) {
-    const participants: { memberName: string; isExternal: boolean }[] = []
-    if (paraMembers) {
-      paraMembers
-        .filter((name) => name.trim().length > 0)
-        .forEach((name) =>
-          participants.push({ memberName: name.trim(), isExternal: false }),
-        )
-    }
-    if (outsideMembers) {
-      outsideMembers
-        .filter((name) => name.trim().length > 0)
-        .forEach((name) =>
-          participants.push({ memberName: name.trim(), isExternal: true }),
-        )
-    }
-    return participants
-  }
-
   async createPortfolio(data: CreatePortfolioDto) {
     try {
       if (!data.date || data.date.length === 0) {
         throw new BadRequestException('시작 날짜가 필요합니다.')
       }
-      const [startDate, endDate] = data.date
-      const participants = this.buildParticipantCreates(
-        data.para_member,
-        data.outside_member,
-      )
-
       return await this.prismaService.portfolio.create({
         data: {
           title: data.title,
@@ -58,14 +19,12 @@ export class PortfolioRepository {
           description: data.description,
           thumbnail: data.thumbnail,
           filePath: data.filePath,
-          startDate,
-          endDate,
+          date: data.date,
           link: data.link,
           github: data.github,
-          tags: this.buildTagRelation(data.tags),
-          participants: participants.length
-            ? { create: participants }
-            : undefined,
+          tags: data.tags,
+          para_member: data.para_member,
+          outside_member: data.outside_member,
         },
       })
     }
@@ -96,7 +55,7 @@ export class PortfolioRepository {
     }
   }
 
-  async getPortfolioDetail(id: string) {
+  async getPortfolioDetail(id: number) {
     try {
       return await this.prismaService.portfolio.findUnique({
         where: { id },
@@ -112,9 +71,7 @@ export class PortfolioRepository {
       return await this.prismaService.portfolio.findMany({
         where: {
           tags: {
-            some: {
-              tagName: category,
-            },
+            has: category,
           },
         },
       })
@@ -152,7 +109,7 @@ export class PortfolioRepository {
     }
   }
 
-  async updatePortfolio(id: string, data: UpdatePortfolioDto) {
+  async updatePortfolio(id: number, data: UpdatePortfolioDto) {
     try {
       const updateData: Record<string, unknown> = {
         title: data.title,
@@ -165,27 +122,18 @@ export class PortfolioRepository {
       }
 
       if (data.date && data.date.length > 0) {
-        const [startDate, endDate] = data.date
-        updateData.startDate = startDate
-        updateData.endDate = endDate
+        updateData.date = data.date
       }
 
-      if (data.tags) {
-        updateData.tags = {
-          set: [],
-          ...this.buildTagRelation(data.tags),
-        }
+      if (data.tags !== undefined) {
+        updateData.tags = data.tags
       }
 
-      if (data.para_member || data.outside_member) {
-        const participants = this.buildParticipantCreates(
-          data.para_member,
-          data.outside_member,
-        )
-        updateData.participants = {
-          deleteMany: {},
-          create: participants,
-        }
+      if (data.para_member !== undefined) {
+        updateData.para_member = data.para_member
+      }
+      if (data.outside_member !== undefined) {
+        updateData.outside_member = data.outside_member
       }
 
       return await this.prismaService.portfolio.update({
@@ -198,7 +146,7 @@ export class PortfolioRepository {
     }
   }
 
-  async deletePortfolio(id: string) {
+  async deletePortfolio(id: number) {
     try {
       return await this.prismaService.portfolio.delete({
         where: { id },
@@ -209,7 +157,7 @@ export class PortfolioRepository {
     }
   }
 
-  async deleteManyPortfoliosByIds(ids: string[]) {
+  async deleteManyPortfoliosByIds(ids: number[]) {
     try {
       return await this.prismaService.portfolio.deleteMany({
         where: { id: { in: ids } },

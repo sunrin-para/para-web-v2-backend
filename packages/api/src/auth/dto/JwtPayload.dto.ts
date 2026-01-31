@@ -1,15 +1,15 @@
 import { Permission as PermissionEnum } from '@/common/enums/Permission.enum'
 import { ApiProperty } from '@nestjs/swagger'
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator'
+import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator'
 
 export class JwtPayload {
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
   @ApiProperty({
-    description: '사용자 고유 UUID',
-    example: 'user-uuid',
+    description: '사용자 고유 ID',
+    example: 1,
   })
-  id: string
+  uid: number
 
   @IsEmail()
   @IsNotEmpty()

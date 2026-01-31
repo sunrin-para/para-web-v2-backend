@@ -1,5 +1,5 @@
 model User {
-  id         String     @id @default(uuid())
+  uid        Int        @id @default(autoincrement())
   email      String     @unique
   password   String?
   name       String
@@ -13,8 +13,8 @@ model User {
 }
 
 enum Permission {
-  SUPER // 유저까지 다 관리
-  MODERATOR // 지원폼까지 볼 수 있음
-  MANAGER // 사이트 기본 설정만
+  SUPER
+  MODERATOR
+  MANAGER
   USER
 }

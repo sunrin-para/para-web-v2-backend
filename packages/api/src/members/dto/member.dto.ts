@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsString, IsOptional } from 'class-validator'
+import { IsNumber, IsOptional, IsString } from 'class-validator'
 
 export class MemberDto {
   @ApiProperty({
@@ -24,7 +24,7 @@ export class MemberDto {
     description: '기수',
     example: 25,
   })
-  @IsString()
+  @IsNumber()
   generation: number
 
   @ApiProperty({

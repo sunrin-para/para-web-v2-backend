@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common'
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common'
 import { PortfolioService } from '@/portfolio/portfolio.service'
 import { ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { PortfolioDto } from '../dto/portfolio.dto'
@@ -17,7 +17,9 @@ export class PortfolioPublicController {
   @ApiOperation({ summary: '포트폴리오 상세 조회' })
   @ApiResponse({ type: PortfolioDto })
   @Get('/id/:id')
-  async getPortfolioDetail(@Param('id') portfolioUUID: string) {
+  async getPortfolioDetail(
+    @Param('id', ParseIntPipe) portfolioUUID: number,
+  ) {
     return await this.portfolioService.getPortfolioDetail(portfolioUUID)
   }
 

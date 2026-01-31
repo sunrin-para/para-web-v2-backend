@@ -18,12 +18,12 @@ export class MembersService {
     return await this.memberRepository.getMembersByGeneration(generation)
   }
 
-  async getMemberDetail(memberUUID: string) {
+  async getMemberDetail(memberUUID: number) {
     return await this.memberRepository.getMemberDetail(memberUUID)
   }
 
   async updateMemberDetail(
-    memberUUID: string,
+    memberUUID: number,
     updateMemberDto?: UpdateMemberDto,
   ) {
     if (!updateMemberDto) {
@@ -35,13 +35,13 @@ export class MembersService {
     )
   }
 
-  async deleteMember(memberUUID: string) {
+  async deleteMember(memberUUID: number) {
     return await this.memberRepository.deleteMember(memberUUID)
   }
 
   async batchUpsertMembers(
     createItems: CreateMemberDto[],
-    updateItems: { id: string; data: UpdateMemberDto }[],
+    updateItems: { id: number; data: UpdateMemberDto }[],
   ) {
     const failures: { index: number; action: 'create' | 'update'; reason: string }[] = []
     let createdCount = 0
@@ -77,7 +77,7 @@ export class MembersService {
     }
   }
 
-  async deleteManyMembersByIds(ids: string[]) {
+  async deleteManyMembersByIds(ids: number[]) {
     if (ids.length === 0) {
       return { deletedCount: 0 }
     }

@@ -15,7 +15,7 @@ export class PortfolioService {
     return await this.portfolioRepository.searchPortfolioByName(keyword)
   }
 
-  async getPortfolioDetail(portfolioUUID: string) {
+  async getPortfolioDetail(portfolioUUID: number) {
     return await this.portfolioRepository.getPortfolioDetail(portfolioUUID)
   }
 
@@ -32,7 +32,7 @@ export class PortfolioService {
   }
 
   async updatePortfolio(
-    portfolioUUID: string,
+    portfolioUUID: number,
     updatePortfolioDto?: Partial<UpdatePortfolioDto>,
   ) {
     if (!updatePortfolioDto) {
@@ -44,13 +44,13 @@ export class PortfolioService {
     )
   }
 
-  async deletePortfolio(portfolioUUID: string) {
+  async deletePortfolio(portfolioUUID: number) {
     return await this.portfolioRepository.deletePortfolio(portfolioUUID)
   }
 
   async batchUpsertPortfolios(
     createItems: CreatePortfolioDto[],
-    updateItems: { id: string; data: UpdatePortfolioDto }[],
+    updateItems: { id: number; data: UpdatePortfolioDto }[],
   ) {
     const failures: { index: number; action: 'create' | 'update'; reason: string }[] = []
     let createdCount = 0
@@ -86,7 +86,7 @@ export class PortfolioService {
     }
   }
 
-  async deleteManyPortfoliosByIds(ids: string[]) {
+  async deleteManyPortfoliosByIds(ids: number[]) {
     if (ids.length === 0) {
       return { deletedCount: 0 }
     }

@@ -1,42 +1,18 @@
-model PortfolioTags {
-  id         String      @id @default(uuid())
-  tagName    String      @unique
-  portfolios Portfolio[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model Portfolio {
-  id String @id @default(uuid())
+  id Int @id @default(autoincrement())
 
-  tags        PortfolioTags[]
-  title       String
-  summary     String
-  description String?
-
-  thumbnail String
-  filePath  String
-
-  participants PortfolioParticipation[]
-
-  startDate DateTime
-  endDate   DateTime?
-  link      String?
-  github    String?
-  awards    Award[]
+  tags           String[]
+  title          String
+  summary        String
+  description    String?
+  thumbnail      String
+  para_member    String[]
+  outside_member String[]
+  filePath       String
+  date           DateTime[]
+  link           String?
+  github         String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-model PortfolioParticipation {
-  id          String    @id @default(uuid())
-  portfolioId String
-  portfolio   Portfolio @relation(fields: [portfolioId], references: [id])
-
-  memberId   String?
-  memberName String
-  isExternal Boolean @default(false)
-  member     Member? @relation(fields: [memberId], references: [id])
 }

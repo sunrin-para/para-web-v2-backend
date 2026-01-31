@@ -40,8 +40,8 @@ describe('MembersService batch', () => {
         },
       ],
       [
-        { id: '1', data: { name: 'C' } },
-        { id: '2', data: { name: 'D' } },
+        { id: 1, data: { name: 'C' } },
+        { id: 2, data: { name: 'D' } },
       ],
     )
 
@@ -53,7 +53,7 @@ describe('MembersService batch', () => {
 
   it('returns deleted count from repository', async () => {
     repository.deleteManyMembersByIds.mockResolvedValueOnce({ count: 2 })
-    const result = await service.deleteManyMembersByIds(['1', '2'])
+    const result = await service.deleteManyMembersByIds([1, 2])
     expect(result).toEqual({ deletedCount: 2 })
   })
 })

@@ -7,6 +7,7 @@ import {
   UseGuards,
   Body,
   Param,
+  ParseIntPipe,
 } from '@nestjs/common'
 import { AwardsService } from '@/awards/awards.service'
 import { AdminGuard } from '@/auth/guards/admin.guard'
@@ -44,7 +45,7 @@ export class AwardsPrivateController {
   @ApiResponse({ type: AwardsDto })
   @Put('/edit/:AwardUUID')
   async updateAwardsHistory(
-    @Param('AwardUUID') uuid: string,
+    @Param('AwardUUID', ParseIntPipe) uuid: number,
     @Body() updateAwardDto: CreateAwardsDto,
   ) {
     return await this.awardsService.updateAwardsHistory(uuid, updateAwardDto)
@@ -53,14 +54,18 @@ export class AwardsPrivateController {
   @ApiOperation({ summary: '수상 실적 삭제' })
   @ApiResponse({ type: Boolean })
   @Delete('/id/:AwardUUID')
-  async deleteAwardsHistoryById(@Param('AwardUUID') uuid: string) {
+  async deleteAwardsHistoryById(
+    @Param('AwardUUID', ParseIntPipe) uuid: number,
+  ) {
     return await this.awardsService.deleteAwardById(uuid)
   }
 
   @ApiOperation({ summary: '연도 단위 수상 실적 삭제' })
   @ApiResponse({ type: Boolean })
   @Delete('/year/:year')
-  async deleteManyAwardsHistoryByYear(@Param('year') year: number) {
+  async deleteManyAwardsHistoryByYear(
+    @Param('year', ParseIntPipe) year: number,
+  ) {
     return await this.awardsService.deleteManyAwardsByYear(year)
   }
 

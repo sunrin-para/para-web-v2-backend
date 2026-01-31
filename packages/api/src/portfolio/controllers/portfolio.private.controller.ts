@@ -7,6 +7,7 @@ import {
   Delete,
   SetMetadata,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common'
 import { PortfolioService } from '@/portfolio/portfolio.service'
 import { AdminGuard } from '@/auth/guards/admin.guard'
@@ -45,7 +46,7 @@ export class PortfolioPrivateController {
   @ApiResponse({ type: PortfolioDto })
   @Patch('/:portfolioUUID')
   async updatePortfolio(
-    @Param('portfolioUUID') portfolioUUID: string,
+    @Param('portfolioUUID', ParseIntPipe) portfolioUUID: number,
     @Body() updatePortfolioDto?: UpdatePortfolioDto,
   ) {
     return await this.portfolioService.updatePortfolio(
@@ -64,7 +65,9 @@ export class PortfolioPrivateController {
   @ApiOperation({ summary: '포트폴리오 삭제' })
   @ApiResponse({ type: Boolean })
   @Delete('/:portfolioUUID')
-  async deletePortfolio(@Param('portfolioUUID') portfolioUUID: string) {
+  async deletePortfolio(
+    @Param('portfolioUUID', ParseIntPipe) portfolioUUID: number,
+  ) {
     return await this.portfolioService.deletePortfolio(portfolioUUID)
   }
 }

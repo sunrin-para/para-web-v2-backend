@@ -50,7 +50,7 @@ export class AwardsRepository {
     }
   }
 
-  async updateAwardHistory(id: string, data: CreateAwardsDto) {
+  async updateAwardHistory(id: number, data: CreateAwardsDto) {
     try {
       return await this.prismaService.award.update({
         where: { id },
@@ -62,7 +62,7 @@ export class AwardsRepository {
     }
   }
 
-  async deleteAwardById(id: string) {
+  async deleteAwardById(id: number) {
     try {
       return await this.prismaService.award.delete({
         where: { id },
@@ -84,7 +84,7 @@ export class AwardsRepository {
     }
   }
 
-  async deleteManyAwardsByIds(ids: string[]) {
+  async deleteManyAwardsByIds(ids: number[]) {
     try {
       return await this.prismaService.award.deleteMany({
         where: { id: { in: ids } },

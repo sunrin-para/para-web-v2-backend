@@ -50,8 +50,8 @@ describe('PortfolioService batch', () => {
         },
       ],
       [
-        { id: '1', data: { title: 'C' } },
-        { id: '2', data: { title: 'D' } },
+        { id: 1, data: { title: 'C' } },
+        { id: 2, data: { title: 'D' } },
       ],
     )
 
@@ -63,7 +63,7 @@ describe('PortfolioService batch', () => {
 
   it('returns deleted count from repository', async () => {
     repository.deleteManyPortfoliosByIds.mockResolvedValueOnce({ count: 4 })
-    const result = await service.deleteManyPortfoliosByIds(['1', '2', '3', '4'])
+    const result = await service.deleteManyPortfoliosByIds([1, 2, 3, 4])
     expect(result).toEqual({ deletedCount: 4 })
   })
 })
