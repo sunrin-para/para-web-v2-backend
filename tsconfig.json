@@ -19,8 +19,7 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/*": ["packages/api/src/*"],
-      "@sunrin-para/database/*": ["../database/*"]
+      "@/*": ["packages/api/src/*"]
     }
   },
   "include": ["packages/api/src/**/*.ts"],
