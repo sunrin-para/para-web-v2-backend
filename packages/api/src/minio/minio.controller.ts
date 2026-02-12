@@ -65,7 +65,7 @@ export class MinioController {
     @Param('type') type: FileType,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    if (!files || !(type in FileType)) {
+    if (!files || !(type in Object.values(FileType))) {
       throw new BadRequestException()
     }
 
