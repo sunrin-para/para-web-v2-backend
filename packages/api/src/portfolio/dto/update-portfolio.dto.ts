@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { Type } from 'class-transformer'
 import { IsArray, IsDate, IsOptional, IsString } from 'class-validator'
 
 export class UpdatePortfolioDto {
@@ -59,6 +60,7 @@ export class UpdatePortfolioDto {
     required: false,
   })
   @IsArray()
+  @Type(() => Date)
   @IsDate({ each: true })
   @IsOptional()
   date?: Date[]
