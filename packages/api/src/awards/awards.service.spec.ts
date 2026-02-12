@@ -22,12 +22,12 @@ describe('AwardsService batch', () => {
 
     const result = await service.batchUpsertAwards(
       [
-        { name: 'A', member: ['a'], year: 2024 },
-        { name: 'B', member: ['b'], year: 2025 },
+        { name: 'A', member: ['a'], year: 2024, isExternal: true },
+        { name: 'B', member: ['b'], year: 2025, isExternal: false },
       ],
       [
-        { id: 1, data: { name: 'C', member: ['c'], year: 2022 } },
-        { id: 2, data: { name: 'D', member: ['d'], year: 2023 } },
+        { id: 1, data: { name: 'C', member: ['c'], year: 2022, isExternal: true } },
+        { id: 2, data: { name: 'D', member: ['d'], year: 2023, isExternal: false } },
       ],
     )
 

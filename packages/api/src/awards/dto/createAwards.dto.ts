@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsArray, IsNumber, IsString } from 'class-validator'
+import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator'
 
 export class CreateAwardsDto {
   @ApiProperty({
@@ -27,4 +27,11 @@ export class CreateAwardsDto {
   })
   @IsNumber()
   year: number
+
+  @ApiProperty({
+    description: '교외 대회 수상 여부',
+    example: true,
+  })
+  @IsBoolean()
+  isExternal: boolean
 }
