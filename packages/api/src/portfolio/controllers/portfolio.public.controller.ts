@@ -2,6 +2,7 @@ import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common'
 import { PortfolioService } from '@/portfolio/portfolio.service'
 import { ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { PortfolioDto } from '../dto/portfolio.dto'
+import { SortType } from '@/common/enums/SortType.enum'
 
 @Controller('portfolio')
 export class PortfolioPublicController {
@@ -33,8 +34,8 @@ export class PortfolioPublicController {
   @ApiOperation({ summary: '전체 포트폴리오 조회' })
   @ApiResponse({ type: PortfolioDto, isArray: true })
   @Get('/all/portfolio')
-  async getPortfolioList() {
-    return await this.portfolioService.getPortfolioList()
+  async getPortfolioList(@Param('sort') sort: SortType = SortType.NEWEST) {
+    return await this.portfolioService.getPortfolioList(sort)
   }
 
   @ApiOperation({ summary: '전체 카테고리 조회' })

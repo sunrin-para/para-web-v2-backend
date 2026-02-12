@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common'
 import { PortfolioRepository } from './repository/portfolio.repo'
 import { CreatePortfolioDto } from './dto/create-portfolio.dto'
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto'
+import { SortType } from '@/common/enums/SortType.enum'
 
 @Injectable()
 export class PortfolioService {
@@ -23,8 +24,8 @@ export class PortfolioService {
     return await this.portfolioRepository.getPortfoliosByCategory(category)
   }
 
-  async getPortfolioList(count: number = 50) {
-    return await this.portfolioRepository.getPortfolioList(count)
+  async getPortfolioList(sort: SortType, count: number = 50) {
+    return await this.portfolioRepository.getPortfolioList(sort, count)
   }
 
   async getTagsList() {

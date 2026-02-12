@@ -96,4 +96,15 @@ export class UserRepository {
       throw new InternalServerErrorException()
     }
   }
+
+  async getUserByEmail(email: string) {
+    try {
+      return await this.prismaService.user.findUnique({
+        where: { email },
+      })
+    }
+    catch {
+      throw new InternalServerErrorException()
+    }
+  }
 }

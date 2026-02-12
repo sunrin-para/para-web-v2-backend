@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException } from '@
 import { PrismaService } from '@/common/prisma/prisma.service'
 import { CreatePortfolioDto } from '../dto/create-portfolio.dto'
 import { UpdatePortfolioDto } from '../dto/update-portfolio.dto'
+import { SortType } from '@/common/enums/SortType.enum'
 
 @Injectable()
 export class PortfolioRepository {
@@ -98,10 +99,13 @@ export class PortfolioRepository {
     }
   }
 
-  async getPortfolioList(count: number) {
+  async getPortfolioList(sort: SortType, count: number) {
     try {
       return await this.prismaService.portfolio.findMany({
         take: count,
+        orderBy: {
+          date: sort === SortType.NEWEST ? 'desc' : sort === SortType.LATEST ? 'asc' : sort === SortType.OLDEST ? 'asc' : 'desc',
+        },
       })
     }
     catch (e) {

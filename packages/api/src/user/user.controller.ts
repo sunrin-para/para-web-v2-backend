@@ -78,4 +78,18 @@ export class UserController {
   async deleteAccount(@Body('email') email: string) {
     return await this.userService.deleteAccount(email)
   }
+
+  @ApiOperation({ summary: '내 계정 조회' })
+  @ApiResponse({ type: UserDataDto })
+  @Get('/me')
+  async getMyAccount(@Req() req: IRequest) {
+    return this.userService.getAccount(req.user.email);
+  }
+
+  @ApiOperation({ summary: '계정 조회' })
+  @ApiResponse({ type: UserDataDto })
+  @Get('/user/:email')
+  async getAccount(@Param('email') email: string) {
+    return this.userService.getAccount(email);
+  }
 }

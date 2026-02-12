@@ -98,4 +98,8 @@ export class UserService {
   async deleteAccount(email: string) {
     return await this.userRepository.deleteAccount(email)
   }
+
+  async getAccount(email: string) {
+    return await this.userRepository.findUserByEmail(email)
+  }
 }
