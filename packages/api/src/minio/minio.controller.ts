@@ -82,26 +82,28 @@ export class MinioController {
   }
 
   @Get('/:type/:filename')
+  @ApiParam({ name: 'type', enum: FileType })
   async getFile(
-    @Param('type') type: string,
+    @Param('type') type: FileType,
     @Param('filename') filename: string,
   ) {
-    return await this.minioService.getFile(
-      FileType[type.toUpperCase()],
-      filename,
-    )
+    if (!FileTypeValues.includes(type)) {
+      throw new BadRequestException('Invalid file type')
+    }
+    return await this.minioService.getFile(type, filename)
   }
 
   @Delete('/:type/:filename')
+  @ApiParam({ name: 'type', enum: FileType })
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
   async deleteFile(
-    @Param('type') type: string,
+    @Param('type') type: FileType,
     @Param('filename') filename: string,
   ) {
-    return await this.minioService.deleteFile(
-      FileType[type.toUpperCase()],
-      filename,
-    )
+    if (!FileTypeValues.includes(type)) {
+      throw new BadRequestException('Invalid file type')
+    }
+    return await this.minioService.deleteFile(type, filename)
   }
 }

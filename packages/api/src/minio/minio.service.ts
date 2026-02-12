@@ -8,8 +8,8 @@ import { ConfigService } from '@nestjs/config'
 export class MinioService {
   constructor(private readonly configService: ConfigService) {}
   async uploadFiles(files: Array<Express.Multer.File>, type: FileType) {
-    if (!files || !(type in FileType)) {
-      throw new BadRequestException()
+    if (!files || !Object.values(FileType).includes(type)) {
+      throw new BadRequestException('Invalid file type')
     }
 
     const filesUrlList: string[] = []
@@ -41,9 +41,10 @@ export class MinioService {
       buffer,
       file.size,
     )
-    return `https://${this.configService.get<string>(
-      'MINIO_URL',
-    )}/${this.configService.get<string>('BUCKET_NAME')}/${path}`
+    const isProduction = this.configService.get<string>('MODE') == 'production'
+    const protocol = isProduction ? 'https' : 'http'
+    const port = isProduction ? '' : ':9000'
+    return `${protocol}://${this.configService.get<string>('MINIO_URL')}${port}/${this.configService.get<string>('BUCKET_NAME')}/${path}`
   }
 
   async getFile(type: FileType, filename: string) {
