@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common'
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common'
 import { PortfolioService } from '@/portfolio/portfolio.service'
 import { ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger'
 import { PortfolioDto } from '../dto/portfolio.dto'
