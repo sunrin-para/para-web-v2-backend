@@ -22,7 +22,7 @@ import {
 } from '@nestjs/swagger'
 import { FilesInterceptor } from '@nestjs/platform-express'
 import { AdminGuard } from '@/auth/guards/admin.guard'
-import { FileType } from '@/common/enums/FileType.enum'
+import { FileType, FileTypeValues } from '@/common/enums/FileType.enum'
 
 @ApiBearerAuth()
 @ApiTags('Minio')
@@ -65,8 +65,8 @@ export class MinioController {
     @Param('type') type: FileType,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    if (!files || !Object.values(FileType).includes(type)) {
-      throw new BadRequestException()
+    if (!files || !FileTypeValues.includes(type)) {
+      throw new BadRequestException('Invalid file type')
     }
 
     const filesUrlList: string[] = []

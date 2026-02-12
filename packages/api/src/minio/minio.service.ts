@@ -34,7 +34,7 @@ export class MinioService {
     })
 
     const buffer = Buffer.from(await file.arrayBuffer())
-    const path = type ? `${type}/${fileName}` : fileName
+    const path = `${type}/${fileName}`
     await minioClient.putObject(
       this.configService.get<string>('BUCKET_NAME'),
       path,

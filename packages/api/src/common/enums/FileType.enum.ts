@@ -4,3 +4,5 @@ export enum FileType {
   GALLERY = 'gallery',
   APPLICANTS = 'apply',
 }
+
+export const FileTypeValues = Object.values(FileType)
