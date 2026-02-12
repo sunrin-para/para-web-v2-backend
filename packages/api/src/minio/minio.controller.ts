@@ -16,6 +16,7 @@ import {
   ApiBody,
   ApiConsumes,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
@@ -56,6 +57,7 @@ export class MinioController {
     },
   })
   @Post('/:type')
+  @ApiQuery({ name: 'type', enum: FileType })
   @UseGuards(AdminGuard)
   @SetMetadata('permission', 'MANAGER')
   @UseInterceptors(FilesInterceptor('files'))
